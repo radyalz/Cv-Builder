@@ -1,45 +1,33 @@
 # Radman Alizadeh — CV Builder
 
-This repository provides an on-demand build of my latest professional CV.
+Generate the latest version of my CV on demand.
 
-The CV is generated dynamically so that time-sensitive information,
-including ongoing experience durations, is calculated at build time.
+## Live CV Builder
 
-## Generate Latest CV
+**[Open the CV Builder](https://radyalz.github.io/Cv-Builder/)**
 
-<p align="center">
-  <a href="https://YOUR_USERNAME.github.io/Cv-Builder/">
-    <img
-      src="https://img.shields.io/badge/Generate-Latest%20CV-181717?style=for-the-badge&logo=github"
-      alt="Generate Latest CV"
-    >
-  </a>
-</p>
+The builder requests a fresh private build of the CV, recalculates date-dependent experience durations, publishes the newest PDF, and starts the download automatically when the build finishes.
 
-### How it works
+A fresh build normally takes about **3–5 minutes**.
 
-When **Generate Latest CV** is selected:
+## Latest published CV
 
-1. A new CV build is requested.
-2. The latest available CV data is processed.
-3. Current experience durations are recalculated.
-4. The document is rendered.
-5. The resulting PDF is prepared as:
+**[View the latest release](https://github.com/radyalz/Cv-Builder/releases/latest)**
 
-   `RadmanAlizadeh-Cv.pdf`
+The generated PDF is always published as:
 
-6. The completed document is returned for download.
+`RadmanAlizadeh-Cv.pdf`
 
-The generated document always reflects the latest available version
-at the time of generation.
+## How it works
 
-## Source
+1. Click **Generate Latest CV**.
+2. A fresh build is requested.
+3. The latest CV source is rendered.
+4. Ongoing experience durations are recalculated using the current build date.
+5. The latest PDF is published.
+6. Your browser automatically starts the download.
 
-The document source and internal build infrastructure are not distributed
-through this repository.
-
-This repository acts solely as the public interface for generating and
-retrieving the current CV.
+The private document source and build credentials are not distributed through this repository.
 
 ## Copyright
 

@@ -1,35 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <title>Radman Alizadeh — CV Builder</title>
+  <meta
+    name="description"
+    content="Generate and download the latest version of Radman Alizadeh's CV."
+  >
 
-    <title>Radman Alizadeh — CV Builder</title>
-
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <main class="page-shell">
+    <section class="builder-card" aria-labelledby="page-title">
+      <div class="eyebrow">ON-DEMAND CV</div>
 
-    <main>
-        <h1>Radman Alizadeh</h1>
+      <h1 id="page-title">Radman Alizadeh</h1>
 
-        <p>
-            Generate the latest version of my CV.
-        </p>
+      <p class="lead">
+        Generate the newest version of my CV with current date-based
+        experience durations.
+      </p>
 
-        <button id="generateButton">
-            Generate Latest CV
+      <div class="actions">
+        <button id="generateButton" class="primary-button" type="button">
+          <span class="button-label">Generate Latest CV</span>
+          <span class="button-arrow" aria-hidden="true">→</span>
         </button>
 
-        <p id="status"></p>
-    </main>
+        <a
+          class="secondary-link"
+          href="https://github.com/radyalz/Cv-Builder/releases/latest"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View latest published copy
+        </a>
+      </div>
 
-    <script src="runner.js"></script>
+      <section id="buildPanel" class="build-panel" hidden aria-live="polite">
+        <div class="status-row">
+          <div class="spinner" aria-hidden="true"></div>
 
+          <div>
+            <div id="statusTitle" class="status-title">
+              Starting CV build…
+            </div>
+
+            <div id="statusText" class="status-text">
+              Preparing your request.
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-bar"></div>
+        </div>
+
+        <div class="build-meta">
+          <span id="elapsedTime">Elapsed: 0:00</span>
+          <span>Typical build: 3–5 min</span>
+        </div>
+      </section>
+
+      <section id="successPanel" class="success-panel" hidden aria-live="polite">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <div>
+          <div class="status-title">Latest CV is ready</div>
+          <div class="status-text">
+            Your download should start automatically.
+          </div>
+        </div>
+      </section>
+
+      <section id="errorPanel" class="error-panel" hidden aria-live="assertive">
+        <div class="error-icon" aria-hidden="true">!</div>
+        <div>
+          <div class="status-title">Build failed</div>
+          <div id="errorText" class="status-text">
+            Please try again.
+          </div>
+        </div>
+      </section>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Output</span>
+          <span class="info-value">RadmanAlizadeh-Cv.pdf</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Build</span>
+          <span class="info-value">Fresh on request</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Source</span>
+          <span class="info-value">Private</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      The public repository contains the builder interface and published CV only.
+    </p>
+  </main>
+
+  <script src="runner.js"></script>
 </body>
 </html>
