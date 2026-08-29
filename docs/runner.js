@@ -22,14 +22,14 @@ button.addEventListener("click", async () => {
     }
 
     await waitForBuild(result.buildId);
-  } catch (error) {
-    console.error(error);
+    } catch (error) {
+    console.error("CV Builder error:", error);
 
     status.textContent =
-      "CV generation failed. Please try again.";
+        `CV generation failed: ${error.message}`;
 
     button.disabled = false;
-  }
+    }
 });
 
 async function waitForBuild(buildId) {
