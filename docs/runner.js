@@ -1,8 +1,7 @@
 const button = document.getElementById("generateButton");
 const status = document.getElementById("status");
 
-const API_URL =
-  "https://cv-builder-api.radman-alizadeh2249.workers.dev";
+const API_URL = "https://cv-api.radyalz.ir";
 
 button.addEventListener("click", async () => {
   try {
