@@ -1,0 +1,18 @@
+# LaTeX generated files
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+*.toc
+*.bcf
+*.run.xml
+*.blg
+*.bbl
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
