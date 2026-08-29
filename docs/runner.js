@@ -1,72 +1,73 @@
 const button = document.getElementById("generateButton");
 const status = document.getElementById("status");
 
-const API_URL = "https://YOUR-WORKER.workers.dev";
+const API_URL =
+  "https://cv-builder-api.radman-alizadeh2249.workers.dev";
 
 button.addEventListener("click", async () => {
-    try {
-        button.disabled = true;
+  try {
+    button.disabled = true;
 
-        status.textContent = "Generating latest CV...";
+    status.textContent =
+      "Generating your latest CV. This may take approximately 3–5 minutes...";
 
-        const buildResponse = await fetch(`${API_URL}/build`, {
-            method: "POST"
-        });
+    const response = await fetch(`${API_URL}/build`, {
+      method: "POST",
+    });
 
-        if (!buildResponse.ok) {
-            throw new Error("Unable to start CV generation.");
-        }
+    const result = await response.json();
 
-        const { buildId } = await buildResponse.json();
-
-        await waitForBuild(buildId);
-
-    } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-            "CV generation failed. Please try again.";
-
-        button.disabled = false;
+    if (!response.ok) {
+      throw new Error(result.error || "Unable to start CV generation.");
     }
+
+    await waitForBuild(result.buildId);
+  } catch (error) {
+    console.error(error);
+
+    status.textContent =
+      "CV generation failed. Please try again.";
+
+    button.disabled = false;
+  }
 });
 
-
 async function waitForBuild(buildId) {
+  while (true) {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    while (true) {
+    const response = await fetch(
+      `${API_URL}/status?id=${encodeURIComponent(buildId)}`
+    );
 
-        await new Promise(resolve =>
-            setTimeout(resolve, 3000)
-        );
+    const result = await response.json();
 
-        const response = await fetch(
-            `${API_URL}/status?id=${encodeURIComponent(buildId)}`
-        );
-
-        if (!response.ok) {
-            throw new Error("Unable to check build status.");
-        }
-
-        const result = await response.json();
-
-        if (result.status === "completed") {
-
-            status.textContent = "CV ready. Downloading...";
-
-            window.location.href = result.downloadUrl;
-
-            button.disabled = false;
-
-            return;
-        }
-
-        if (result.status === "failed") {
-
-            throw new Error("CV build failed.");
-        }
-
-        status.textContent = "Generating latest CV...";
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Unable to check CV generation status."
+      );
     }
+
+    if (result.status === "completed") {
+      status.textContent =
+        "Latest CV generated successfully. Downloading...";
+
+      window.location.href = result.downloadUrl;
+
+      button.disabled = false;
+      return;
+    }
+
+    if (result.status === "failed") {
+      throw new Error("CV generation failed.");
+    }
+
+    if (result.status === "running") {
+      status.textContent =
+        "Building the latest CV... This may take approximately 3–5 minutes.";
+    } else {
+      status.textContent =
+        "Waiting for the CV build to start...";
+    }
+  }
 }
