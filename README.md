@@ -20,6 +20,10 @@ The colour is applied to the document itself, not just to this page: headings,
 entry titles, links and the header all follow it, and the supporting shades of
 a custom colour are derived automatically.
 
+The published CV is shown right next to the picker. Colours that have already
+been generated appear straight away, and anything you build replaces the
+preview as soon as it is published.
+
 ## Latest published CV
 
 **[View the latest release](https://github.com/radyalz/Cv-Builder/releases/latest)**

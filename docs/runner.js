@@ -50,6 +50,18 @@ const customHex = document.getElementById("customHex");
 const customApply = document.getElementById("customApply");
 const outputName = document.getElementById("outputName");
 
+const pageShell = document.querySelector(".page-shell");
+const previewPane = document.querySelector(".card-preview");
+const previewFrame = document.getElementById("previewFrame");
+const previewState = document.getElementById("previewState");
+const previewLabel = document.getElementById("previewLabel");
+const previewMeta = document.getElementById("previewMeta");
+const previewOpen = document.getElementById("previewOpen");
+
+let variants = new Map();
+let previewStamp = "";
+let previewTimer = null;
+
 let elapsedTimer = null;
 let buildStartedAt = null;
 
@@ -275,6 +287,8 @@ function syncPicker() {
     swatch.tabIndex = active ? 0 : -1;
   }
 
+  schedulePreview();
+
   if (selection.mode !== "custom") {
     setHint("");
     return;
@@ -315,6 +329,101 @@ function setPickerEnabled(enabled) {
   customColor.disabled = !enabled;
   customHex.disabled = !enabled;
   customApply.disabled = !enabled;
+}
+
+/* -------------------------------------------------------------------------
+   Published preview
+   ---------------------------------------------------------------------- */
+
+function formatPublished(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// The preview is a progressive enhancement: if the build service cannot be
+// reached the pane stays hidden and the rest of the page is unaffected.
+async function loadVariants() {
+  try {
+    const response = await fetch(`${API_URL}/variants`);
+
+    if (!response.ok) {
+      throw new Error("Variants unavailable.");
+    }
+
+    const data = await response.json();
+
+    variants = new Map(
+      (data.variants || []).map((variant) => [variant.theme, variant])
+    );
+
+    previewPane.classList.add("is-active");
+    pageShell.classList.add("has-preview");
+
+    return true;
+  } catch {
+    previewPane.classList.remove("is-active");
+    pageShell.classList.remove("has-preview");
+
+    return false;
+  }
+}
+
+function previewUrl(slug) {
+  const stamp = previewStamp
+    ? `&v=${encodeURIComponent(previewStamp)}`
+    : "";
+
+  return `${API_URL}/preview?theme=${encodeURIComponent(slug)}${stamp}`;
+}
+
+function refreshPreview() {
+  const slug = selectedSlug();
+
+  previewLabel.textContent = selectedLabel();
+
+  const variant = variants.get(slug);
+
+  if (!variant) {
+    previewFrame.hidden = true;
+    previewFrame.removeAttribute("src");
+
+    previewState.hidden = false;
+    previewState.textContent =
+      "This colour has not been generated yet. Use Generate Latest CV to build it, and the result appears here.";
+
+    previewMeta.textContent = "";
+    previewOpen.hidden = true;
+
+    return;
+  }
+
+  const url = previewUrl(slug);
+
+  previewFrame.src = url;
+  previewFrame.hidden = false;
+  previewState.hidden = true;
+
+  const published = formatPublished(variant.updatedAt);
+
+  previewMeta.textContent = published ? `Published ${published}` : "";
+
+  previewOpen.href = url;
+  previewOpen.hidden = false;
+}
+
+// Clicking through swatches should not fire a request per click.
+function schedulePreview() {
+  window.clearTimeout(previewTimer);
+  previewTimer = window.setTimeout(refreshPreview, 180);
 }
 
 /* -------------------------------------------------------------------------
@@ -458,6 +567,12 @@ async function waitForBuild(buildId, theme) {
 
       showSuccess();
 
+      // Point the preview at what was just published, using the build id to
+      // defeat any caching of the previous copy under the same name.
+      previewStamp = String(buildId);
+      await loadVariants();
+      refreshPreview();
+
       window.location.assign(result.downloadUrl);
       return;
     }
@@ -492,6 +607,8 @@ customColor.value = selectedHex().toLowerCase();
 customHex.value = selectedHex();
 
 syncPicker();
+
+loadVariants().then(refreshPreview);
 
 customColor.addEventListener("input", (event) => {
   applyCustomColour(event.target.value);

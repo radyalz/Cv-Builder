@@ -17,6 +17,7 @@
 <body>
   <main class="page-shell">
     <section class="builder-card" aria-labelledby="page-title">
+      <div class="card-main">
       <div class="eyebrow">ON-DEMAND CV</div>
 
       <h1 id="page-title">Radman Alizadeh</h1>
@@ -140,6 +141,38 @@
           <span class="info-value">Private</span>
         </div>
       </div>
+      </div>
+
+      <aside class="card-preview" aria-labelledby="previewHeading">
+        <div class="preview-head">
+          <span id="previewHeading" class="picker-label">Preview</span>
+          <span id="previewLabel" class="picker-value">Purple</span>
+        </div>
+
+        <div class="preview-frame">
+          <iframe
+            id="previewFrame"
+            title="Published CV preview"
+            hidden
+          ></iframe>
+
+          <div id="previewState" class="preview-state">
+            Loading the published CV…
+          </div>
+        </div>
+
+        <div class="preview-foot">
+          <span id="previewMeta" class="preview-meta"></span>
+
+          <a
+            id="previewOpen"
+            class="secondary-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+          >Open full size</a>
+        </div>
+      </aside>
     </section>
 
     <p class="footer-note">
