@@ -23,8 +23,45 @@
 
       <p class="lead">
         Generate the newest version of my CV with current date-based
-        experience durations.
+        experience durations, in whichever colour you prefer.
       </p>
+
+      <section class="theme-picker" aria-labelledby="themePickerLabel">
+        <div class="picker-head">
+          <span id="themePickerLabel" class="picker-label">Accent colour</span>
+          <span id="themeName" class="picker-value">Purple</span>
+        </div>
+
+        <div
+          id="themeGrid"
+          class="theme-grid"
+          role="radiogroup"
+          aria-labelledby="themePickerLabel"
+        ></div>
+
+        <div class="custom-row">
+          <label class="custom-swatch" for="customColor">
+            <input id="customColor" type="color" value="#7030A0">
+            <span>Custom</span>
+          </label>
+
+          <input
+            id="customHex"
+            class="hex-input"
+            type="text"
+            spellcheck="false"
+            maxlength="7"
+            aria-label="Custom colour, hex value"
+            value="#7030A0"
+          >
+
+          <button id="customApply" class="ghost-button" type="button">
+            Use this colour
+          </button>
+        </div>
+
+        <p id="themeHint" class="picker-hint" hidden></p>
+      </section>
 
       <div class="actions">
         <button id="generateButton" class="primary-button" type="button">
@@ -90,7 +127,7 @@
       <div class="info-grid">
         <div class="info-item">
           <span class="info-label">Output</span>
-          <span class="info-value">RadmanAlizadeh-Cv.pdf</span>
+          <span class="info-value" id="outputName">RadmanAlizadeh-Cv.pdf</span>
         </div>
 
         <div class="info-item">

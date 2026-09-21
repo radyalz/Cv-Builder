@@ -10,22 +10,35 @@ The builder requests a fresh private build of the CV, recalculates date-dependen
 
 A fresh build normally takes about **3–5 minutes**.
 
+## Choose a colour
+
+Pick the accent colour before generating. Eighteen presets are available —
+including purple, blue, orange and a plain black & white version for
+printing or ATS screening — or enter any hex colour of your own.
+
+The colour is applied to the document itself, not just to this page: headings,
+entry titles, links and the header all follow it, and the supporting shades of
+a custom colour are derived automatically.
+
 ## Latest published CV
 
 **[View the latest release](https://github.com/radyalz/Cv-Builder/releases/latest)**
 
-The generated PDF is always published as:
+The default copy is always published as:
 
 `RadmanAlizadeh-Cv.pdf`
 
+Colour variants are published alongside it as `RadmanAlizadeh-Cv-<colour>.pdf`.
+
 ## How it works
 
-1. Click **Generate Latest CV**.
-2. A fresh build is requested.
-3. The latest CV source is rendered.
-4. Ongoing experience durations are recalculated using the current build date.
-5. The latest PDF is published.
-6. Your browser automatically starts the download.
+1. Choose an accent colour, or keep the default.
+2. Click **Generate Latest CV**.
+3. A fresh build is requested.
+4. The latest CV source is rendered in the chosen colour.
+5. Ongoing experience durations are recalculated using the current build date.
+6. The latest PDF is published.
+7. Your browser automatically starts the download.
 
 The private document source and build credentials are not distributed through this repository.
 
