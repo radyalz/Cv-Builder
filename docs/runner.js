@@ -1,6 +1,7 @@
 const API_URL = "https://cv-api.radyalz.ir";
-const STORAGE_KEY = "cv-builder-accent";
+const STORAGE_KEY = "cv-builder-selection";
 const DEFAULT_THEME = "purple";
+const DEFAULT_VARIANT = "digital";
 
 // Mirrors the theme table in the private cv/helpers/colors.tex. `hex` is the
 // theme's main accent; `swatch` only overrides how the dot is drawn here.
@@ -31,6 +32,12 @@ const THEMES = [
 ];
 
 const THEME_BY_SLUG = new Map(THEMES.map((theme) => [theme.slug, theme]));
+const VARIANTS = new Set([DEFAULT_VARIANT, "print"]);
+
+const VARIANT_LABEL = {
+  digital: "Digital",
+  print: "Print",
+};
 
 const button = document.getElementById("generateButton");
 const buildPanel = document.getElementById("buildPanel");
@@ -42,21 +49,27 @@ const statusText = document.getElementById("statusText");
 const errorText = document.getElementById("errorText");
 const elapsedTime = document.getElementById("elapsedTime");
 
+const colourTrigger = document.getElementById("colourTrigger");
+const colourTriggerLabel = document.getElementById("colourTriggerLabel");
+const colourMenu = document.getElementById("colourMenu");
 const themeGrid = document.getElementById("themeGrid");
-const themeName = document.getElementById("themeName");
 const themeHint = document.getElementById("themeHint");
 const customColor = document.getElementById("customColor");
 const customHex = document.getElementById("customHex");
 const customApply = document.getElementById("customApply");
-const outputName = document.getElementById("outputName");
+const variantToggle = document.getElementById("variantToggle");
 
-const pageShell = document.querySelector(".page-shell");
 const previewPane = document.querySelector(".card-preview");
 const previewFrame = document.getElementById("previewFrame");
 const previewState = document.getElementById("previewState");
 const previewLabel = document.getElementById("previewLabel");
 const previewMeta = document.getElementById("previewMeta");
-const previewOpen = document.getElementById("previewOpen");
+const previewExpand = document.getElementById("previewExpand");
+
+const lightbox = document.getElementById("lightbox");
+const lightboxFrame = document.getElementById("lightboxFrame");
+const lightboxTitle = document.getElementById("lightboxTitle");
+const lightboxClose = document.getElementById("lightboxClose");
 
 let variants = new Map();
 let previewStamp = "";
@@ -65,7 +78,12 @@ let previewTimer = null;
 let elapsedTimer = null;
 let buildStartedAt = null;
 
-let selection = { mode: "theme", theme: DEFAULT_THEME, color: "#7030A0" };
+let selection = {
+  mode: "theme",
+  theme: DEFAULT_THEME,
+  color: "#7030A0",
+  variant: DEFAULT_VARIANT,
+};
 
 /* -------------------------------------------------------------------------
    Colour helpers
@@ -138,10 +156,10 @@ function uiAccent(hex) {
 function contrastRatio(a, b) {
   const first = relativeLuminance(a);
   const second = relativeLuminance(b);
-  const lighter = Math.max(first, second);
-  const darker = Math.min(first, second);
 
-  return (lighter + 0.05) / (darker + 0.05);
+  return (
+    (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05)
+  );
 }
 
 // Mid-tone accents such as orange beat a fixed lightness threshold, so the
@@ -171,9 +189,9 @@ function selectedHex() {
   return theme ? theme.hex : "#7030A0";
 }
 
-function selectedLabel() {
+function colourLabel() {
   if (selection.mode === "custom") {
-    return `Custom ${selection.color}`;
+    return selection.color;
   }
 
   const theme = THEME_BY_SLUG.get(selection.theme);
@@ -181,12 +199,16 @@ function selectedLabel() {
   return theme ? theme.label : "Purple";
 }
 
-function assetName() {
-  const slug = selectedSlug();
+function selectionLabel() {
+  return `${colourLabel()} · ${VARIANT_LABEL[selection.variant]}`;
+}
 
-  return slug === DEFAULT_THEME
-    ? "RadmanAlizadeh-Cv.pdf"
-    : `RadmanAlizadeh-Cv-${slug}.pdf`;
+function variantKey(theme, variant) {
+  return `${theme}|${variant}`;
+}
+
+function selectedKey() {
+  return variantKey(selectedSlug(), selection.variant);
 }
 
 function loadSelection() {
@@ -197,25 +219,28 @@ function loadSelection() {
       return;
     }
 
+    if (VARIANTS.has(stored.variant)) {
+      selection.variant = stored.variant;
+    }
+
     if (stored.mode === "custom") {
       const hex = normaliseHex(stored.color);
 
       if (hex) {
-        selection = { mode: "custom", theme: DEFAULT_THEME, color: hex };
+        selection.mode = "custom";
+        selection.color = hex;
       }
 
       return;
     }
 
     if (THEME_BY_SLUG.has(stored.theme)) {
-      selection = {
-        mode: "theme",
-        theme: stored.theme,
-        color: normaliseHex(stored.color) || "#7030A0",
-      };
+      selection.mode = "theme";
+      selection.theme = stored.theme;
+      selection.color = normaliseHex(stored.color) || "#7030A0";
     }
   } catch {
-    // A blocked or corrupt store just means the default colour is used.
+    // A blocked or corrupt store just means the defaults are used.
   }
 }
 
@@ -228,8 +253,53 @@ function saveSelection() {
 }
 
 /* -------------------------------------------------------------------------
-   Picker rendering
+   Colour menu
    ---------------------------------------------------------------------- */
+
+function menuIsOpen() {
+  return !colourMenu.hidden;
+}
+
+// The card clips its own overflow so the page never scrolls, so the menu
+// lives at the top level and is placed against its trigger instead.
+function positionMenu() {
+  const rect = colourTrigger.getBoundingClientRect();
+  const width = colourMenu.offsetWidth;
+  const height = colourMenu.offsetHeight;
+  const margin = 8;
+
+  let left = rect.left;
+  let top = rect.bottom + margin;
+
+  left = Math.min(left, window.innerWidth - width - margin);
+  left = Math.max(margin, left);
+
+  if (top + height > window.innerHeight - margin) {
+    top = Math.max(margin, rect.top - height - margin);
+  }
+
+  colourMenu.style.left = `${Math.round(left)}px`;
+  colourMenu.style.top = `${Math.round(top)}px`;
+}
+
+function openMenu() {
+  colourMenu.hidden = false;
+  colourTrigger.setAttribute("aria-expanded", "true");
+  positionMenu();
+}
+
+function closeMenu() {
+  colourMenu.hidden = true;
+  colourTrigger.setAttribute("aria-expanded", "false");
+}
+
+function toggleMenu() {
+  if (menuIsOpen()) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
+}
 
 function renderSwatches() {
   for (const theme of THEMES) {
@@ -247,7 +317,7 @@ function renderSwatches() {
     swatch.addEventListener("click", () => {
       selection = { ...selection, mode: "theme", theme: theme.slug };
       saveSelection();
-      syncPicker();
+      syncInterface();
     });
 
     themeGrid.append(swatch);
@@ -265,42 +335,6 @@ function setHint(message) {
   themeHint.textContent = message;
 }
 
-function syncPicker() {
-  const hex = selectedHex();
-  const accent = uiAccent(hex);
-
-  document.documentElement.style.setProperty("--accent", accent);
-  document.documentElement.style.setProperty("--accent-text", textOn(accent));
-  document.documentElement.style.setProperty(
-    "--accent-soft",
-    `${accent}33`
-  );
-
-  themeName.textContent = selectedLabel();
-  outputName.textContent = assetName();
-
-  for (const swatch of themeGrid.children) {
-    const active =
-      selection.mode === "theme" && swatch.dataset.slug === selection.theme;
-
-    swatch.setAttribute("aria-checked", active ? "true" : "false");
-    swatch.tabIndex = active ? 0 : -1;
-  }
-
-  schedulePreview();
-
-  if (selection.mode !== "custom") {
-    setHint("");
-    return;
-  }
-
-  setHint(
-    relativeLuminance(selection.color) > 0.7
-      ? "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better."
-      : "The lighter and muted shades of the CV are derived from this colour automatically."
-  );
-}
-
 function applyCustomColour(value) {
   const hex = normaliseHex(value);
 
@@ -314,21 +348,11 @@ function applyCustomColour(value) {
   customHex.value = hex;
   customColor.value = hex.toLowerCase();
 
-  selection = { mode: "custom", theme: DEFAULT_THEME, color: hex };
+  selection = { ...selection, mode: "custom", color: hex };
   saveSelection();
-  syncPicker();
+  syncInterface();
 
   return true;
-}
-
-function setPickerEnabled(enabled) {
-  for (const swatch of themeGrid.children) {
-    swatch.disabled = !enabled;
-  }
-
-  customColor.disabled = !enabled;
-  customHex.disabled = !enabled;
-  customApply.disabled = !enabled;
 }
 
 /* -------------------------------------------------------------------------
@@ -362,68 +386,151 @@ async function loadVariants() {
     const data = await response.json();
 
     variants = new Map(
-      (data.variants || []).map((variant) => [variant.theme, variant])
+      (data.variants || []).map((item) => [
+        variantKey(item.theme, item.variant || DEFAULT_VARIANT),
+        item,
+      ])
     );
 
     previewPane.classList.add("is-active");
-    pageShell.classList.add("has-preview");
 
     return true;
   } catch {
     previewPane.classList.remove("is-active");
-    pageShell.classList.remove("has-preview");
 
     return false;
   }
 }
 
-function previewUrl(slug) {
-  const stamp = previewStamp
-    ? `&v=${encodeURIComponent(previewStamp)}`
-    : "";
+function previewUrl() {
+  const stamp = previewStamp ? `&v=${encodeURIComponent(previewStamp)}` : "";
 
-  return `${API_URL}/preview?theme=${encodeURIComponent(slug)}${stamp}`;
+  return (
+    `${API_URL}/preview?theme=${encodeURIComponent(selectedSlug())}` +
+    `&variant=${encodeURIComponent(selection.variant)}${stamp}`
+  );
 }
 
 function refreshPreview() {
-  const slug = selectedSlug();
+  previewLabel.textContent = selectionLabel();
 
-  previewLabel.textContent = selectedLabel();
+  const published = variants.get(selectedKey());
 
-  const variant = variants.get(slug);
-
-  if (!variant) {
+  if (!published) {
     previewFrame.hidden = true;
     previewFrame.removeAttribute("src");
 
     previewState.hidden = false;
     previewState.textContent =
-      "This colour has not been generated yet. Use Generate Latest CV to build it, and the result appears here.";
+      "This combination has not been generated yet. Use Generate Latest CV to build it, and the result appears here.";
 
     previewMeta.textContent = "";
-    previewOpen.hidden = true;
+    previewExpand.hidden = true;
+
+    if (!lightbox.hidden) {
+      closeLightbox();
+    }
 
     return;
   }
 
-  const url = previewUrl(slug);
+  const url = previewUrl();
 
   previewFrame.src = url;
   previewFrame.hidden = false;
   previewState.hidden = true;
 
-  const published = formatPublished(variant.updatedAt);
+  const date = formatPublished(published.updatedAt);
 
-  previewMeta.textContent = published ? `Published ${published}` : "";
+  previewMeta.textContent = date ? `Published ${date}` : "";
+  previewExpand.hidden = false;
 
-  previewOpen.href = url;
-  previewOpen.hidden = false;
+  if (!lightbox.hidden) {
+    lightboxFrame.src = url;
+    lightboxTitle.textContent = selectionLabel();
+  }
 }
 
 // Clicking through swatches should not fire a request per click.
 function schedulePreview() {
   window.clearTimeout(previewTimer);
   previewTimer = window.setTimeout(refreshPreview, 180);
+}
+
+function openLightbox() {
+  if (!variants.has(selectedKey())) {
+    return;
+  }
+
+  lightboxFrame.src = previewUrl();
+  lightboxTitle.textContent = selectionLabel();
+  lightbox.hidden = false;
+  lightboxClose.focus();
+}
+
+function closeLightbox() {
+  lightbox.hidden = true;
+  lightboxFrame.removeAttribute("src");
+}
+
+/* -------------------------------------------------------------------------
+   Interface sync
+   ---------------------------------------------------------------------- */
+
+function syncInterface() {
+  const accent = uiAccent(selectedHex());
+
+  document.documentElement.style.setProperty("--accent", accent);
+  document.documentElement.style.setProperty("--accent-text", textOn(accent));
+  document.documentElement.style.setProperty("--accent-soft", `${accent}33`);
+
+  colourTriggerLabel.textContent = colourLabel();
+
+  for (const swatch of themeGrid.children) {
+    const active =
+      selection.mode === "theme" && swatch.dataset.slug === selection.theme;
+
+    swatch.setAttribute("aria-checked", active ? "true" : "false");
+    swatch.tabIndex = active ? 0 : -1;
+  }
+
+  for (const segment of variantToggle.children) {
+    segment.setAttribute(
+      "aria-checked",
+      segment.dataset.variant === selection.variant ? "true" : "false"
+    );
+  }
+
+  if (selection.mode === "custom") {
+    setHint(
+      relativeLuminance(selection.color) > 0.7
+        ? "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better."
+        : "The lighter and muted shades of the CV are derived from this colour automatically."
+    );
+  } else {
+    setHint("");
+  }
+
+  if (menuIsOpen()) {
+    positionMenu();
+  }
+
+  schedulePreview();
+}
+
+function setControlsEnabled(enabled) {
+  for (const swatch of themeGrid.children) {
+    swatch.disabled = !enabled;
+  }
+
+  for (const segment of variantToggle.children) {
+    segment.disabled = !enabled;
+  }
+
+  colourTrigger.disabled = !enabled;
+  customColor.disabled = !enabled;
+  customHex.disabled = !enabled;
+  customApply.disabled = !enabled;
 }
 
 /* -------------------------------------------------------------------------
@@ -467,11 +574,12 @@ function showBuilding() {
 
   button.disabled = true;
   button.querySelector(".button-label").textContent = "Building CV…";
-  setPickerEnabled(false);
+  setControlsEnabled(false);
+  closeMenu();
 
   setBuildStatus(
     "Requesting a fresh build…",
-    `Connecting to the CV build service. Accent: ${selectedLabel()}.`
+    `Connecting to the CV build service. ${selectionLabel()}.`
   );
 
   startElapsedTimer();
@@ -486,7 +594,7 @@ function showSuccess() {
 
   button.disabled = false;
   button.querySelector(".button-label").textContent = "Generate Again";
-  setPickerEnabled(true);
+  setControlsEnabled(true);
 }
 
 function showError(message) {
@@ -500,7 +608,7 @@ function showError(message) {
 
   button.disabled = false;
   button.querySelector(".button-label").textContent = "Try Again";
-  setPickerEnabled(true);
+  setControlsEnabled(true);
 }
 
 /* -------------------------------------------------------------------------
@@ -508,10 +616,13 @@ function showError(message) {
    ---------------------------------------------------------------------- */
 
 async function startBuild() {
-  const payload =
-    selection.mode === "custom"
-      ? { color: selection.color }
-      : { theme: selection.theme };
+  const payload = { variant: selection.variant };
+
+  if (selection.mode === "custom") {
+    payload.color = selection.color;
+  } else {
+    payload.theme = selection.theme;
+  }
 
   const response = await fetch(`${API_URL}/build`, {
     method: "POST",
@@ -529,13 +640,18 @@ async function startBuild() {
     throw new Error("The build service did not return a build ID.");
   }
 
-  return { buildId: result.buildId, theme: result.theme || selectedSlug() };
+  return {
+    buildId: result.buildId,
+    theme: result.theme || selectedSlug(),
+    variant: result.variant || selection.variant,
+  };
 }
 
-async function getBuildStatus(buildId, theme) {
+async function getBuildStatus(buildId, theme, variant) {
   const response = await fetch(
     `${API_URL}/status?id=${encodeURIComponent(buildId)}` +
-      `&theme=${encodeURIComponent(theme)}`
+      `&theme=${encodeURIComponent(theme)}` +
+      `&variant=${encodeURIComponent(variant)}`
   );
 
   const result = await response.json();
@@ -547,11 +663,11 @@ async function getBuildStatus(buildId, theme) {
   return result;
 }
 
-async function waitForBuild(buildId, theme) {
+async function waitForBuild(buildId, theme, variant) {
   while (true) {
     await new Promise((resolve) => window.setTimeout(resolve, 5000));
 
-    const result = await getBuildStatus(buildId, theme);
+    const result = await getBuildStatus(buildId, theme, variant);
 
     if (result.status === "completed") {
       if (!result.downloadUrl) {
@@ -606,9 +722,57 @@ loadSelection();
 customColor.value = selectedHex().toLowerCase();
 customHex.value = selectedHex();
 
-syncPicker();
-
+syncInterface();
 loadVariants().then(refreshPreview);
+
+colourTrigger.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleMenu();
+});
+
+colourMenu.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+document.addEventListener("click", () => {
+  if (menuIsOpen()) {
+    closeMenu();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  if (!lightbox.hidden) {
+    closeLightbox();
+    return;
+  }
+
+  if (menuIsOpen()) {
+    closeMenu();
+    colourTrigger.focus();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (menuIsOpen()) {
+    positionMenu();
+  }
+});
+
+variantToggle.addEventListener("click", (event) => {
+  const segment = event.target.closest(".segment");
+
+  if (!segment || !VARIANTS.has(segment.dataset.variant)) {
+    return;
+  }
+
+  selection = { ...selection, variant: segment.dataset.variant };
+  saveSelection();
+  syncInterface();
+});
 
 customColor.addEventListener("input", (event) => {
   applyCustomColour(event.target.value);
@@ -641,23 +805,32 @@ themeGrid.addEventListener("keydown", (event) => {
 
   selection = { ...selection, mode: "theme", theme: next };
   saveSelection();
-  syncPicker();
+  syncInterface();
 
   themeGrid.querySelector(`[data-slug="${next}"]`).focus();
+});
+
+previewExpand.addEventListener("click", openLightbox);
+lightboxClose.addEventListener("click", closeLightbox);
+
+lightbox.addEventListener("click", (event) => {
+  if (event.target === lightbox) {
+    closeLightbox();
+  }
 });
 
 button.addEventListener("click", async () => {
   try {
     showBuilding();
 
-    const { buildId, theme } = await startBuild();
+    const { buildId, theme, variant } = await startBuild();
 
     setBuildStatus(
       "Build started",
       `Build #${buildId} is running. You can keep this tab open.`
     );
 
-    await waitForBuild(buildId, theme);
+    await waitForBuild(buildId, theme, variant);
   } catch (error) {
     console.error("CV Builder error:", error);
 

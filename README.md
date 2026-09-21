@@ -20,6 +20,9 @@ The colour is applied to the document itself, not just to this page: headings,
 entry titles, links and the header all follow it, and the supporting shades of
 a custom colour are derived automatically.
 
+You can also pick the **edition**: *Digital* includes the portfolio links,
+*Print* leaves them out for a cleaner printed or ATS-screened copy.
+
 The published CV is shown right next to the picker. Colours that have already
 been generated appear straight away, and anything you build replaces the
 preview as soon as it is published.

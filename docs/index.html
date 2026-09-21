@@ -15,138 +15,135 @@
 </head>
 
 <body>
+  <div class="skull-field" aria-hidden="true">
+    <div class="skull-layer skull-closed"></div>
+    <div class="skull-layer skull-open"></div>
+    <div class="skull-glint"></div>
+  </div>
+
   <main class="page-shell">
     <section class="builder-card" aria-labelledby="page-title">
       <div class="card-main">
-      <div class="eyebrow">ON-DEMAND CV</div>
+        <div class="eyebrow">ON-DEMAND CV</div>
 
-      <h1 id="page-title">Radman Alizadeh</h1>
+        <h1 id="page-title">Radman Alizadeh</h1>
 
-      <p class="lead">
-        Generate the newest version of my CV with current date-based
-        experience durations, in whichever colour you prefer.
-      </p>
+        <p class="lead">
+          Generate the newest version of my CV, in whichever colour and
+          edition you prefer.
+        </p>
 
-      <section class="theme-picker" aria-labelledby="themePickerLabel">
-        <div class="picker-head">
-          <span id="themePickerLabel" class="picker-label">Accent colour</span>
-          <span id="themeName" class="picker-value">Purple</span>
+        <div class="controls">
+          <div class="control">
+            <span class="control-label">Accent</span>
+
+            <button
+              id="colourTrigger"
+              class="menu-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+            >
+              <span class="trigger-dot" aria-hidden="true"></span>
+              <span id="colourTriggerLabel">Purple</span>
+              <span class="trigger-caret" aria-hidden="true">▾</span>
+            </button>
+          </div>
+
+          <div class="control">
+            <span class="control-label">Edition</span>
+
+            <div
+              id="variantToggle"
+              class="segmented"
+              role="radiogroup"
+              aria-label="Edition"
+            >
+              <button
+                class="segment"
+                type="button"
+                role="radio"
+                data-variant="digital"
+                aria-checked="true"
+              >Digital</button>
+
+              <button
+                class="segment"
+                type="button"
+                role="radio"
+                data-variant="print"
+                aria-checked="false"
+              >Print</button>
+            </div>
+          </div>
         </div>
 
-        <div
-          id="themeGrid"
-          class="theme-grid"
-          role="radiogroup"
-          aria-labelledby="themePickerLabel"
-        ></div>
-
-        <div class="custom-row">
-          <label class="custom-swatch" for="customColor">
-            <input id="customColor" type="color" value="#7030A0">
-            <span>Custom</span>
-          </label>
-
-          <input
-            id="customHex"
-            class="hex-input"
-            type="text"
-            spellcheck="false"
-            maxlength="7"
-            aria-label="Custom colour, hex value"
-            value="#7030A0"
-          >
-
-          <button id="customApply" class="ghost-button" type="button">
-            Use this colour
+        <div class="actions">
+          <button id="generateButton" class="primary-button" type="button">
+            <span class="button-label">Generate Latest CV</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
           </button>
+
+          <a
+            class="secondary-link"
+            href="https://github.com/radyalz/Cv-Builder/releases/latest"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            All published copies
+          </a>
         </div>
 
-        <p id="themeHint" class="picker-hint" hidden></p>
-      </section>
+        <section id="buildPanel" class="build-panel" hidden aria-live="polite">
+          <div class="status-row">
+            <div class="spinner" aria-hidden="true"></div>
 
-      <div class="actions">
-        <button id="generateButton" class="primary-button" type="button">
-          <span class="button-label">Generate Latest CV</span>
-          <span class="button-arrow" aria-hidden="true">→</span>
-        </button>
+            <div>
+              <div id="statusTitle" class="status-title">
+                Starting CV build…
+              </div>
 
-        <a
-          class="secondary-link"
-          href="https://github.com/radyalz/Cv-Builder/releases/latest"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View latest published copy
-        </a>
-      </div>
+              <div id="statusText" class="status-text">
+                Preparing your request.
+              </div>
+            </div>
+          </div>
 
-      <section id="buildPanel" class="build-panel" hidden aria-live="polite">
-        <div class="status-row">
-          <div class="spinner" aria-hidden="true"></div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-bar"></div>
+          </div>
 
+          <div class="build-meta">
+            <span id="elapsedTime">Elapsed: 0:00</span>
+            <span>Typical build: 3–5 min</span>
+          </div>
+        </section>
+
+        <section id="successPanel" class="success-panel" hidden aria-live="polite">
+          <div class="success-icon" aria-hidden="true">✓</div>
           <div>
-            <div id="statusTitle" class="status-title">
-              Starting CV build…
-            </div>
-
-            <div id="statusText" class="status-text">
-              Preparing your request.
+            <div class="status-title">Latest CV is ready</div>
+            <div class="status-text">
+              Your download should start automatically.
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="progress-track" aria-hidden="true">
-          <div class="progress-bar"></div>
-        </div>
-
-        <div class="build-meta">
-          <span id="elapsedTime">Elapsed: 0:00</span>
-          <span>Typical build: 3–5 min</span>
-        </div>
-      </section>
-
-      <section id="successPanel" class="success-panel" hidden aria-live="polite">
-        <div class="success-icon" aria-hidden="true">✓</div>
-        <div>
-          <div class="status-title">Latest CV is ready</div>
-          <div class="status-text">
-            Your download should start automatically.
+        <section id="errorPanel" class="error-panel" hidden aria-live="assertive">
+          <div class="error-icon" aria-hidden="true">!</div>
+          <div>
+            <div class="status-title">Build failed</div>
+            <div id="errorText" class="status-text">
+              Please try again.
+            </div>
           </div>
-        </div>
-      </section>
-
-      <section id="errorPanel" class="error-panel" hidden aria-live="assertive">
-        <div class="error-icon" aria-hidden="true">!</div>
-        <div>
-          <div class="status-title">Build failed</div>
-          <div id="errorText" class="status-text">
-            Please try again.
-          </div>
-        </div>
-      </section>
-
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="info-label">Output</span>
-          <span class="info-value" id="outputName">RadmanAlizadeh-Cv.pdf</span>
-        </div>
-
-        <div class="info-item">
-          <span class="info-label">Build</span>
-          <span class="info-value">Fresh on request</span>
-        </div>
-
-        <div class="info-item">
-          <span class="info-label">Source</span>
-          <span class="info-value">Private</span>
-        </div>
-      </div>
+        </section>
       </div>
 
       <aside class="card-preview" aria-labelledby="previewHeading">
         <div class="preview-head">
-          <span id="previewHeading" class="picker-label">Preview</span>
-          <span id="previewLabel" class="picker-value">Purple</span>
+          <span id="previewHeading" class="control-label">Preview</span>
+          <span id="previewLabel" class="preview-title">Purple</span>
         </div>
 
         <div class="preview-frame">
@@ -164,21 +161,66 @@
         <div class="preview-foot">
           <span id="previewMeta" class="preview-meta"></span>
 
-          <a
-            id="previewOpen"
-            class="secondary-link"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            id="previewExpand"
+            class="ghost-button"
+            type="button"
             hidden
-          >Open full size</a>
+          >Expand</button>
         </div>
       </aside>
     </section>
-
-    <p class="footer-note">
-      The public repository contains the builder interface and published CV only.
-    </p>
   </main>
+
+  <div
+    id="colourMenu"
+    class="menu"
+    role="dialog"
+    aria-label="Choose an accent colour"
+    hidden
+  >
+    <div
+      id="themeGrid"
+      class="theme-grid"
+      role="radiogroup"
+      aria-label="Preset colours"
+    ></div>
+
+    <div class="custom-row">
+      <label class="custom-swatch" for="customColor">
+        <input id="customColor" type="color" value="#7030A0">
+        <span>Custom</span>
+      </label>
+
+      <input
+        id="customHex"
+        class="hex-input"
+        type="text"
+        spellcheck="false"
+        maxlength="7"
+        aria-label="Custom colour, hex value"
+        value="#7030A0"
+      >
+
+      <button id="customApply" class="ghost-button" type="button">Use</button>
+    </div>
+
+    <p id="themeHint" class="picker-hint" hidden></p>
+  </div>
+
+  <div id="lightbox" class="lightbox" hidden>
+    <div class="lightbox-bar">
+      <span id="lightboxTitle" class="lightbox-title">Preview</span>
+
+      <button id="lightboxClose" class="ghost-button" type="button">
+        Close
+      </button>
+    </div>
+
+    <div class="lightbox-stage">
+      <iframe id="lightboxFrame" title="CV preview, expanded"></iframe>
+    </div>
+  </div>
 
   <script src="runner.js"></script>
 </body>
