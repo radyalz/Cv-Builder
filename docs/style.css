@@ -15,7 +15,9 @@
   --accent-soft: rgba(255, 255, 255, 0.3);
   --danger: #ffb4b4;
   --success: #b7f7c8;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --glass: rgba(13, 16, 21, 0.44);
+  --glass-edge: rgba(255, 255, 255, 0.14);
   --radius: 4px;
   --radius-lg: 6px;
   --skull-shut: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20fill='%23fff'%20fill-rule='evenodd'%20d='M50%2012%20C31%2012%2019%2025%2019%2042%20C19%2052%2023%2059%2028%2064%20L28%2070%20L72%2070%20L72%2064%20C77%2059%2081%2052%2081%2042%20C81%2025%2069%2012%2050%2012%20Z%20M37%2033%20A9%2010%200%201%200%2037%2053%20A9%2010%200%201%200%2037%2033%20Z%20M63%2033%20A9%2010%200%201%200%2063%2053%20A9%2010%200%201%200%2063%2033%20Z%20M50%2056%20L55%2066%20L45%2066%20Z'/%3E%3Cpath%20fill='%23fff'%20d='M31%2071%20L69%2071%20L69%2078%20C69%2084%2061%2088%2050%2088%20C39%2088%2031%2084%2031%2078%20Z'/%3E%3C/svg%3E");
@@ -160,13 +162,31 @@ input {
   width: min(1180px, 100%);
   max-height: calc(100dvh - 32px);
   padding: clamp(20px, 3vw, 40px);
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius-lg);
-  background: var(--panel);
-  box-shadow: var(--shadow);
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.085),
+      rgba(255, 255, 255, 0.022) 42%,
+      rgba(255, 255, 255, 0.055)
+    ),
+    var(--glass);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   gap: clamp(20px, 3vw, 38px);
   grid-template-columns: minmax(0, 1fr) minmax(0, 390px);
-  backdrop-filter: blur(22px);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+}
+
+/* Without backdrop blur the panel would read as a flat grey wash, so it
+   falls back to something solid enough to stay legible over the skulls. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .builder-card {
+    background: var(--panel);
+  }
 }
 
 .card-main {
