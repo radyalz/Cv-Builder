@@ -872,9 +872,55 @@ function mixHex(a, b, amount) {
   );
 }
 
+// A sibling hue for the lightning. Cool accents lean towards cyan and warm
+// ones towards yellow, the colours that read as electric, so blue gets an
+// electric blue rather than just more of the same blue. Greys stay grey.
+function electricHue(hex, lightness) {
+  const { r, g, b } = toRgb(hex);
+  const R = r / 255;
+  const G = g / 255;
+  const B = b / 255;
+  const max = Math.max(R, G, B);
+  const min = Math.min(R, G, B);
+  const light = (max + min) / 2;
+  let hue = 0;
+  let sat = 0;
+
+  if (max !== min) {
+    const d = max - min;
+    sat = light > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    if (max === R) {
+      hue = (G - B) / d + (G < B ? 6 : 0);
+    } else if (max === G) {
+      hue = (B - R) / d + 2;
+    } else {
+      hue = (R - G) / d + 4;
+    }
+
+    hue *= 60;
+  }
+
+  const H = (hue + (hue < 180 ? 25 : -25) + 360) % 360;
+  const S = sat < 0.08 ? sat : Math.min(1, sat * 1.15 + 0.1);
+  const c = (1 - Math.abs(2 * lightness - 1)) * S;
+  const x = c * (1 - Math.abs(((H / 60) % 2) - 1));
+  const m = lightness - c / 2;
+  const [r1, g1, b1] =
+    H < 60 ? [c, x, 0] : H < 120 ? [x, c, 0] : H < 180 ? [0, c, x] :
+    H < 240 ? [0, x, c] : H < 300 ? [x, 0, c] : [c, 0, x];
+
+  return (
+    "#" +
+    [r1, g1, b1]
+      .map((v) => Math.round((v + m) * 255).toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
 function svgImage(defs, body) {
   const svg =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 130">' +
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200">' +
     `<defs>${defs}</defs>${body}</svg>`;
 
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
@@ -891,11 +937,18 @@ function skullParts(accent) {
   ];
   const { bolt, veins1, veins2, veins3 } = boltPaths();
 
+  // Bone is pale and only tinted by the accent; the eyes are a bright tint
+  // of the accent and the lightning a sibling hue, so each part stands apart
+  // without leaving the chosen colour.
   const boneLight = mixHex(accent, "#fbf6f0", 0.84);
   const boneMid = mixHex(accent, "#9a908a", 0.58);
   const boneDark = mixHex(accent, "#1a1413", 0.66);
   const rim = mixHex(accent, "#ffffff", 0.4);
-  const hot = mixHex(accent, "#ffffff", 0.7);
+  const eyeHot = mixHex(accent, "#ffffff", 0.62);
+  const flashTone = mixHex(accent, "#ffffff", 0.5);
+  const spark = electricHue(accent, 0.62);
+  const sparkHot = mixHex(spark, "#ffffff", 0.55);
+  const sparkDeep = mixHex(spark, "#000000", 0.55);
 
   const boneDefs =
     '<linearGradient id="b" gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="96">' +
@@ -922,7 +975,7 @@ function skullParts(accent) {
     `<radialGradient id="${id}">` +
     '<stop offset="0" stop-color="#ffffff"/>' +
     `<stop offset="${core}" stop-color="#ffffff" stop-opacity=".95"/>` +
-    `<stop offset="${mid}" stop-color="${hot}" stop-opacity=".85"/>` +
+    `<stop offset="${mid}" stop-color="${eyeHot}" stop-opacity=".85"/>` +
     `<stop offset="1" stop-color="${accent}" stop-opacity="0"/>` +
     "</radialGradient>";
 
@@ -935,10 +988,13 @@ function skullParts(accent) {
     '<mask id="m"><rect width="100" height="130" fill="url(#v)"/></mask>' +
     '<filter id="g" x="-60%" y="-10%" width="220%" height="120%">' +
     '<feGaussianBlur stdDeviation=".9"/></filter>' +
+    // a wide halo so the bolt lights the air around it while it strikes
+    '<filter id="w" x="-160%" y="-20%" width="420%" height="140%">' +
+    '<feGaussianBlur stdDeviation="2.6"/></filter>' +
     '<radialGradient id="i">' +
     '<stop offset="0" stop-color="#ffffff"/>' +
-    `<stop offset=".3" stop-color="${hot}" stop-opacity=".9"/>` +
-    `<stop offset="1" stop-color="${accent}" stop-opacity="0"/>` +
+    `<stop offset=".3" stop-color="${sparkHot}" stop-opacity=".9"/>` +
+    `<stop offset="1" stop-color="${spark}" stop-opacity="0"/>` +
     "</radialGradient>";
 
   // A coloured halo under a white-hot core, so the current reads against
@@ -948,10 +1004,13 @@ function skullParts(accent) {
       '<filter id="g" x="-40%" y="-40%" width="180%" height="180%">' +
         '<feGaussianBlur stdDeviation="1.1"/></filter>' +
         '<filter id="n" x="-30%" y="-30%" width="160%" height="160%">' +
-        '<feGaussianBlur stdDeviation=".45"/></filter>',
-      `<path d="${d}" fill="${boneDark}" filter="url(#g)" opacity=".85"/>` +
-        `<path d="${d}" fill="${accent}" filter="url(#g)"/>` +
-        `<path d="${d}" fill="${accent}" filter="url(#n)"/>` +
+        '<feGaussianBlur stdDeviation=".45"/></filter>' +
+        '<filter id="w" x="-60%" y="-60%" width="220%" height="220%">' +
+        '<feGaussianBlur stdDeviation="2"/></filter>',
+      `<path d="${d}" fill="${spark}" filter="url(#w)" opacity=".7"/>` +
+        `<path d="${d}" fill="${sparkDeep}" filter="url(#g)" opacity=".85"/>` +
+        `<path d="${d}" fill="${spark}" filter="url(#g)"/>` +
+        `<path d="${d}" fill="${sparkHot}" filter="url(#n)"/>` +
         `<path d="${d}" fill="#ffffff"/>`
     );
 
@@ -963,15 +1022,17 @@ function skullParts(accent) {
     jaw: svgImage(boneDefs, bone(jaw)),
     flash: svgImage(
       '<filter id="h"><feGaussianBlur stdDeviation=".8"/></filter>',
-      `<g transform="translate(0 30)"><path d="${cranium}" fill="${hot}" filter="url(#h)"/></g>`
+      `<g transform="translate(0 30)"><path d="${cranium}" fill="${flashTone}" filter="url(#h)"/></g>`
     ),
     eyes: svgImage(glow("e", 0.18, 0.42), eyes),
     flare: svgImage(glow("f", 0.1, 0.3), flare),
     bolt: svgImage(
       strike,
       '<g mask="url(#m)">' +
-        `<path d="${bolt}" fill="${accent}" filter="url(#g)"/>` +
-        `<path d="${bolt}" fill="${hot}" filter="url(#g)" opacity=".7"/>` +
+        `<path d="${bolt}" fill="${spark}" filter="url(#w)"/>` +
+        `<path d="${bolt}" fill="${sparkHot}" filter="url(#w)" opacity=".6"/>` +
+        `<path d="${bolt}" fill="${spark}" filter="url(#g)"/>` +
+        `<path d="${bolt}" fill="${sparkHot}" filter="url(#g)" opacity=".7"/>` +
         `<path d="${bolt}" fill="#ffffff"/>` +
         "</g>" +
         '<circle cx="50" cy="33.5" r="4.2" fill="url(#i)"/>'
