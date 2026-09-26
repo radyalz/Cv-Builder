@@ -70,15 +70,15 @@ input {
   pointer-events: none;
 }
 
-/* Rows alternate between two sets, offset half a tile like brickwork. On
-   average both travel down-right at 45 degrees, but set A drifts faster to
-   the right and set B slower, so neighbouring rows slide past each other in
-   opposite directions. Each loop moves whole tiles, so it never jumps.
-   The 45 degree average relies on --skull-row equalling --skull-w, and
-   the tile images being twice as tall as they are wide. */
+/* Rows alternate between two sets, offset half a tile like brickwork.
+   Set A slides right and set B slides left, genuinely, on screen, while the
+   field as a whole drifts down-right at 45 degrees: per loop A moves
+   (5w, 2r) and B (-w, 2r), which average to (2w, 2r), a 45 degree line
+   because --skull-row equals --skull-w. Every loop moves whole tiles, so it
+   never jumps. The tile images are twice as tall as they are wide. */
 .skull-rows {
   position: absolute;
-  inset: -800px;
+  inset: -900px;
   will-change: transform;
 }
 
@@ -90,12 +90,6 @@ input {
   animation: skull-flow-b 90s linear infinite;
 }
 
-/* The two sets strike half a cycle apart, so the rows take turns. Two
-   classes, so it outranks the animation shorthands on the layers below,
-   which would otherwise reset the delay to zero. */
-.skull-rows.skull-rows-b * {
-  animation-delay: calc(var(--skull-cycle) / -2);
-}
 
 .skull-layer,
 .skull-shake,
@@ -170,12 +164,12 @@ input {
 
 @keyframes skull-flow-a {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(calc(var(--skull-w) * 3), calc(var(--skull-row) * 2), 0); }
+  to { transform: translate3d(calc(var(--skull-w) * 5), calc(var(--skull-row) * 2), 0); }
 }
 
 @keyframes skull-flow-b {
   from { transform: translate3d(calc(var(--skull-w) / 2), var(--skull-row), 0); }
-  to { transform: translate3d(calc(var(--skull-w) * 1.5), calc(var(--skull-row) * 3), 0); }
+  to { transform: translate3d(calc(var(--skull-w) / -2), calc(var(--skull-row) * 3), 0); }
 }
 
 /* Two quick flickers, a hold, then the channel fades. */
@@ -318,8 +312,8 @@ input {
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   gap: clamp(20px, 3vw, 38px);
   grid-template-columns: minmax(0, 1fr) minmax(0, 390px);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
 }
 
 /* Without backdrop blur the panel would read as a flat grey wash, so it
