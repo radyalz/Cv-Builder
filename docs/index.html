@@ -261,6 +261,15 @@
             hidden
           >Expand</button>
         </div>
+
+        <div class="preview-backdrop" aria-hidden="true"></div>
+
+        <button
+          id="previewCollapse"
+          class="ghost-button preview-collapse"
+          type="button"
+          hidden
+        >Close</button>
       </aside>
     </section>
   </main>
@@ -301,84 +310,6 @@
     <p id="themeHint" class="picker-hint" hidden></p>
   </div>
 
-  <div id="lightbox" class="lightbox" hidden>
-    <div class="lightbox-bar">
-      <span id="lightboxTitle" class="lightbox-title">Preview</span>
-
-      <button id="lightboxClose" class="ghost-button" type="button">
-        Close
-      </button>
-    </div>
-
-    <div class="lightbox-stage">
-      <iframe id="lightboxFrame" class="is-loading" title="CV preview, expanded"></iframe>
-
-      <div id="lightboxSkeleton" class="preview-skeleton" aria-hidden="true">
-        <div class="sk-header">
-          <div class="sk-identity">
-            <span class="sk sk-name"></span>
-            <span class="sk sk-role"></span>
-          </div>
-          <div class="sk-contacts">
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-            <div class="sk-contact"><span class="sk sk-icon"></span><span class="sk sk-contact-text"></span></div>
-          </div>
-        </div>
-        <div class="sk-section">
-          <div class="sk-section-head">
-            <span class="sk sk-rule"></span>
-            <span class="sk sk-heading"></span>
-          </div>
-          <div class="sk-body">
-            <span class="sk sk-line"></span>
-            <span class="sk sk-line"></span>
-            <span class="sk sk-line"></span>
-            <span class="sk sk-line"></span>
-            <span class="sk sk-line sk-short"></span>
-          </div>
-        </div>
-        <div class="sk-section">
-          <div class="sk-section-head">
-            <span class="sk sk-rule"></span>
-            <span class="sk sk-heading"></span>
-          </div>
-          <div class="sk-body">
-            <div class="sk-row"><span class="sk sk-label"></span><span class="sk sk-value"></span></div>
-            <div class="sk-row"><span class="sk sk-label"></span><span class="sk sk-value"></span></div>
-            <div class="sk-row"><span class="sk sk-label"></span><span class="sk sk-value"></span></div>
-            <div class="sk-row"><span class="sk sk-label"></span><span class="sk sk-value"></span></div>
-            <div class="sk-row"><span class="sk sk-label"></span><span class="sk sk-value"></span></div>
-          </div>
-        </div>
-        <div class="sk-section">
-          <div class="sk-section-head">
-            <span class="sk sk-rule"></span>
-            <span class="sk sk-heading"></span>
-          </div>
-          <div class="sk-body">
-            <div class="sk-entry">
-              <div class="sk-dates"><span class="sk sk-date"></span><span class="sk sk-duration"></span></div>
-              <div class="sk-body"><span class="sk sk-title"></span>
-                <div class="sk-bullet"><span class="sk sk-dot"></span><span class="sk sk-line"></span></div>
-                <div class="sk-bullet"><span class="sk sk-dot"></span><span class="sk sk-line"></span></div>
-              </div>
-            </div>
-            <div class="sk-entry">
-              <div class="sk-dates"><span class="sk sk-date"></span><span class="sk sk-duration"></span></div>
-              <div class="sk-body"><span class="sk sk-title"></span>
-                <div class="sk-bullet"><span class="sk sk-dot"></span><span class="sk sk-line"></span></div>
-                <div class="sk-bullet"><span class="sk sk-dot"></span><span class="sk sk-line"></span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script src="runner.js"></script>
 </body>

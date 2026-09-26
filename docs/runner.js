@@ -66,13 +66,11 @@ const previewLabel = document.getElementById("previewLabel");
 const previewMeta = document.getElementById("previewMeta");
 const previewExpand = document.getElementById("previewExpand");
 
-const lightbox = document.getElementById("lightbox");
-const lightboxFrame = document.getElementById("lightboxFrame");
-const lightboxTitle = document.getElementById("lightboxTitle");
-const lightboxClose = document.getElementById("lightboxClose");
 const previewSkeleton = document.getElementById("previewSkeleton");
-const lightboxSkeleton = document.getElementById("lightboxSkeleton");
 const skullField = document.querySelector(".skull-field");
+const previewBox = document.querySelector(".preview-frame");
+const previewCollapse = document.getElementById("previewCollapse");
+const previewBackdrop = document.querySelector(".preview-backdrop");
 const mobilePreview = document.getElementById("mobilePreview");
 
 let variants = new Map();
@@ -80,8 +78,6 @@ let variants = new Map();
 // its skeleton instead of wrongly reporting a colour as not generated.
 let variantsLoaded = false;
 let previewLoadTimer = null;
-let lightboxLoadTimer = null;
-let previewStamp = "";
 let previewTimer = null;
 
 let elapsedTimer = null;
@@ -416,13 +412,78 @@ async function loadVariants() {
   }
 }
 
-function previewUrl() {
-  const stamp = previewStamp ? `&v=${encodeURIComponent(previewStamp)}` : "";
-
+// Keyed on the publish time, so the URL only changes when a new copy is
+// published and a cached copy can never be a stale one.
+function previewUrl(published) {
   return (
     `${API_URL}/preview?theme=${encodeURIComponent(selectedSlug())}` +
-    `&variant=${encodeURIComponent(selection.variant)}${stamp}`
+    `&variant=${encodeURIComponent(selection.variant)}` +
+    `&v=${Date.parse(published.updatedAt)}`
   );
+}
+
+const previewCache = new Map();
+
+function cachedPreview(url) {
+  if (!previewCache.has(url)) {
+    const promise = fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error("Preview request failed.");
+        return response.blob();
+      })
+      .then(blob => URL.createObjectURL(blob))
+      .catch(error => {
+        previewCache.delete(url);
+        throw error;
+      });
+    previewCache.set(url, promise);
+  }
+  return previewCache.get(url);
+}
+
+function expandPreview() {
+  if (!variants.has(selectedKey()) || previewBox.classList.contains("is-expanded")) return;
+  const first = previewBox.getBoundingClientRect();
+  document.body.classList.add("preview-open");
+  previewBox.classList.add("is-expanded");
+  const last = previewBox.getBoundingClientRect();
+  if (first.width > 0) {
+    previewBox.style.transformOrigin = "0 0";
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = first.width / last.width;
+    const sy = first.height / last.height;
+    previewBox.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+    void previewBox.offsetWidth;
+    previewBox.style.transition = "transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+    previewBox.style.transform = "";
+  }
+  previewCollapse.hidden = false;
+  previewCollapse.focus();
+}
+
+function collapsePreview() {
+  if (!previewBox.classList.contains("is-expanded")) return;
+  const first = previewBox.getBoundingClientRect();
+  previewBox.classList.remove("is-expanded");
+  document.body.classList.remove("preview-open");
+  previewCollapse.hidden = true;
+  const last = previewBox.getBoundingClientRect();
+  if (last.width > 0) {
+    previewBox.style.transition = "none";
+    previewBox.style.transformOrigin = "0 0";
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = first.width / last.width;
+    const sy = first.height / last.height;
+    previewBox.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+    void previewBox.offsetWidth;
+    previewBox.style.transition = "transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+    previewBox.style.transform = "";
+  } else {
+    previewBox.style.transform = "";
+    previewBox.style.transition = "";
+  }
 }
 
 // Shows the page-shaped skeleton until the PDF has actually loaded. PDFs
@@ -438,15 +499,6 @@ function setPreviewLoading(loading) {
   }
 }
 
-function setLightboxLoading(loading) {
-  window.clearTimeout(lightboxLoadTimer);
-  lightboxSkeleton.hidden = !loading;
-  lightboxFrame.classList.toggle("is-loading", loading);
-
-  if (loading && !lightbox.hidden) {
-    lightboxLoadTimer = window.setTimeout(() => setLightboxLoading(false), 10000);
-  }
-}
 
 function refreshPreview() {
   previewLabel.textContent = selectionLabel();
@@ -466,6 +518,7 @@ function refreshPreview() {
     setPreviewLoading(false);
     previewFrame.hidden = true;
     previewFrame.removeAttribute("src");
+    delete previewFrame.dataset.url;
 
     previewState.hidden = false;
     previewState.textContent =
@@ -474,20 +527,30 @@ function refreshPreview() {
     previewMeta.textContent = "";
     previewExpand.hidden = true;
 
-    if (!lightbox.hidden) {
-      closeLightbox();
-    }
+    collapsePreview();
 
     return;
   }
 
-  const url = previewUrl();
+  const url = previewUrl(published);
 
-  // Only reload when the copy actually changed; re-setting the same URL
-  // would flash the skeleton and fetch the PDF again for nothing.
-  if (previewFrame.getAttribute("src") !== url) {
+  // Each copy is downloaded once and kept for the session, so switching
+  // back to a colour, or expanding it, never fetches it again.
+  if (previewFrame.dataset.url !== url) {
+    previewFrame.dataset.url = url;
     setPreviewLoading(true);
-    previewFrame.src = url;
+
+    cachedPreview(url)
+      .then((objectUrl) => {
+        if (previewFrame.dataset.url === url) {
+          previewFrame.src = objectUrl;
+        }
+      })
+      .catch(() => {
+        if (previewFrame.dataset.url === url) {
+          previewFrame.src = url;
+        }
+      });
   }
 
   previewFrame.hidden = false;
@@ -498,11 +561,6 @@ function refreshPreview() {
   previewMeta.textContent = date ? `Published ${date}` : "";
   previewExpand.hidden = false;
 
-  if (!lightbox.hidden && lightboxFrame.getAttribute("src") !== url) {
-    setLightboxLoading(true);
-    lightboxFrame.src = url;
-    lightboxTitle.textContent = selectionLabel();
-  }
 }
 
 // Clicking through swatches should not fire a request per click.
@@ -511,24 +569,7 @@ function schedulePreview() {
   previewTimer = window.setTimeout(refreshPreview, 180);
 }
 
-function openLightbox() {
-  if (!variants.has(selectedKey())) {
-    return;
-  }
 
-  setLightboxLoading(true);
-  lightboxFrame.src = previewUrl();
-  lightboxTitle.textContent = selectionLabel();
-  lightbox.hidden = false;
-  setLightboxLoading(true);
-  lightboxClose.focus();
-}
-
-function closeLightbox() {
-  lightbox.hidden = true;
-  lightboxFrame.removeAttribute("src");
-  setLightboxLoading(true);
-}
 
 /* -------------------------------------------------------------------------
    Interface sync
@@ -708,16 +749,15 @@ async function startBuild() {
   };
 }
 
-async function deliver(stamp, downloadUrl, message) {
+async function deliver(downloadUrl, message) {
   setBuildStatus("Build complete", message);
 
   await new Promise((resolve) => window.setTimeout(resolve, 650));
 
   showSuccess();
 
-  // Point the preview at what was just published, using the stamp to
-  // defeat any caching of the previous copy under the same name.
-  previewStamp = String(stamp);
+  // The refreshed listing carries the new publish time, which is part of
+  // the preview URL, so the new copy is fetched instead of a cached one.
   await loadVariants();
   refreshPreview();
 
@@ -752,7 +792,6 @@ async function waitForBuild(buildId, theme, variant) {
       }
 
       await deliver(
-        buildId,
         result.downloadUrl,
         "The newest CV has been published. Starting your download…"
       );
@@ -811,8 +850,8 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (!lightbox.hidden) {
-    closeLightbox();
+  if (previewBox.classList.contains("is-expanded")) {
+    collapsePreview();
     return;
   }
 
@@ -882,21 +921,11 @@ previewFrame.addEventListener("load", () => {
   }
 });
 
-lightboxFrame.addEventListener("load", () => {
-  if (lightboxFrame.getAttribute("src")) {
-    setLightboxLoading(false);
-  }
-});
 
-previewExpand.addEventListener("click", openLightbox);
-mobilePreview.addEventListener("click", openLightbox);
-lightboxClose.addEventListener("click", closeLightbox);
-
-lightbox.addEventListener("click", (event) => {
-  if (event.target === lightbox) {
-    closeLightbox();
-  }
-});
+previewExpand.addEventListener("click", expandPreview);
+mobilePreview.addEventListener("click", expandPreview);
+previewCollapse.addEventListener("click", collapsePreview);
+previewBackdrop.addEventListener("click", collapsePreview);
 
 button.addEventListener("click", async () => {
   try {
@@ -906,7 +935,6 @@ button.addEventListener("click", async () => {
 
     if (downloadUrl) {
       await deliver(
-        new URL(downloadUrl).searchParams.get("v") || buildId,
         downloadUrl,
         "This copy is already up to date. Starting your download…"
       );
