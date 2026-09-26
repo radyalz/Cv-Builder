@@ -889,7 +889,7 @@ function skullParts(accent) {
     [38, 67],
     [63, 67],
   ];
-  const { bolt } = boltPaths();
+  const { bolt, veins1, veins2, veins3 } = boltPaths();
 
   const boneLight = mixHex(accent, "#fbf6f0", 0.84);
   const boneMid = mixHex(accent, "#9a908a", 0.58);
@@ -934,14 +934,31 @@ function skullParts(accent) {
     '<stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient>' +
     '<mask id="m"><rect width="100" height="130" fill="url(#v)"/></mask>' +
     '<filter id="g" x="-60%" y="-10%" width="220%" height="120%">' +
-    '<feGaussianBlur stdDeviation="1.5"/></filter>' +
+    '<feGaussianBlur stdDeviation=".9"/></filter>' +
     '<radialGradient id="i">' +
     '<stop offset="0" stop-color="#ffffff"/>' +
     `<stop offset=".3" stop-color="${hot}" stop-opacity=".9"/>` +
     `<stop offset="1" stop-color="${accent}" stop-opacity="0"/>` +
     "</radialGradient>";
 
+  // A coloured halo under a white-hot core, so the current reads against
+  // pale bone as well as dark.
+  const current = (d) =>
+    svgImage(
+      '<filter id="g" x="-40%" y="-40%" width="180%" height="180%">' +
+        '<feGaussianBlur stdDeviation="1.1"/></filter>' +
+        '<filter id="n" x="-30%" y="-30%" width="160%" height="160%">' +
+        '<feGaussianBlur stdDeviation=".45"/></filter>',
+      `<path d="${d}" fill="${boneDark}" filter="url(#g)" opacity=".85"/>` +
+        `<path d="${d}" fill="${accent}" filter="url(#g)"/>` +
+        `<path d="${d}" fill="${accent}" filter="url(#n)"/>` +
+        `<path d="${d}" fill="#ffffff"/>`
+    );
+
   return {
+    veins1: current(veins1),
+    veins2: current(veins2),
+    veins3: current(veins3),
     cranium: svgImage(boneDefs, bone(cranium)),
     jaw: svgImage(boneDefs, bone(jaw)),
     flash: svgImage(
@@ -957,7 +974,7 @@ function skullParts(accent) {
         `<path d="${bolt}" fill="${hot}" filter="url(#g)" opacity=".7"/>` +
         `<path d="${bolt}" fill="#ffffff"/>` +
         "</g>" +
-        '<circle cx="50" cy="33.5" r="7" fill="url(#i)"/>'
+        '<circle cx="50" cy="33.5" r="4.2" fill="url(#i)"/>'
     ),
   };
 }
@@ -989,9 +1006,14 @@ function skullPaths() {
 }
 
 // Hand-placed strike: a tapered main channel with two forks and a twig,
-// ending on the crown. Generated as filled outlines so it thins to a point.
+// ending on the crown, plus the current it sends through the skull in three
+// waves (dome, face, jaw). Generated as filled outlines so every line thins
+// to a point.
 function boltPaths() {
   return {
-    bolt: "M44.8 1.5L49.5 5.6L45.3 10.3L52 15.6L46.8 20.3L51.1 25.6L48.9 29.3L49.7 33.5L50.3 33.5L50.1 29.7L52.9 25.4L49.2 20.7L55 15.4L48.7 9.7L53.5 5.4L48.2 -1.5ZM46.4 9.1L41.3 13.2L43.5 16.3L38.3 20.8L36.4 24.5L36.6 24.5L38.7 21.2L44.5 16.7L42.7 13.8L47.6 10.9ZM53.1 16.3L58 18.3L56.2 21.7L62 24.6L62 24.4L56.8 21.3L59 17.7L53.9 14.7ZM47.7 20.1L44.2 22.9L45.4 26L45.6 26L44.8 23.1L48.3 20.9Z",
+    bolt: "M45.7 0.7L50.6 5.5L46.2 10.2L52.8 15.6L47.4 20.4L51.6 25.6L49.2 29.4L49.8 33.5L50.2 33.5L49.8 29.6L52.4 25.4L48.6 20.6L54.2 15.4L47.8 9.8L52.4 5.5L47.3 -0.7ZM46.7 9.6L41.6 13.3L43.7 16.4L38.4 20.9L36.4 24.5L36.6 24.5L38.6 21.1L44.3 16.6L42.4 13.7L47.3 10.4ZM53.3 15.9L58.2 18.1L56.3 21.6L62 24.6L62 24.4L56.7 21.4L58.8 17.9L53.7 15.1ZM47.8 20.3L44.4 22.9L45.5 26L45.5 26L44.6 23.1L48.2 20.7Z",
+    veins1: "M49.6 33.8L48.7 35.5L47.1 36.5L45.4 37.6L43.8 38.8L42.4 40.2L40.7 41.5L39 42.6L36.9 42.8L35.3 44.3L33.7 45.7L32.7 47.7L31 48.9L31 49.1L32.9 47.8L33.9 45.8L35.5 44.5L37.1 43.2L39.2 43L41 41.9L42.7 40.7L44.2 39.2L45.8 38.1L47.4 37.1L49.3 36L50.4 34.2ZM49.8 34.4L51.6 35.2L53.4 36.2L54.9 37.6L56.9 38.3L59 38.4L60.8 39.4L62.6 40.5L63.9 42.1L65.9 43.4L68 44.4L69 46.6L71 48.1L71 47.9L69.2 46.4L68.2 44.2L66 43.2L64.1 41.9L62.9 40.2L61.1 39L59.2 37.9L57.1 37.7L55.3 37L53.8 35.6L52 34.5L50.2 33.6ZM49.6 34L49.8 35.8L49 37.3L48.4 39.2L48.7 41.1L49.8 42.5L50.5 44L51.5 45.4L51.8 47L51.2 48.5L49.9 49.6L50.1 51.3L49.9 53L50.1 53L50.3 51.3L50.1 49.7L51.5 48.7L52.2 47L51.9 45.2L50.9 43.8L50.3 42.2L49.3 40.9L49.1 39.2L49.7 37.6L50.6 35.9L50.4 34ZM56.6 38.1L56.8 39.7L57.3 41.4L58.2 42.9L59.3 44.1L59.4 45.3L59.3 46.6L58.6 47.8L57.9 49L58.1 49L58.8 47.9L59.6 46.8L59.8 45.4L59.7 43.9L58.7 42.6L57.9 41.1L57.6 39.6L57.4 37.9Z",
+    veins2: "M30.6 49L30.4 50.9L30.6 52.7L29.8 54.3L28.7 56L30 57.4L30.7 58.7L30.7 60.4L30.9 62.1L31.8 62.9L32.7 63.7L33.3 64.8L33.4 66L33.6 66L33.5 64.7L32.9 63.6L32 62.7L31.1 61.9L31 60.3L31.1 58.6L30.3 57.1L29.3 56L30.3 54.6L31.2 52.8L31.1 50.9L31.4 49ZM70.6 48L70.8 49.9L71.1 51.8L71.9 53.5L72.7 55L71.5 56.3L70.9 58.3L70.1 60L69.8 62L69.7 63.2L69.2 64.2L67.9 64.7L67.4 66L67.6 66L68 64.8L69.3 64.4L70 63.3L70.2 62L70.5 60.1L71.3 58.4L71.9 56.6L73.3 55L72.4 53.2L71.7 51.6L71.4 49.8L71.4 48ZM49.6 52.9L49.3 54.6L49.5 56.1L48.4 57.3L47.7 59L48.5 60.7L49.4 62L49.7 63.7L50.7 65.1L50.5 66.4L49.7 67.8L49.5 69.5L49.8 71L50.3 72.8L51.1 74.4L50.9 76.2L50.8 78L50.4 79.7L49.9 81.5L49 83.1L48.9 85L49.2 86.9L50.4 88.4L50.2 90.2L49.9 92L50.1 92L50.4 90.2L50.6 88.3L49.3 86.9L49.1 85L49.2 83.2L50.1 81.6L50.7 79.8L51.2 78L51.2 76.2L51.4 74.4L50.7 72.7L50.2 71L50 69.5L50.2 68L50.9 66.6L51.3 64.9L50.2 63.5L49.9 61.8L49 60.4L48.3 59L48.9 57.6L50.1 56.4L50 54.6L50.4 53.1ZM31 62.4L31.9 62.3L32.5 63.2L33.5 63.7L34.5 63.6L34.5 63.4L33.5 63.4L32.8 62.9L32.3 61.9L31 61.6ZM70.1 61.7L68.9 61.4L68 62.3L67 62.5L66.5 63.5L66.5 63.5L67.2 62.8L68.2 62.6L69 61.9L69.9 62.3Z",
+    veins3: "M49.7 96.9L49.2 98.5L48.6 100.1L48.1 101.7L46.7 103L48.5 104.3L49.5 106L51.1 107.2L51.8 109L50.4 110.4L49.5 112.3L49.1 114.3L47.9 116L49.1 116.9L49.9 118.1L50 119.6L49.9 121L50.1 121L50.2 119.6L50.1 118.1L49.3 116.8L48.1 116L49.4 114.4L49.8 112.4L50.7 110.6L52.2 109L51.5 107L49.9 105.7L48.9 103.9L47.3 103L48.5 102L49.2 100.3L49.8 98.7L50.3 97.1ZM42.7 99.8L41.7 101.4L40.5 103.1L40.1 105L39.8 107L40.4 108.7L41.8 109.8L41.5 111.4L41.9 113L42.1 113L41.6 111.4L42 109.7L40.7 108.5L40.2 107L40.5 105.1L41 103.3L42.2 101.8L43.3 100.2ZM56.7 100.1L57.2 101.9L57.5 103.9L58.8 105.4L59.8 107L59.1 108.5L59.3 110.1L58.2 111.3L57.9 113L58.1 113L58.3 111.4L59.6 110.2L59.4 108.5L60.2 107L59.2 105.2L58 103.7L57.8 101.8L57.3 99.9Z",
   };
 }
