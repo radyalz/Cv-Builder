@@ -10,9 +10,9 @@
   --text: #f5f7fa;
   --muted: #9aa4b2;
   --line: rgba(255, 255, 255, 0.09);
-  --accent: #ffffff;
+  --accent: #9f74bf;
   --accent-text: #0b0d10;
-  --accent-soft: rgba(255, 255, 255, 0.3);
+  --accent-soft: #9f74bf33;
   --danger: #ffb4b4;
   --success: #b7f7c8;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
@@ -66,8 +66,15 @@ input {
   z-index: 0;
   overflow: hidden;
   inset: 0;
-  opacity: 0.58;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+/* Set once runner.js has built the artwork, so the field fades in rather
+   than popping in after the page has already drawn. */
+.skull-field.is-painted {
+  opacity: 0.58;
 }
 
 /* Rows alternate between two sets, offset half a tile like brickwork.
@@ -733,14 +740,14 @@ h1 {
 /* -------- Preview -------- */
 
 .card-preview {
-  display: none;
+  display: flex;
   min-width: 0;
   min-height: 0;
   flex-direction: column;
 }
 
-.card-preview.is-active {
-  display: flex;
+.card-preview.is-unavailable {
+  display: none;
 }
 
 .preview-head {
@@ -776,6 +783,114 @@ h1 {
   width: 100%;
   height: 100%;
   border: 0;
+  transition: opacity 240ms ease;
+}
+
+.preview-frame iframe.is-loading,
+.lightbox-stage iframe.is-loading {
+  opacity: 0;
+}
+
+/* -------- Loading skeletons --------
+   A page-shaped placeholder that shimmers until the PDF has loaded, in the
+   accent colour so it already looks like the CV it stands in for. */
+
+.preview-frame,
+.lightbox-stage {
+  position: relative;
+}
+
+.preview-skeleton {
+  position: absolute;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  padding: 8% 7%;
+  background: #ffffff;
+  gap: 2.2%;
+  inset: 0;
+}
+
+.sk-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1%;
+}
+
+.sk {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  flex: none;
+  height: 7px;
+  border-radius: 3px;
+  background: #ebebf0;
+}
+
+.sk::after {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  content: "";
+  inset: 0;
+  transform: translateX(-100%);
+  animation: sk-shimmer 1.3s ease-in-out infinite;
+}
+
+.sk-title {
+  width: 46%;
+  height: 16px;
+  background: color-mix(in srgb, var(--accent) 32%, #ebebf0);
+}
+
+.sk-contact {
+  width: 22%;
+  height: 32px;
+}
+
+.sk-sub {
+  width: 30%;
+  height: 8px;
+  background: color-mix(in srgb, var(--accent) 22%, #ebebf0);
+}
+
+.sk-section {
+  width: 38%;
+  height: 9px;
+  margin-top: 2%;
+  background: color-mix(in srgb, var(--accent) 38%, #ebebf0);
+}
+
+.sk-line {
+  width: 100%;
+}
+
+.sk-short {
+  width: 64%;
+}
+
+/* The date line under the preview, while the listing loads. */
+.preview-meta.is-loading {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 120px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.preview-meta.is-loading::after {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  content: "";
+  inset: 0;
+  transform: translateX(-100%);
+  animation: sk-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes sk-shimmer {
+  to { transform: translateX(100%); }
 }
 
 .preview-state {
@@ -846,6 +961,7 @@ h1 {
   width: 100%;
   height: 100%;
   border: 0;
+  transition: opacity 240ms ease;
 }
 
 [hidden] {

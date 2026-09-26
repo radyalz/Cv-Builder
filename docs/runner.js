@@ -70,8 +70,15 @@ const lightbox = document.getElementById("lightbox");
 const lightboxFrame = document.getElementById("lightboxFrame");
 const lightboxTitle = document.getElementById("lightboxTitle");
 const lightboxClose = document.getElementById("lightboxClose");
+const previewSkeleton = document.getElementById("previewSkeleton");
+const lightboxSkeleton = document.getElementById("lightboxSkeleton");
+const skullField = document.querySelector(".skull-field");
 
 let variants = new Map();
+// False until the published listing arrives. Until then the preview keeps
+// its skeleton instead of wrongly reporting a colour as not generated.
+let variantsLoaded = false;
+let previewLoadTimer = null;
 let previewStamp = "";
 let previewTimer = null;
 
@@ -396,11 +403,12 @@ async function loadVariants() {
       ])
     );
 
-    previewPane.classList.add("is-active");
+    variantsLoaded = true;
+    previewPane.classList.remove("is-unavailable");
 
     return true;
   } catch {
-    previewPane.classList.remove("is-active");
+    previewPane.classList.add("is-unavailable");
 
     return false;
   }
@@ -415,12 +423,37 @@ function previewUrl() {
   );
 }
 
+// Shows the page-shaped skeleton until the PDF has actually loaded. PDFs
+// that a browser refuses to render in a frame never fire "load", so the
+// skeleton gives way after a few seconds regardless.
+function setPreviewLoading(loading) {
+  window.clearTimeout(previewLoadTimer);
+  previewSkeleton.hidden = !loading;
+  previewFrame.classList.toggle("is-loading", loading);
+
+  if (loading) {
+    previewLoadTimer = window.setTimeout(() => setPreviewLoading(false), 10000);
+  }
+}
+
+function setLightboxLoading(loading) {
+  lightboxSkeleton.hidden = !loading;
+  lightboxFrame.classList.toggle("is-loading", loading);
+}
+
 function refreshPreview() {
   previewLabel.textContent = selectionLabel();
+
+  if (!variantsLoaded) {
+    return;
+  }
+
+  previewMeta.classList.remove("is-loading");
 
   const published = variants.get(selectedKey());
 
   if (!published) {
+    setPreviewLoading(false);
     previewFrame.hidden = true;
     previewFrame.removeAttribute("src");
 
@@ -440,7 +473,13 @@ function refreshPreview() {
 
   const url = previewUrl();
 
-  previewFrame.src = url;
+  // Only reload when the copy actually changed; re-setting the same URL
+  // would flash the skeleton and fetch the PDF again for nothing.
+  if (previewFrame.getAttribute("src") !== url) {
+    setPreviewLoading(true);
+    previewFrame.src = url;
+  }
+
   previewFrame.hidden = false;
   previewState.hidden = true;
 
@@ -449,7 +488,8 @@ function refreshPreview() {
   previewMeta.textContent = date ? `Published ${date}` : "";
   previewExpand.hidden = false;
 
-  if (!lightbox.hidden) {
+  if (!lightbox.hidden && lightboxFrame.getAttribute("src") !== url) {
+    setLightboxLoading(true);
     lightboxFrame.src = url;
     lightboxTitle.textContent = selectionLabel();
   }
@@ -466,6 +506,7 @@ function openLightbox() {
     return;
   }
 
+  setLightboxLoading(true);
   lightboxFrame.src = previewUrl();
   lightboxTitle.textContent = selectionLabel();
   lightbox.hidden = false;
@@ -475,6 +516,7 @@ function openLightbox() {
 function closeLightbox() {
   lightbox.hidden = true;
   lightboxFrame.removeAttribute("src");
+  setLightboxLoading(true);
 }
 
 /* -------------------------------------------------------------------------
@@ -823,6 +865,18 @@ themeGrid.addEventListener("keydown", (event) => {
   themeGrid.querySelector(`[data-slug="${next}"]`).focus();
 });
 
+previewFrame.addEventListener("load", () => {
+  if (previewFrame.getAttribute("src")) {
+    setPreviewLoading(false);
+  }
+});
+
+lightboxFrame.addEventListener("load", () => {
+  if (lightboxFrame.getAttribute("src")) {
+    setLightboxLoading(false);
+  }
+});
+
 previewExpand.addEventListener("click", openLightbox);
 lightboxClose.addEventListener("click", closeLightbox);
 
@@ -1069,6 +1123,8 @@ function paintSkulls(accent) {
   for (const [name, image] of Object.entries(parts)) {
     root.setProperty(`--skull-${name}`, image);
   }
+
+  skullField.classList.add("is-painted");
 }
 
 // Generated from the concept art trace. A function declaration, so it is

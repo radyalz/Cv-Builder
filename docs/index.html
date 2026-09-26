@@ -176,17 +176,36 @@
         <div class="preview-frame">
           <iframe
             id="previewFrame"
+            class="is-loading"
             title="Published CV preview"
             hidden
           ></iframe>
 
-          <div id="previewState" class="preview-state">
-            Loading the published CV…
+          <div id="previewSkeleton" class="preview-skeleton" aria-hidden="true">
+            <div class="sk-head">
+              <span class="sk sk-title"></span>
+              <span class="sk sk-contact"></span>
+            </div>
+            <span class="sk sk-sub"></span>
+            <span class="sk sk-section"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line sk-short"></span>
+            <span class="sk sk-section"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line sk-short"></span>
+            <span class="sk sk-section"></span>
+            <span class="sk sk-line"></span>
+            <span class="sk sk-line sk-short"></span>
           </div>
+
+          <div id="previewState" class="preview-state" hidden></div>
         </div>
 
         <div class="preview-foot">
-          <span id="previewMeta" class="preview-meta"></span>
+          <span id="previewMeta" class="preview-meta is-loading"></span>
 
           <button
             id="previewExpand"
@@ -245,7 +264,27 @@
     </div>
 
     <div class="lightbox-stage">
-      <iframe id="lightboxFrame" title="CV preview, expanded"></iframe>
+      <iframe id="lightboxFrame" class="is-loading" title="CV preview, expanded"></iframe>
+
+      <div id="lightboxSkeleton" class="preview-skeleton" aria-hidden="true">
+        <div class="sk-head">
+          <span class="sk sk-title"></span>
+          <span class="sk sk-contact"></span>
+        </div>
+        <span class="sk sk-sub"></span>
+        <span class="sk sk-section"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line sk-short"></span>
+        <span class="sk sk-section"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line sk-short"></span>
+        <span class="sk sk-section"></span>
+        <span class="sk sk-line"></span>
+        <span class="sk sk-line sk-short"></span>
+      </div>
     </div>
   </div>
 
