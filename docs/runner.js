@@ -73,12 +73,14 @@ const lightboxClose = document.getElementById("lightboxClose");
 const previewSkeleton = document.getElementById("previewSkeleton");
 const lightboxSkeleton = document.getElementById("lightboxSkeleton");
 const skullField = document.querySelector(".skull-field");
+const mobilePreview = document.getElementById("mobilePreview");
 
 let variants = new Map();
 // False until the published listing arrives. Until then the preview keeps
 // its skeleton instead of wrongly reporting a colour as not generated.
 let variantsLoaded = false;
 let previewLoadTimer = null;
+let lightboxLoadTimer = null;
 let previewStamp = "";
 let previewTimer = null;
 
@@ -437,8 +439,13 @@ function setPreviewLoading(loading) {
 }
 
 function setLightboxLoading(loading) {
+  window.clearTimeout(lightboxLoadTimer);
   lightboxSkeleton.hidden = !loading;
   lightboxFrame.classList.toggle("is-loading", loading);
+
+  if (loading && !lightbox.hidden) {
+    lightboxLoadTimer = window.setTimeout(() => setLightboxLoading(false), 10000);
+  }
 }
 
 function refreshPreview() {
@@ -451,6 +458,9 @@ function refreshPreview() {
   previewMeta.classList.remove("is-loading");
 
   const published = variants.get(selectedKey());
+
+  // Phones have no inline preview; their button opens the viewer instead.
+  mobilePreview.disabled = !published;
 
   if (!published) {
     setPreviewLoading(false);
@@ -510,6 +520,7 @@ function openLightbox() {
   lightboxFrame.src = previewUrl();
   lightboxTitle.textContent = selectionLabel();
   lightbox.hidden = false;
+  setLightboxLoading(true);
   lightboxClose.focus();
 }
 
@@ -878,6 +889,7 @@ lightboxFrame.addEventListener("load", () => {
 });
 
 previewExpand.addEventListener("click", openLightbox);
+mobilePreview.addEventListener("click", openLightbox);
 lightboxClose.addEventListener("click", closeLightbox);
 
 lightbox.addEventListener("click", (event) => {
