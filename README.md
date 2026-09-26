@@ -8,7 +8,9 @@ Generate the latest version of my CV on demand.
 
 The builder requests a fresh private build of the CV, recalculates date-dependent experience durations, publishes the newest PDF, and starts the download automatically when the build finishes.
 
-A fresh build normally takes about **3–5 minutes**.
+Every colour is pre-built whenever the CV changes, so a current copy downloads
+immediately. A custom colour, or a request made just after the CV changed, is
+built fresh in well under a minute.
 
 ## Choose a colour
 

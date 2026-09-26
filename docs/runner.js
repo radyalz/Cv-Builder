@@ -650,7 +650,25 @@ async function startBuild() {
     buildId: result.buildId,
     theme: result.theme || selectedSlug(),
     variant: result.variant || selection.variant,
+    // Present when a current copy was already published: no build needed.
+    downloadUrl: result.status === "completed" ? result.downloadUrl : null,
   };
+}
+
+async function deliver(stamp, downloadUrl, message) {
+  setBuildStatus("Build complete", message);
+
+  await new Promise((resolve) => window.setTimeout(resolve, 650));
+
+  showSuccess();
+
+  // Point the preview at what was just published, using the stamp to
+  // defeat any caching of the previous copy under the same name.
+  previewStamp = String(stamp);
+  await loadVariants();
+  refreshPreview();
+
+  window.location.assign(downloadUrl);
 }
 
 async function getBuildStatus(buildId, theme, variant) {
@@ -680,22 +698,11 @@ async function waitForBuild(buildId, theme, variant) {
         throw new Error("The build completed without a download URL.");
       }
 
-      setBuildStatus(
-        "Build complete",
+      await deliver(
+        buildId,
+        result.downloadUrl,
         "The newest CV has been published. Starting your download…"
       );
-
-      await new Promise((resolve) => window.setTimeout(resolve, 650));
-
-      showSuccess();
-
-      // Point the preview at what was just published, using the build id to
-      // defeat any caching of the previous copy under the same name.
-      previewStamp = String(buildId);
-      await loadVariants();
-      refreshPreview();
-
-      window.location.assign(result.downloadUrl);
       return;
     }
 
@@ -829,7 +836,16 @@ button.addEventListener("click", async () => {
   try {
     showBuilding();
 
-    const { buildId, theme, variant } = await startBuild();
+    const { buildId, theme, variant, downloadUrl } = await startBuild();
+
+    if (downloadUrl) {
+      await deliver(
+        new URL(downloadUrl).searchParams.get("v") || buildId,
+        downloadUrl,
+        "This copy is already up to date. Starting your download…"
+      );
+      return;
+    }
 
     setBuildStatus(
       "Build started",
