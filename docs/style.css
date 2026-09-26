@@ -20,7 +20,10 @@
   --glass-edge: rgba(255, 255, 255, 0.14);
   --radius: 4px;
   --radius-lg: 6px;
-  --skull-tile: 176px;
+  --skull-w: 150px;
+  --skull-h: 195px;
+  --skull-bite: 6px;
+  --skull-cycle: 6.5s;
 }
 
 * {
@@ -53,32 +56,110 @@ input {
 }
 
 /* -------- Skull field --------
-   One tiled SVG image, built in runner.js so its bone gradient, rim light
-   and glowing sockets follow the accent. The jaw and the eye glow move
-   inside the image; this layer only drifts, slowly. */
+   Every layer holds a still SVG tile built in runner.js. Only these layers
+   move, using opacity and transform, which the browser composites cheaply.
+   One cycle: a long rest, then lightning strikes the crown, the skull
+   flashes, the jaw drops a little and the eyes flare, then it settles. */
 
 .skull-field {
   position: fixed;
   z-index: 0;
   overflow: hidden;
   inset: 0;
+  opacity: 0.58;
   pointer-events: none;
 }
 
-.skull-art {
+.skull-drift {
   position: absolute;
-  inset: calc(var(--skull-tile) * -1);
-  background-image: var(--skull-art, none);
-  background-repeat: repeat;
-  background-size: var(--skull-tile) var(--skull-tile);
-  opacity: 0.34;
-  animation: skull-drift 70s linear infinite;
+  inset: calc(var(--skull-h) * -1);
+  animation: skull-drift 90s linear infinite;
   will-change: transform;
+}
+
+.skull-layer,
+.skull-bite {
+  position: absolute;
+  inset: 0;
+}
+
+.skull-layer {
+  background-repeat: repeat;
+  background-size: var(--skull-w) var(--skull-h);
+}
+
+.skull-cranium { background-image: var(--skull-cranium, none); }
+.skull-jaw { background-image: var(--skull-jaw, none); }
+
+.skull-flash {
+  background-image: var(--skull-flash, none);
+  opacity: 0;
+  animation: skull-flash var(--skull-cycle) linear infinite;
+}
+
+.skull-bite {
+  animation: skull-bite var(--skull-cycle) ease-in-out infinite;
+  will-change: transform;
+}
+
+.skull-eyes {
+  background-image: var(--skull-eyes, none);
+  opacity: 0.35;
+  animation: skull-eyes var(--skull-cycle) ease-in-out infinite;
+}
+
+.skull-flare {
+  background-image: var(--skull-flare, none);
+  opacity: 0;
+  animation: skull-flare var(--skull-cycle) ease-out infinite;
+}
+
+.skull-bolt {
+  background-image: var(--skull-bolt, none);
+  opacity: 0;
+  animation: skull-strike var(--skull-cycle) linear infinite;
 }
 
 @keyframes skull-drift {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(var(--skull-tile), var(--skull-tile), 0); }
+  to { transform: translate3d(var(--skull-w), var(--skull-h), 0); }
+}
+
+/* Two quick flickers, a hold, then the channel fades. */
+@keyframes skull-strike {
+  0%, 69% { opacity: 0; }
+  70% { opacity: 1; }
+  71% { opacity: 0.15; }
+  72% { opacity: 1; }
+  75% { opacity: 0.85; }
+  81%, 100% { opacity: 0; }
+}
+
+@keyframes skull-flash {
+  0%, 70% { opacity: 0; }
+  71.5% { opacity: 0.55; }
+  79%, 100% { opacity: 0; }
+}
+
+@keyframes skull-bite {
+  0%, 70% { transform: translateY(0); }
+  73.5%, 86% { transform: translateY(var(--skull-bite)); }
+  95%, 100% { transform: translateY(0); }
+}
+
+@keyframes skull-eyes {
+  0% { opacity: 0.3; }
+  35% { opacity: 0.42; }
+  70% { opacity: 0.32; }
+  72.5%, 86% { opacity: 1; }
+  97%, 100% { opacity: 0.3; }
+}
+
+@keyframes skull-flare {
+  0%, 70% { opacity: 0; }
+  73% { opacity: 1; }
+  85% { opacity: 0.65; }
+  96%, 100% { opacity: 0; }
 }
 
 /* -------- Shell and card -------- */
@@ -713,7 +794,12 @@ h1 {
     transition-duration: 0.01ms !important;
   }
 
-  .skull-art {
+  .skull-drift,
+  .skull-bite,
+  .skull-eyes,
+  .skull-flare,
+  .skull-flash,
+  .skull-bolt {
     animation: none;
   }
 }
