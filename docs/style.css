@@ -445,6 +445,13 @@ h1 {
     background-color 140ms ease;
 }
 
+/* The UI font has no Persian glyphs; without this the fallback renders
+   the label tiny. */
+.segment[lang="fa"] {
+  font-family: Vazirmatn, "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  font-size: 16px;
+}
+
 .segment[aria-checked="true"] {
   color: var(--accent-text);
   background: var(--accent);

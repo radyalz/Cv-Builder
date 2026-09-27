@@ -39,6 +39,14 @@ const VARIANT_LABEL = {
   print: "Print",
 };
 
+const DEFAULT_LANGUAGE = "en";
+const LANGUAGES = new Set([DEFAULT_LANGUAGE, "fa"]);
+
+const LANGUAGE_LABEL = {
+  en: "English",
+  fa: "فارسی",
+};
+
 const button = document.getElementById("generateButton");
 const buildPanel = document.getElementById("buildPanel");
 const successPanel = document.getElementById("successPanel");
@@ -58,6 +66,7 @@ const customColor = document.getElementById("customColor");
 const customHex = document.getElementById("customHex");
 const customApply = document.getElementById("customApply");
 const variantToggle = document.getElementById("variantToggle");
+const languageToggle = document.getElementById("languageToggle");
 
 const previewPane = document.querySelector(".card-preview");
 const previewFrame = document.getElementById("previewFrame");
@@ -92,6 +101,7 @@ let selection = {
   theme: DEFAULT_THEME,
   color: "#7030A0",
   variant: DEFAULT_VARIANT,
+  language: DEFAULT_LANGUAGE,
 };
 
 /* -------------------------------------------------------------------------
@@ -209,15 +219,15 @@ function colourLabel() {
 }
 
 function selectionLabel() {
-  return `${colourLabel()} · ${VARIANT_LABEL[selection.variant]}`;
+  return `${colourLabel()} · ${VARIANT_LABEL[selection.variant]} · ${LANGUAGE_LABEL[selection.language]}`;
 }
 
-function variantKey(theme, variant) {
-  return `${theme}|${variant}`;
+function variantKey(theme, variant, language) {
+  return `${theme}|${variant}|${language}`;
 }
 
 function selectedKey() {
-  return variantKey(selectedSlug(), selection.variant);
+  return variantKey(selectedSlug(), selection.variant, selection.language);
 }
 
 function loadSelection() {
@@ -230,6 +240,10 @@ function loadSelection() {
 
     if (VARIANTS.has(stored.variant)) {
       selection.variant = stored.variant;
+    }
+
+    if (LANGUAGES.has(stored.language)) {
+      selection.language = stored.language;
     }
 
     if (stored.mode === "custom") {
@@ -396,7 +410,11 @@ async function loadVariants() {
 
     variants = new Map(
       (data.variants || []).map((item) => [
-        variantKey(item.theme, item.variant || DEFAULT_VARIANT),
+        variantKey(
+          item.theme,
+          item.variant || DEFAULT_VARIANT,
+          item.language || DEFAULT_LANGUAGE
+        ),
         item,
       ])
     );
@@ -418,6 +436,7 @@ function previewUrl(published) {
   return (
     `${API_URL}/preview?theme=${encodeURIComponent(selectedSlug())}` +
     `&variant=${encodeURIComponent(selection.variant)}` +
+    `&language=${encodeURIComponent(selection.language)}` +
     `&v=${Date.parse(published.updatedAt)}`
   );
 }
@@ -601,6 +620,13 @@ function syncInterface() {
     );
   }
 
+  for (const segment of languageToggle.children) {
+    segment.setAttribute(
+      "aria-checked",
+      segment.dataset.language === selection.language ? "true" : "false"
+    );
+  }
+
   if (selection.mode === "custom") {
     setHint(
       relativeLuminance(selection.color) > 0.7
@@ -623,7 +649,7 @@ function setControlsEnabled(enabled) {
     swatch.disabled = !enabled;
   }
 
-  for (const segment of variantToggle.children) {
+  for (const segment of [...variantToggle.children, ...languageToggle.children]) {
     segment.disabled = !enabled;
   }
 
@@ -716,7 +742,7 @@ function showError(message) {
    ---------------------------------------------------------------------- */
 
 async function startBuild() {
-  const payload = { variant: selection.variant };
+  const payload = { variant: selection.variant, language: selection.language };
 
   if (selection.mode === "custom") {
     payload.color = selection.color;
@@ -744,6 +770,7 @@ async function startBuild() {
     buildId: result.buildId,
     theme: result.theme || selectedSlug(),
     variant: result.variant || selection.variant,
+    language: result.language || selection.language,
     // Present when a current copy was already published: no build needed.
     downloadUrl: result.status === "completed" ? result.downloadUrl : null,
   };
@@ -764,11 +791,12 @@ async function deliver(downloadUrl, message) {
   window.location.assign(downloadUrl);
 }
 
-async function getBuildStatus(buildId, theme, variant) {
+async function getBuildStatus(buildId, theme, variant, language) {
   const response = await fetch(
     `${API_URL}/status?id=${encodeURIComponent(buildId)}` +
       `&theme=${encodeURIComponent(theme)}` +
-      `&variant=${encodeURIComponent(variant)}`
+      `&variant=${encodeURIComponent(variant)}` +
+      `&language=${encodeURIComponent(language)}`
   );
 
   const result = await response.json();
@@ -780,11 +808,11 @@ async function getBuildStatus(buildId, theme, variant) {
   return result;
 }
 
-async function waitForBuild(buildId, theme, variant) {
+async function waitForBuild(buildId, theme, variant, language) {
   while (true) {
     await new Promise((resolve) => window.setTimeout(resolve, 5000));
 
-    const result = await getBuildStatus(buildId, theme, variant);
+    const result = await getBuildStatus(buildId, theme, variant, language);
 
     if (result.status === "completed") {
       if (!result.downloadUrl) {
@@ -879,6 +907,18 @@ variantToggle.addEventListener("click", (event) => {
   syncInterface();
 });
 
+languageToggle.addEventListener("click", (event) => {
+  const segment = event.target.closest(".segment");
+
+  if (!segment || !LANGUAGES.has(segment.dataset.language)) {
+    return;
+  }
+
+  selection = { ...selection, language: segment.dataset.language };
+  saveSelection();
+  syncInterface();
+});
+
 customColor.addEventListener("input", (event) => {
   applyCustomColour(event.target.value);
 });
@@ -931,7 +971,7 @@ button.addEventListener("click", async () => {
   try {
     showBuilding();
 
-    const { buildId, theme, variant, downloadUrl } = await startBuild();
+    const { buildId, theme, variant, language, downloadUrl } = await startBuild();
 
     if (downloadUrl) {
       await deliver(
@@ -946,7 +986,7 @@ button.addEventListener("click", async () => {
       `Build #${buildId} is running. You can keep this tab open.`
     );
 
-    await waitForBuild(buildId, theme, variant);
+    await waitForBuild(buildId, theme, variant, language);
   } catch (error) {
     console.error("CV Builder error:", error);
 
