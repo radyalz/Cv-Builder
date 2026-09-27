@@ -460,6 +460,20 @@ function cachedPreview(url) {
   return previewCache.get(url);
 }
 
+// Phones get the copy in its own tab rather than the inline preview:
+// Chrome on Android cannot render a PDF inside a page, so the browser hands
+// it to the phone's own viewer instead. Called straight from the click so
+// pop-up blockers allow it.
+function openPreviewInTab() {
+  const published = variants.get(selectedKey());
+
+  if (!published) {
+    return;
+  }
+
+  window.open(previewUrl(published), "_blank", "noopener");
+}
+
 function expandPreview() {
   if (!variants.has(selectedKey()) || previewBox.classList.contains("is-expanded")) return;
   const first = previewBox.getBoundingClientRect();
@@ -963,7 +977,7 @@ previewFrame.addEventListener("load", () => {
 
 
 previewExpand.addEventListener("click", expandPreview);
-mobilePreview.addEventListener("click", expandPreview);
+mobilePreview.addEventListener("click", openPreviewInTab);
 previewCollapse.addEventListener("click", collapsePreview);
 previewBackdrop.addEventListener("click", collapsePreview);
 
