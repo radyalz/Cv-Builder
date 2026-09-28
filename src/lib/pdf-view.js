@@ -65,45 +65,21 @@ export class PdfView {
     this.observer.observe(host);
   }
 
-  // Loads a document and draws it; resolves true once it is on screen.
-  // Switching copies quickly starts a new open() while an older one is
-  // still loading: each builds its pages privately and only swaps them in
-  // if it is still the newest, so an older copy can never land on top of
-  // (or mix its pages into) the one asked for last.
+  // Loads a document and shows it page by page: resolves true as soon as
+  // the first page is on screen, and the rest are prepared and added after
+  // it, so a copy appears without waiting for all of it. Switching copies
+  // quickly starts a new open() while an older one is still loading; each
+  // only shows its pages while it is still the newest, so an older copy can
+  // never land on top of (or mix its pages into) the one asked for last.
   async open(url) {
     const token = ++this.token;
     const current = () => token === this.token;
     const lib = await loadLibrary();
     const doc = await lib.getDocument({ url, isEvalSupported: false }).promise;
-    const pages = [];
+    let first;
 
     try {
-      for (let number = 1; number <= doc.numPages; number++) {
-        const page = await doc.getPage(number);
-
-        if (!current()) {
-          release(doc);
-          return false;
-        }
-
-        const shell = document.createElement("div");
-        const canvas = document.createElement("canvas");
-        const links = document.createElement("div");
-
-        shell.className = "pdf-page";
-        links.className = "pdf-links";
-        shell.append(canvas, links);
-
-        pages.push({
-          page,
-          shell,
-          canvas,
-          links,
-          size: page.getViewport({ scale: 1 }),
-          annotations: await page.getAnnotations(),
-          task: null,
-        });
-      }
+      first = await this.preparePage(doc, 1);
     } catch (error) {
       release(doc);
       throw error;
@@ -120,12 +96,60 @@ export class PdfView {
 
     release(this.doc);
     this.doc = doc;
-    this.pages = pages;
-    this.host.replaceChildren(...pages.map((entry) => entry.shell));
+    this.pages = [first];
+    this.host.replaceChildren(first.shell);
     this.host.scrollTop = 0;
     await this.render();
 
+    this.addRemainingPages(doc, current);
+
     return current();
+  }
+
+  async preparePage(doc, number) {
+    const page = await doc.getPage(number);
+    const shell = document.createElement("div");
+    const canvas = document.createElement("canvas");
+    const links = document.createElement("div");
+
+    shell.className = "pdf-page";
+    links.className = "pdf-links";
+    shell.append(canvas, links);
+
+    return {
+      page,
+      shell,
+      canvas,
+      links,
+      size: page.getViewport({ scale: 1 }),
+      annotations: await page.getAnnotations(),
+      task: null,
+    };
+  }
+
+  // Pages after the first, one at a time, each drawn as soon as it is ready.
+  async addRemainingPages(doc, current) {
+    for (let number = 2; number <= doc.numPages; number++) {
+      let entry;
+
+      try {
+        entry = await this.preparePage(doc, number);
+      } catch {
+        return; // the document was released for a newer one
+      }
+
+      if (!current()) {
+        return;
+      }
+
+      this.pages.push(entry);
+      this.host.append(entry.shell);
+
+      if (this.host.clientWidth) {
+        await this.drawPage(entry, this.scale);
+        this.announce();
+      }
+    }
   }
 
   // The scale the current fit mode asks for, from the first page's size.
@@ -165,41 +189,41 @@ export class PdfView {
     this.host.style.setProperty("--pdf-gap", `${this.gap}px`);
     this.host.style.setProperty("--pdf-pad", `${this.pad()}px`);
 
+    await Promise.all(this.pages.map((entry) => this.drawPage(entry, this.scale)));
+    this.announce();
+  }
+
+  // Draws one page at the given scale, off-screen, and swaps it in, so the
+  // old drawing stays visible (just softer) until the sharper one is ready.
+  async drawPage(entry, scale) {
     const ratio = Math.min(window.devicePixelRatio || 1, 3);
+    const viewport = entry.page.getViewport({ scale });
+    const canvas = document.createElement("canvas");
 
-    await Promise.all(
-      this.pages.map(async (entry) => {
-        const viewport = entry.page.getViewport({ scale: this.scale });
+    entry.shell.style.width = `${Math.floor(viewport.width)}px`;
+    entry.shell.style.height = `${Math.floor(viewport.height)}px`;
+    canvas.width = Math.floor(viewport.width * ratio);
+    canvas.height = Math.floor(viewport.height * ratio);
 
-        entry.shell.style.width = `${Math.floor(viewport.width)}px`;
-        entry.shell.style.height = `${Math.floor(viewport.height)}px`;
+    entry.task?.cancel();
+    entry.task = entry.page.render({
+      canvas,
+      viewport,
+      transform: ratio === 1 ? undefined : [ratio, 0, 0, ratio, 0, 0],
+    });
 
-        // Drawn off-screen and swapped in, so the old page stays visible
-        // (just softer) until the sharper one is ready.
-        const canvas = document.createElement("canvas");
+    try {
+      await entry.task.promise;
+    } catch {
+      return; // cancelled by a newer render
+    }
 
-        canvas.width = Math.floor(viewport.width * ratio);
-        canvas.height = Math.floor(viewport.height * ratio);
+    entry.canvas.replaceWith(canvas);
+    entry.canvas = canvas;
+    this.placeLinks(entry, viewport);
+  }
 
-        entry.task?.cancel();
-        entry.task = entry.page.render({
-          canvas,
-          viewport,
-          transform: ratio === 1 ? undefined : [ratio, 0, 0, ratio, 0, 0],
-        });
-
-        try {
-          await entry.task.promise;
-        } catch {
-          return; // cancelled by a newer render
-        }
-
-        entry.canvas.replaceWith(canvas);
-        entry.canvas = canvas;
-        this.placeLinks(entry, viewport);
-      })
-    );
-
+  announce() {
     this.host.dispatchEvent(
       new CustomEvent("pdf:rendered", { detail: { scale: this.scale, links: this.linkCount() } })
     );

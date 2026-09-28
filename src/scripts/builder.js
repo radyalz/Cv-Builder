@@ -317,6 +317,38 @@ function formatPublished(value) {
 
 // The preview is a progressive enhancement: if the build service cannot be
 // reached the pane stays hidden and the rest of the page is unaffected.
+function keyed(items) {
+  return (items || []).map((item) => [
+    variantKey(item.theme, item.variant || DEFAULT_VARIANT, item.language || DEFAULT_LANGUAGE),
+    item,
+  ]);
+}
+
+// Asks about just the copy about to be shown, so its preview can start
+// before the whole listing (every colour, edition and language) is in.
+async function loadCurrentVariant() {
+  if (selection.mode === "custom") {
+    return;
+  }
+
+  try {
+    const query = new URLSearchParams({
+      theme: selection.theme,
+      variant: selection.variant,
+      language: selection.language,
+    });
+    const response = await fetch(`${API_URL}/variants?${query}`);
+
+    if (response.ok) {
+      for (const [key, item] of keyed((await response.json()).variants)) {
+        variants.set(key, item);
+      }
+    }
+  } catch {
+    // The full listing below covers it.
+  }
+}
+
 async function loadVariants() {
   try {
     const response = await fetch(`${API_URL}/variants`);
@@ -327,16 +359,7 @@ async function loadVariants() {
 
     const data = await response.json();
 
-    variants = new Map(
-      (data.variants || []).map((item) => [
-        variantKey(
-          item.theme,
-          item.variant || DEFAULT_VARIANT,
-          item.language || DEFAULT_LANGUAGE
-        ),
-        item,
-      ])
-    );
+    variants = new Map(keyed(data.variants));
 
     variantsLoaded = true;
     previewPane.classList.remove("is-unavailable");
@@ -842,7 +865,9 @@ function refreshPreview() {
   previewLabel.textContent = selectionLabel();
   expandedLabel.textContent = selectionLabel();
 
-  if (!variantsLoaded) {
+  // Until the full listing is in, only a copy already known can be shown;
+  // anything else keeps its skeleton rather than claiming it is missing.
+  if (!variantsLoaded && !variants.has(selectedKey())) {
     return;
   }
 
@@ -1441,7 +1466,23 @@ export function initBuilder() {
 
   localiseSwatches();
   syncInterface();
-  loadVariants().then(refreshPreview);
+  // The copy on screen first, then everything else, then the likely next
+  // copies (which need the full listing to find the neighbours).
+  loadCurrentVariant()
+    .then(() => {
+      if (variants.size) {
+        refreshPreview();
+      }
+
+      return loadVariants();
+    })
+    .then(() => {
+      refreshPreview();
+
+      if (!previewDoc.hidden && !previewDoc.classList.contains("is-loading")) {
+        planPrefetch();
+      }
+    });
 
   // Page language or appearance changed in the accessibility menu.
   document.addEventListener("prefs:change", () => {
