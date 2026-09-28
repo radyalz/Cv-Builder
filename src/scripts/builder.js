@@ -360,6 +360,9 @@ const GROW_MS = 820;
 // Closing is unhurried: a slower shrink and a slower return of the text.
 const SHRINK_MS = 920;
 const RETURN_FADE_MS = 540;
+// The card moves first; the text follows after these pauses.
+const LEAVE_DELAY_MS = 180;
+const RETURN_AT = 0.55; // of the way through the shrink
 // Eases in and out, so the card's size changes at the same even pace as
 // the fades around it instead of jumping most of the way at once.
 const GROW_EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
@@ -591,7 +594,9 @@ async function expandPreview() {
   document.body.classList.add("preview-open");
   pinParts(parts);
 
-  // One change: the card starts growing as the text starts to leave.
+  // The card starts growing at once; the text starts to leave a moment
+  // later (a transition delay, so it stays in step with the grow).
+  builderCard.style.setProperty("--fade-delay", `${quick ? 0 : LEAVE_DELAY_MS}ms`);
   builderCard.classList.add("is-expanded", "is-fading");
 
   const cardTo = builderCard.getBoundingClientRect();
@@ -606,6 +611,7 @@ async function expandPreview() {
 
   settle(animations);
   unpinParts();
+  builderCard.style.removeProperty("--fade-delay");
   expandState = "open";
 
   // The grown card covers the skulls, so they rest while it is open.
@@ -653,8 +659,9 @@ async function collapsePreview() {
   builderCard.classList.remove("is-open");
   const shrinking = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : SHRINK_MS);
 
-  // …and the text slides back in, more slowly than it left.
-  await wait(quick ? 0 : SHRINK_MS * 0.35);
+  // …and once it is past halfway, the text slides back in, more slowly
+  // than it left.
+  await wait(quick ? 0 : SHRINK_MS * RETURN_AT);
   builderCard.style.setProperty("--fade-ms", `${RETURN_FADE_MS}ms`);
   builderCard.classList.remove("is-fading");
 
