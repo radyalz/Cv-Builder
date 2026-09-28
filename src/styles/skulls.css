@@ -1,0 +1,231 @@
+/* -------- Skull field --------
+   Every layer holds a still SVG tile built in src/lib/skulls.js. Only these layers
+   move, using opacity and transform, which the browser composites cheaply.
+   One cycle: a long rest, then lightning strikes the crown, the skull
+   flashes, the jaw drops a little and the eyes flare, then it settles. */
+
+.skull-field {
+  position: fixed;
+  z-index: 0;
+  overflow: hidden;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+/* Set once src/lib/skulls.js has built the artwork, so the field fades in rather
+   than popping in after the page has already drawn. */
+.skull-field.is-painted {
+  opacity: var(--skull-opacity);
+}
+
+/* Rows alternate between two sets, offset half a tile like brickwork.
+   Set A slides right and set B slides left, genuinely, on screen, while the
+   field as a whole drifts down-right at 45 degrees: per loop A moves
+   (5w, 2r) and B (-w, 2r), which average to (2w, 2r), a 45 degree line
+   because --skull-row equals --skull-w. Every loop moves whole tiles, so it
+   never jumps. The tile images are twice as tall as they are wide. */
+.skull-rows {
+  position: absolute;
+  inset: -900px;
+  will-change: transform;
+}
+
+.skull-rows-a {
+  animation: skull-flow-a 90s linear infinite;
+}
+
+.skull-rows-b {
+  animation: skull-flow-b 90s linear infinite;
+}
+
+
+.skull-layer,
+.skull-shake,
+.skull-bite {
+  position: absolute;
+  inset: 0;
+}
+
+/* The whole skull jolts when the bolt lands; the bolt itself stays put. */
+.skull-shake {
+  animation: skull-shake var(--skull-cycle) linear infinite;
+  will-change: transform;
+}
+
+.skull-veins1,
+.skull-veins2,
+.skull-veins3 {
+  opacity: 0;
+}
+
+.skull-veins1 {
+  background-image: var(--skull-veins1, none);
+  animation: skull-veins1 var(--skull-cycle) linear infinite;
+}
+
+.skull-veins2 {
+  background-image: var(--skull-veins2, none);
+  animation: skull-veins2 var(--skull-cycle) linear infinite;
+}
+
+.skull-veins3 {
+  background-image: var(--skull-veins3, none);
+  animation: skull-veins3 var(--skull-cycle) linear infinite;
+}
+
+.skull-layer {
+  background-repeat: repeat;
+  background-size: var(--skull-w) calc(var(--skull-row) * 2);
+}
+
+.skull-cranium { background-image: var(--skull-cranium, none); }
+.skull-jaw { background-image: var(--skull-jaw, none); }
+
+.skull-flash {
+  background-image: var(--skull-flash, none);
+  opacity: 0;
+  animation: skull-flash var(--skull-cycle) linear infinite;
+}
+
+.skull-bite {
+  animation: skull-bite var(--skull-cycle) ease-in-out infinite;
+  will-change: transform;
+}
+
+.skull-eyes {
+  background-image: var(--skull-eyes, none);
+  opacity: 0.35;
+  animation: skull-eyes var(--skull-cycle) ease-in-out infinite;
+}
+
+.skull-flare {
+  background-image: var(--skull-flare, none);
+  opacity: 0;
+  animation: skull-flare var(--skull-cycle) ease-out infinite;
+}
+
+.skull-bolt {
+  background-image: var(--skull-bolt, none);
+  opacity: 0;
+  animation: skull-strike var(--skull-cycle) linear infinite;
+}
+
+@keyframes skull-flow-a {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(var(--skull-w) * 5), calc(var(--skull-row) * 2), 0); }
+}
+
+@keyframes skull-flow-b {
+  from { transform: translate3d(calc(var(--skull-w) / 2), var(--skull-row), 0); }
+  to { transform: translate3d(calc(var(--skull-w) / -2), calc(var(--skull-row) * 3), 0); }
+}
+
+/* Two quick flickers, a hold, then the channel fades. */
+@keyframes skull-strike {
+  0%, 69% { opacity: 0; }
+  70% { opacity: 1; }
+  71% { opacity: 0.15; }
+  72% { opacity: 1; }
+  75% { opacity: 0.85; }
+  81%, 100% { opacity: 0; }
+}
+
+/* Short, decaying jolt right after impact. */
+@keyframes skull-shake {
+  0%, 18% { transform: translate(0, 0); }
+  /* the head bobs with each laugh */
+  20% { transform: translate(0, -1.2px); }
+  22.5% { transform: translate(0, 0); }
+  25% { transform: translate(0, -1.2px); }
+  27.5% { transform: translate(0, 0); }
+  30% { transform: translate(0, -1px); }
+  32.5% { transform: translate(0, 0); }
+  35% { transform: translate(0, -0.8px); }
+  37.5% { transform: translate(0, 0); }
+  40% { transform: translate(0, -0.6px); }
+  42.5% { transform: translate(0, 0); }
+  45% { transform: translate(0, -0.4px); }
+  48%, 70.4% { transform: translate(0, 0); }
+  71% { transform: translate(-2px, 1px); }
+  71.6% { transform: translate(2px, -1px); }
+  72.2% { transform: translate(-1.6px, -1px); }
+  72.8% { transform: translate(1.4px, 1px); }
+  73.4% { transform: translate(-1px, 0.5px); }
+  74% { transform: translate(0.7px, -0.5px); }
+  74.6% { transform: translate(-0.3px, 0); }
+  75.2%, 100% { transform: translate(0, 0); }
+}
+
+/* The current spreads in three waves: dome, then face, then jaw. */
+@keyframes skull-veins1 {
+  0%, 70.3% { opacity: 0; }
+  70.8% { opacity: 1; }
+  71.6% { opacity: 0.35; }
+  72.4% { opacity: 1; }
+  74% { opacity: 0.8; }
+  79%, 100% { opacity: 0; }
+}
+
+@keyframes skull-veins2 {
+  0%, 71.2% { opacity: 0; }
+  71.8% { opacity: 1; }
+  72.6% { opacity: 0.4; }
+  73.4% { opacity: 1; }
+  75.5% { opacity: 0.75; }
+  81%, 100% { opacity: 0; }
+}
+
+@keyframes skull-veins3 {
+  0%, 72.2% { opacity: 0; }
+  72.8% { opacity: 1; }
+  73.6% { opacity: 0.4; }
+  74.4% { opacity: 1; }
+  77% { opacity: 0.7; }
+  83%, 100% { opacity: 0; }
+}
+
+@keyframes skull-flash {
+  0%, 70% { opacity: 0; }
+  71.5% { opacity: 0.55; }
+  79%, 100% { opacity: 0; }
+}
+
+/* Between strikes the skull laughs: a run of quick bites that tails off,
+   then it waits for the next bolt, which wrenches the jaw open. */
+@keyframes skull-bite {
+  0%, 18% { transform: translateY(0); }
+  20% { transform: translateY(calc(var(--skull-bite) * 0.7)); }
+  22.5% { transform: translateY(calc(var(--skull-bite) * 0.12)); }
+  25% { transform: translateY(calc(var(--skull-bite) * 0.72)); }
+  27.5% { transform: translateY(calc(var(--skull-bite) * 0.12)); }
+  30% { transform: translateY(calc(var(--skull-bite) * 0.62)); }
+  32.5% { transform: translateY(calc(var(--skull-bite) * 0.1)); }
+  35% { transform: translateY(calc(var(--skull-bite) * 0.52)); }
+  37.5% { transform: translateY(calc(var(--skull-bite) * 0.08)); }
+  40% { transform: translateY(calc(var(--skull-bite) * 0.4)); }
+  42.5% { transform: translateY(calc(var(--skull-bite) * 0.06)); }
+  45% { transform: translateY(calc(var(--skull-bite) * 0.26)); }
+  48%, 70% { transform: translateY(0); }
+  73.5%, 86% { transform: translateY(var(--skull-bite)); }
+  95%, 100% { transform: translateY(0); }
+}
+
+@keyframes skull-eyes {
+  0%, 18% { opacity: 0.3; }
+  /* a glint on each laugh */
+  20%, 25%, 30%, 35%, 40% { opacity: 0.55; }
+  22.5%, 27.5%, 32.5%, 37.5%, 42.5% { opacity: 0.38; }
+  48% { opacity: 0.34; }
+  70% { opacity: 0.32; }
+  72.5%, 86% { opacity: 1; }
+  97%, 100% { opacity: 0.3; }
+}
+
+@keyframes skull-flare {
+  0%, 70% { opacity: 0; }
+  73% { opacity: 1; }
+  85% { opacity: 0.65; }
+  96%, 100% { opacity: 0; }
+}

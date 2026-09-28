@@ -1,0 +1,16 @@
+/* Radman Alizadeh - CV Builder
+   The page is a single non-scrolling viewport: one card, sized to fit.
+   The partials are imported in cascade order: later files override
+   earlier ones, and the responsive rules come last on purpose. */
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./skulls.css";
+@import "./card.css";
+@import "./menus.css";
+@import "./actions.css";
+@import "./preview.css";
+@import "./a11y.css";
+@import "./buttons.css";
+@import "./tooltip.css";
+@import "./responsive.css";

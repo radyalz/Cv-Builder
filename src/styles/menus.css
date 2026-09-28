@@ -1,0 +1,137 @@
+/* -------- Colour menu (positioned against its trigger) -------- */
+
+.menu {
+  position: fixed;
+  z-index: 40;
+  width: min(330px, calc(100vw - 24px));
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--menu-bg);
+  box-shadow: var(--menu-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--swatch);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.swatch:hover {
+  transform: translateY(-2px);
+}
+
+.swatch[aria-checked="true"] {
+  box-shadow:
+    0 0 0 2px var(--menu-bg),
+    0 0 0 4px var(--swatch);
+}
+
+.swatch:focus-visible,
+.segment:focus-visible,
+.menu-trigger:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.custom-swatch {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: calc(13px * var(--fs));
+  cursor: pointer;
+  gap: 8px;
+}
+
+.custom-swatch input[type="color"] {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.custom-swatch input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.custom-swatch input[type="color"]::-webkit-color-swatch,
+.custom-swatch input[type="color"]::-moz-color-swatch {
+  border: 0;
+  border-radius: var(--radius);
+}
+
+.hex-input {
+  width: 96px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--field-strong);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: calc(13px * var(--fs));
+  text-transform: uppercase;
+}
+
+.hex-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.hex-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.ghost-button {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  font-size: calc(13px * var(--fs));
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.ghost-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.picker-hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: calc(12px * var(--fs));
+  line-height: 1.5;
+}

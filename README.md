@@ -51,6 +51,29 @@ Colour variants are published alongside it as `RadmanAlizadeh-Cv-<colour>.pdf`.
 
 The private document source and build credentials are not distributed through this repository.
 
+## Development
+
+The site is built with [Astro](https://astro.build) and deployed to GitHub
+Pages by `.github/workflows/deploy.yml` on every push to `main`.
+
+```sh
+npm install
+npm run dev      # http://localhost:4321/Cv-Builder/
+npm run build    # static site in dist/
+```
+
+- `src/pages/index.astro`: the builder page.
+- `src/layouts/Base.astro`: the shared shell (skull background, accessibility
+  menu, tooltip, page transitions).
+- `src/components/`: reusable pieces (skull field, tooltip, segmented
+  control, colour menu, preview).
+- `src/lib/`: shared browser code (preferences, tooltips, skull art, colour
+  maths) and `data.js`, which holds the themes, text and fonts.
+- `src/scripts/builder.js`: the builder's own behaviour.
+- `src/styles/`: styles, imported in cascade order by `main.css`.
+
+Font licences are published under `/licenses/`.
+
 ## Copyright
 
 Copyright © 2026 Radman Alizadeh. All Rights Reserved.

@@ -1,0 +1,54 @@
+---
+// The accent colour menu: the preset swatches and the custom colour row.
+// It lives outside the card (which clips its overflow) and is placed
+// against its trigger by the builder script.
+import { STRINGS, THEMES } from "../lib/data.js";
+
+const en = STRINGS.en;
+---
+
+<div
+  id="colourMenu"
+  class="menu"
+  role="dialog"
+  aria-label={en.chooseAccent}
+  data-i18n-aria="chooseAccent"
+  hidden
+>
+  <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label={en.presets} data-i18n-aria="presets">
+    {THEMES.map((theme) => (
+      <button
+        type="button"
+        class="swatch"
+        role="radio"
+        aria-checked="false"
+        aria-label={theme.label}
+        data-slug={theme.slug}
+        data-tip="swatch"
+        style={`--swatch: ${theme.swatch || theme.hex}`}
+      />
+    ))}
+  </div>
+
+  <div class="custom-row">
+    <label class="custom-swatch" for="customColor">
+      <input id="customColor" type="color" data-tip="pick" value="#7030A0" />
+      <span data-i18n="custom">{en.custom}</span>
+    </label>
+
+    <input
+      id="customHex"
+      class="hex-input"
+      type="text"
+      spellcheck="false"
+      maxlength="7"
+      aria-label={en.customHex}
+      data-i18n-aria="customHex"
+      value="#7030A0"
+    />
+
+    <button id="customApply" class="ghost-button" type="button" data-i18n="use" data-tip="use">{en.use}</button>
+  </div>
+
+  <p id="themeHint" class="picker-hint" hidden></p>
+</div>

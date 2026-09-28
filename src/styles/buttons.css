@@ -1,0 +1,62 @@
+/* -------- Download button -------- */
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  background: transparent;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.download-button:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.download-button[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.card-main > .secondary-link {
+  align-self: flex-start;
+  margin-top: 14px;
+}
+
+/* -------- Ripple --------
+   A material-style ink ripple from the point of the press. */
+
+.primary-button,
+.ghost-button,
+.segment,
+.menu-trigger,
+.mobile-preview,
+.download-button,
+.swatch {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple 560ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes ripple {
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}

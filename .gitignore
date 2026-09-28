@@ -16,3 +16,7 @@
 *.nav
 *.snm
 *.vrb
+# Astro
+node_modules/
+dist/
+.astro/

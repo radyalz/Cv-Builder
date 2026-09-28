@@ -1,0 +1,48 @@
+---
+// A row of mutually exclusive options (role=radiogroup), used for the
+// edition, CV language and accessibility settings.
+interface Option {
+  label: string;
+  i18n?: string;
+  ariaI18n?: string;
+  ariaLabel?: string;
+  tip?: string;
+  lang?: string;
+  checked?: boolean;
+  data: Record<string, string | number>;
+}
+
+interface Props {
+  id?: string;
+  label?: string;
+  labelI18n?: string;
+  group?: string;
+  options: Option[];
+}
+
+const { id, label, labelI18n, group, options } = Astro.props;
+---
+
+<div
+  id={id}
+  class="segmented"
+  role="radiogroup"
+  aria-label={label}
+  data-i18n-aria={labelI18n}
+  data-a11y={group}
+>
+  {options.map((option) => (
+    <button
+      class="segment"
+      type="button"
+      role="radio"
+      {...Object.fromEntries(Object.entries(option.data).map(([key, value]) => [`data-${key}`, value]))}
+      data-i18n={option.i18n}
+      data-i18n-aria={option.ariaI18n}
+      aria-label={option.ariaLabel}
+      data-tip={option.tip}
+      lang={option.lang}
+      aria-checked={option.checked ? "true" : "false"}
+    >{option.label}</button>
+  ))}
+</div>

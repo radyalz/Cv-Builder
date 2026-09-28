@@ -1,0 +1,43 @@
+---
+// The three states under the actions while a build runs, succeeds or
+// fails. Their text is filled in by the builder script.
+import { STRINGS } from "../lib/data.js";
+
+const en = STRINGS.en;
+---
+
+<section id="buildPanel" class="build-panel" hidden aria-live="polite">
+  <div class="status-row">
+    <div class="spinner" aria-hidden="true"></div>
+
+    <div>
+      <div id="statusTitle" class="status-title">Starting CV build…</div>
+      <div id="statusText" class="status-text">Preparing your request.</div>
+    </div>
+  </div>
+
+  <div class="progress-track" aria-hidden="true">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="build-meta">
+    <span id="elapsedTime">Elapsed: 0:00</span>
+    <span data-i18n="typical">{en.typical}</span>
+  </div>
+</section>
+
+<section id="successPanel" class="success-panel" hidden aria-live="polite">
+  <div class="success-icon" aria-hidden="true">✓</div>
+  <div>
+    <div class="status-title" data-i18n="readyTitle">{en.readyTitle}</div>
+    <div class="status-text" data-i18n="readyText">{en.readyText}</div>
+  </div>
+</section>
+
+<section id="errorPanel" class="error-panel" hidden aria-live="assertive">
+  <div class="error-icon" aria-hidden="true">!</div>
+  <div>
+    <div class="status-title" data-i18n="failedTitle">{en.failedTitle}</div>
+    <div id="errorText" class="status-text">Please try again.</div>
+  </div>
+</section>

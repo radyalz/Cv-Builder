@@ -1,0 +1,88 @@
+---
+// The floating accessibility button and its menu: page language,
+// appearance, text size and fonts. Behaviour is in src/lib/prefs.js.
+import Segmented from "./Segmented.astro";
+import { EN_FONTS, FA_FONTS, STRINGS, TEXT_SIZES } from "../lib/data.js";
+
+const en = STRINGS.en;
+const SIZE_KEYS = ["sizeSmall", "sizeDefault", "sizeLarge", "sizeLarger"];
+
+// The Persian option labels are the font names written in Persian.
+const FA_LABELS = { yekan: "یکان بخ", vazir: "وزیر", doran: "دوران", niloofar: "نیلوفر" };
+const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
+---
+
+<button
+  id="a11yTrigger"
+  class="a11y-trigger"
+  type="button"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-label={en.a11y}
+  data-i18n-aria="a11y"
+  data-tip="a11y"
+><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="1.8"/><path d="M4.5 8.2c2.4.7 4.9 1 7.5 1s5.1-.3 7.5-1"/><path d="M12 9.2v5.3"/><path d="M8.6 21l3.4-6.5 3.4 6.5"/></svg></button>
+
+<div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
+  <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
+
+  <div class="a11y-group">
+    <span class="control-label" data-i18n="pageLanguage">{en.pageLanguage}</span>
+    <Segmented
+      group="ui-lang"
+      options={[
+        { label: "English", tip: "uiEn", data: { "ui-lang": "en" } },
+        { label: "فارسی", tip: "uiFa", lang: "fa", data: { "ui-lang": "fa" } },
+      ]}
+    />
+  </div>
+
+  <div class="a11y-group">
+    <span class="control-label" data-i18n="appearance">{en.appearance}</span>
+    <Segmented
+      group="theme"
+      options={["dark", "light"].map((theme) => ({
+        label: en[theme],
+        i18n: theme,
+        tip: theme,
+        data: { theme },
+      }))}
+    />
+  </div>
+
+  <div class="a11y-group">
+    <span class="control-label" data-i18n="textSize">{en.textSize}</span>
+    <Segmented
+      group="fs"
+      options={TEXT_SIZES.map((fs, index) => ({
+        label: "A",
+        ariaLabel: en[SIZE_KEYS[index]],
+        ariaI18n: SIZE_KEYS[index],
+        tip: `${SIZE_KEYS[index]}`,
+        data: { fs },
+      }))}
+    />
+  </div>
+
+  <div class="a11y-group">
+    <span class="control-label" data-i18n="enFont">{en.enFont}</span>
+    <div class="font-grid" role="radiogroup" data-a11y="en-font">
+      {Object.entries(EN_FONTS).map(([slug, font]) => (
+        <button class="font-option" type="button" role="radio" data-en-font={slug} data-tip="font" aria-checked="false">
+          {EN_LABELS[slug] ?? font.name}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="a11y-group">
+    <span class="control-label" data-i18n="faFont">{en.faFont}</span>
+    <div class="font-grid" role="radiogroup" data-a11y="fa-font">
+      {Object.keys(FA_FONTS).map((slug) => (
+        <button class="font-option" type="button" role="radio" data-fa-font={slug} data-tip="font" lang="fa" aria-checked="false">
+          {FA_LABELS[slug]}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>

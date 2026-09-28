@@ -1,0 +1,144 @@
+/* -------- Actions and status -------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: clamp(16px, 2.4vh, 28px);
+}
+
+.primary-button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--accent-text);
+  background: var(--accent);
+  font-weight: 750;
+  cursor: pointer;
+  gap: 18px;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px var(--accent-soft);
+}
+
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.button-arrow {
+  font-size: calc(19px * var(--fs));
+}
+
+.secondary-link {
+  color: var(--text);
+  font-size: calc(14px * var(--fs));
+  text-decoration-color: var(--underline);
+  text-underline-offset: 5px;
+}
+
+.secondary-link:hover {
+  text-decoration-color: currentColor;
+}
+
+.build-panel,
+.success-panel,
+.error-panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+}
+
+.status-row,
+.success-panel,
+.error-panel {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border: 2px solid var(--spinner-track);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 750ms linear infinite;
+}
+
+.status-title {
+  font-weight: 750;
+}
+
+.status-text {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: calc(13px * var(--fs));
+  line-height: 1.5;
+}
+
+.progress-track {
+  position: relative;
+  overflow: hidden;
+  height: 4px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+.progress-bar {
+  position: absolute;
+  inset: 0 auto 0 -35%;
+  width: 35%;
+  border-radius: inherit;
+  background: var(--accent);
+  animation: progress 1.6s ease-in-out infinite;
+}
+
+.build-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: calc(12px * var(--fs));
+}
+
+.success-panel {
+  color: var(--success);
+}
+
+.error-panel {
+  color: var(--danger);
+}
+
+.success-icon,
+.error-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-weight: 800;
+  place-items: center;
+}
+
+.success-panel .status-text,
+.error-panel .status-text {
+  color: var(--muted);
+}

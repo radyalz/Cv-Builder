@@ -1,0 +1,131 @@
+:root {
+  --bg: #0b0d10;
+  --panel: rgba(20, 23, 29, 0.92);
+  --panel-2: rgba(255, 255, 255, 0.045);
+  --text: #f5f7fa;
+  --muted: #9aa4b2;
+  --line: rgba(255, 255, 255, 0.09);
+  --accent: #9f74bf;
+  --accent-text: #0b0d10;
+  --accent-soft: #9f74bf33;
+  --danger: #ffb4b4;
+  --success: #b7f7c8;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --glass: rgba(13, 16, 21, 0.44);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-strong: rgba(13, 16, 21, 0.62);
+  --field: rgba(0, 0, 0, 0.25);
+  --field-strong: rgba(0, 0, 0, 0.3);
+  --edge: rgba(255, 255, 255, 0.22);
+  --menu-bg: rgba(16, 19, 24, 0.98);
+  --menu-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --underline: rgba(255, 255, 255, 0.35);
+  --track: rgba(255, 255, 255, 0.07);
+  --spinner-track: rgba(255, 255, 255, 0.18);
+  --sk-page: #16181d;
+  --sk-bar: #262930;
+  --sk-shine: rgba(255, 255, 255, 0.07);
+  --meta-bar: rgba(255, 255, 255, 0.08);
+  --meta-shine: rgba(255, 255, 255, 0.14);
+  --backdrop: rgba(6, 7, 10, 0.3);
+  --skull-opacity: 0.58;
+  /* text size chosen in the accessibility menu; every font-size scales by it */
+  --fs: 1;
+  color-scheme: dark;
+  --radius: 4px;
+  --radius-lg: 6px;
+  --skull-w: 150px;
+  --skull-row: 150px;
+  --skull-bite: 6px;
+  --skull-cycle: 6.5s;
+  --font-en: "CV Inter";
+  --font-fa: "CV Yekan Bakh";
+  --font-ui: var(--font-en), var(--font-fa), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root[data-en-font="manrope"] { --font-en: "CV Manrope"; }
+:root[data-en-font="jakarta"] { --font-en: "CV Jakarta"; }
+:root[data-en-font="plex"] { --font-en: "CV Plex"; }
+:root[data-en-font="grotesk"] { --font-en: "CV Grotesk"; }
+:root[data-fa-font="vazir"] { --font-fa: "CV Vazir"; }
+:root[data-fa-font="niloofar"] { --font-fa: "CV Niloofar"; }
+:root[data-fa-font="doran"] { --font-fa: "CV Doran"; }
+
+/* -------- Light appearance --------
+   Chosen in the accessibility menu, or taken from the system setting. */
+:root[data-theme="light"] {
+  --bg: #f3f2f7;
+  --panel: rgba(255, 255, 255, 0.94);
+  --panel-2: rgba(17, 19, 24, 0.035);
+  --text: #111318;
+  --muted: #5d6272;
+  --line: rgba(17, 19, 24, 0.1);
+  --danger: #b42318;
+  --success: #146c43;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 24px 64px rgba(16, 24, 40, 0.14);
+  --glass: rgba(255, 255, 255, 0.36);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --glass-strong: rgba(255, 255, 255, 0.5);
+  --field: #ffffff;
+  --field-strong: #ffffff;
+  --edge: rgba(17, 19, 24, 0.16);
+  --menu-bg: #ffffff;
+  --menu-shadow: 0 12px 40px rgba(16, 24, 40, 0.16);
+  --underline: rgba(17, 19, 24, 0.3);
+  --track: rgba(17, 19, 24, 0.08);
+  --spinner-track: rgba(17, 19, 24, 0.14);
+  --sk-page: #ffffff;
+  --sk-bar: #ecedf2;
+  --sk-shine: rgba(255, 255, 255, 0.9);
+  --meta-bar: rgba(17, 19, 24, 0.07);
+  --meta-shine: rgba(255, 255, 255, 0.7);
+  --backdrop: rgba(243, 242, 247, 0.3);
+  --skull-opacity: 0.5;
+  color-scheme: light;
+}
+
+/* A faint wash of the accent, so light mode is not flat grey. */
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36rem),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 32rem),
+    var(--bg);
+}
+
+/* -------- Persian page --------
+   Letter-spacing breaks the joins in Persian script, so it is dropped. */
+:root[lang="fa"] * {
+  letter-spacing: 0 !important;
+}
+
+[dir="rtl"] .button-arrow {
+  transform: scaleX(-1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  font-size: calc(16px * var(--fs));
+  font-family: var(--font-ui);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.045), transparent 30rem),
+    var(--bg);
+}
+
+button,
+a,
+input {
+  font: inherit;
+}

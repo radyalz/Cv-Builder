@@ -1,0 +1,160 @@
+/* -------- Tooltips --------
+   Modelled on the ERD schema project's floating tooltip: an inverted,
+   solid bubble that follows the cursor on a spring and squashes a little
+   in the direction it is moving (src/lib/tooltip.js drives the motion). Keyboard
+   focus pins it to the control with an arrow instead. Each one carries a
+   title, a line on what the control does and, where useful, the live
+   details it acts on. */
+
+.tooltip {
+  --tip-bg: #ffffff;
+  --tip-text: #0b0d10;
+  --tip-rule: rgba(11, 13, 16, 0.1);
+  position: fixed;
+  z-index: 95;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform;
+  /* stays visible for the fade out */
+  transition: visibility 0s linear 150ms;
+}
+
+:root[data-theme="light"] .tooltip {
+  --tip-bg: #16181d;
+  --tip-text: #f5f7fa;
+  --tip-rule: rgba(255, 255, 255, 0.12);
+}
+
+.tooltip.is-visible {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.tip-pop {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.tooltip.is-visible .tip-pop {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tip-bubble {
+  position: relative;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 24px));
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: var(--tip-text);
+  background: var(--tip-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  font-size: calc(11px * var(--fs));
+  font-weight: 500;
+  line-height: 1.45;
+  will-change: transform;
+}
+
+.tip-arrow {
+  position: absolute;
+  display: none;
+  width: 10px;
+  height: 10px;
+  background: var(--tip-bg);
+  transform: rotate(45deg);
+}
+
+.tooltip[data-mode="arrow"] .tip-arrow {
+  display: block;
+  left: calc(50% - 5px);
+}
+
+.tooltip[data-side="top"] .tip-arrow {
+  bottom: -4px;
+}
+
+.tooltip[data-side="bottom"] .tip-arrow {
+  top: -4px;
+}
+
+.tip-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tip-content.is-swapping {
+  animation: tip-swap 150ms ease-out;
+}
+
+@keyframes tip-swap {
+  from { opacity: 0; }
+}
+
+.tip-title {
+  font-size: calc(12px * var(--fs));
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.tip-body {
+  max-width: 34ch;
+  margin: 0;
+  font-size: calc(11px * var(--fs));
+  opacity: 0.72;
+}
+
+.tip-facts {
+  display: grid;
+  margin: 6px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--tip-rule);
+  gap: 3px 14px;
+  grid-template-columns: auto minmax(0, 1fr);
+  font-size: calc(10.5px * var(--fs));
+}
+
+.tip-facts dt {
+  opacity: 0.58;
+  white-space: nowrap;
+}
+
+.tip-facts dd {
+  overflow: hidden;
+  margin: 0;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tip-facts .is-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95em;
+}
+
+.tip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--tip-rule);
+  vertical-align: -0.5px;
+}
+
+.tip-hint {
+  margin-top: 4px;
+  font-size: calc(10px * var(--fs));
+  opacity: 0.55;
+}
+
+.tip-kbd {
+  padding: 0 4px;
+  border: 1px solid var(--tip-rule);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}

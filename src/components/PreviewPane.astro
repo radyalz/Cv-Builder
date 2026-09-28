@@ -1,0 +1,48 @@
+---
+// The published-copy preview beside the controls, and the bar it gains
+// when the card grows to fill the window (see "Expanding the preview" in
+// src/scripts/builder.js).
+import PreviewSkeleton from "./PreviewSkeleton.astro";
+import { STRINGS } from "../lib/data.js";
+
+const en = STRINGS.en;
+---
+
+<aside class="card-preview" aria-labelledby="previewHeading">
+  <div class="preview-head">
+    <span id="previewHeading" class="control-label" data-i18n="preview">{en.preview}</span>
+    <span id="previewLabel" class="preview-title">Purple</span>
+  </div>
+
+  <div class="preview-frame">
+    <iframe
+      id="previewFrame"
+      class="is-loading"
+      title={en.previewFrame}
+      data-i18n-title="previewFrame"
+      hidden
+    ></iframe>
+
+    <PreviewSkeleton />
+
+    <div id="previewState" class="preview-state" hidden></div>
+  </div>
+
+  <div class="preview-foot">
+    <span id="previewMeta" class="preview-meta is-loading"></span>
+
+    <button id="previewExpand" class="ghost-button" type="button" hidden data-i18n="expand" data-tip="expand">{en.expand}</button>
+  </div>
+
+  <!-- Shown once the card has grown to fill the window. -->
+  <div class="expanded-bar">
+    <div class="expanded-info">
+      <span id="expandedLabel" class="preview-title"></span>
+      <span id="expandedMeta" class="preview-meta"></span>
+    </div>
+
+    <a id="expandedDownload" class="ghost-button" data-i18n="downloadShort" data-tip="download" download>{en.downloadShort}</a>
+
+    <button id="previewCollapse" class="ghost-button" type="button" data-i18n="close" data-tip="close">{en.close}</button>
+  </div>
+</aside>

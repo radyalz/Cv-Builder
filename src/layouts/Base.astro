@@ -1,0 +1,74 @@
+---
+// The shell every page shares: fonts and styles, the skull background (kept
+// alive across page changes), the accessibility button and menu, and the
+// tooltip. Pages supply their content through the slot.
+import { ClientRouter } from "astro:transitions";
+import SkullField from "../components/SkullField.astro";
+import A11yMenu from "../components/A11yMenu.astro";
+import Tooltip from "../components/Tooltip.astro";
+import { UI_KEY } from "../lib/data.js";
+import "../styles/main.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Applies the stored preferences before the first paint, so a light
+         or Persian page never flashes dark or English first. -->
+    <script is:inline define:vars={{ key: UI_KEY }}>
+      try {
+        const stored = JSON.parse(localStorage.getItem(key) || "null") || {};
+        const root = document.documentElement;
+        const light = matchMedia("(prefers-color-scheme: light)").matches;
+
+        root.dataset.theme = stored.theme || (light ? "light" : "dark");
+
+        if (stored.lang === "fa") {
+          root.lang = "fa";
+          root.dir = "rtl";
+        }
+
+        if (stored.fs) root.style.setProperty("--fs", String(stored.fs));
+        if (stored.enFont) root.dataset.enFont = stored.enFont;
+        if (stored.faFont) root.dataset.faFont = stored.faFont;
+      } catch {}
+    </script>
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <SkullField transition:persist />
+
+    <main class="page-shell">
+      <slot />
+    </main>
+
+    <A11yMenu />
+    <slot name="overlays" />
+    <Tooltip />
+
+    <script>
+      import { initPrefs } from "../lib/prefs.js";
+      import { initTooltip } from "../lib/tooltip.js";
+      import { initRipple } from "../lib/ripple.js";
+
+      initPrefs();
+      initTooltip();
+      initRipple();
+    </script>
+  </body>
+</html>

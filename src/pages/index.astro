@@ -1,0 +1,107 @@
+---
+import Base from "../layouts/Base.astro";
+import Segmented from "../components/Segmented.astro";
+import PreviewPane from "../components/PreviewPane.astro";
+import BuildStatus from "../components/BuildStatus.astro";
+import ColourMenu from "../components/ColourMenu.astro";
+import { STRINGS } from "../lib/data.js";
+
+const en = STRINGS.en;
+---
+
+<Base
+  title="Radman Alizadeh — CV Builder"
+  description="Generate and download the latest version of Radman Alizadeh's CV."
+>
+  <section class="builder-card" aria-labelledby="page-title" transition:name="card">
+    <div class="card-main">
+      <div class="card-top">
+        <div class="eyebrow" data-i18n="eyebrow">{en.eyebrow}</div>
+      </div>
+
+      <h1 id="page-title" data-i18n="name">{en.name}</h1>
+
+      <p class="lead" data-i18n="lead">{en.lead}</p>
+
+      <div class="controls">
+        <div class="control">
+          <span class="control-label" data-i18n="accent">{en.accent}</span>
+
+          <button
+            id="colourTrigger"
+            data-tip="accent"
+            class="menu-trigger"
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            <span class="trigger-dot" aria-hidden="true"></span>
+            <span id="colourTriggerLabel">Purple</span>
+            <span class="trigger-caret" aria-hidden="true">▾</span>
+          </button>
+        </div>
+
+        <div class="control">
+          <span class="control-label" data-i18n="edition">{en.edition}</span>
+          <Segmented
+            id="variantToggle"
+            label={en.edition}
+            labelI18n="edition"
+            options={["digital", "print"].map((variant, index) => ({
+              label: en[variant],
+              i18n: variant,
+              tip: variant,
+              checked: index === 0,
+              data: { variant },
+            }))}
+          />
+        </div>
+
+        <div class="control">
+          <span class="control-label" data-i18n="cvLanguage">{en.cvLanguage}</span>
+          <Segmented
+            id="languageToggle"
+            label={en.cvLanguage}
+            labelI18n="cvLanguage"
+            options={[
+              { label: "EN", tip: "cvEn", checked: true, data: { language: "en" } },
+              { label: "فا", tip: "cvFa", lang: "fa", data: { language: "fa" } },
+            ]}
+          />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generateButton" class="primary-button" type="button" data-tip="generate">
+          <span class="button-label" data-i18n="generate">{en.generate}</span>
+          <span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <a id="downloadLatest" class="download-button" data-i18n="download" data-tip="download" aria-disabled="true" download>{en.download}</a>
+      </div>
+
+      <a
+        class="secondary-link"
+        data-i18n="allCopies"
+        data-tip="allCopies"
+        href="https://github.com/radyalz/Cv-Builder/releases/latest"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{en.allCopies}</a>
+
+      <button id="mobilePreview" class="mobile-preview" type="button" data-i18n="expandPreview" data-tip="expand" disabled>{en.expandPreview}</button>
+
+      <BuildStatus />
+    </div>
+
+    <PreviewPane />
+  </section>
+
+  <ColourMenu slot="overlays" />
+</Base>
+
+<script>
+  import { initBuilder } from "../scripts/builder.js";
+
+  initBuilder();
+</script>
