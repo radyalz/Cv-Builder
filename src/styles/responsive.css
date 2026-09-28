@@ -115,8 +115,8 @@
         rgba(255, 255, 255, 0.04)
       ),
       var(--glass-strong);
-    backdrop-filter: blur(4px) saturate(130%);
     -webkit-backdrop-filter: blur(4px) saturate(130%);
+    backdrop-filter: blur(4px) saturate(130%);
   }
 
   .eyebrow {
@@ -215,8 +215,8 @@
         rgba(255, 255, 255, 0.36)
       ),
       var(--glass-strong);
-    backdrop-filter: blur(4px) saturate(160%);
     -webkit-backdrop-filter: blur(4px) saturate(160%);
+    backdrop-filter: blur(4px) saturate(160%);
   }
 }
 
