@@ -39,11 +39,11 @@
   background: var(--sk-page);
 }
 
-/* Side by side there is height to spare, so the preview claims most of the
-   window instead of matching the controls' column. */
+/* Side by side, the preview is a little taller than the controls' column
+   alone would make it. */
 @media (min-width: 1001px) {
   .preview-frame {
-    min-height: min(68dvh, 760px);
+    min-height: min(42dvh, 340px);
   }
 }
 
