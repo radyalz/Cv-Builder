@@ -92,6 +92,26 @@
     var(--bg);
 }
 
+/* Scrollbars in the chosen accent (inherited by every scrolling box). */
+html {
+  scrollbar-color: color-mix(in srgb, var(--accent) 75%, transparent) transparent;
+}
+
+/* Browsers without scrollbar-color (older Safari) style them this way. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 75%, transparent);
+}
+
 /* -------- Persian page --------
    Letter-spacing breaks the joins in Persian script, so it is dropped. */
 :root[lang="fa"] * {

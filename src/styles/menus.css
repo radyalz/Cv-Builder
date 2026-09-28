@@ -62,7 +62,7 @@
   display: inline-flex;
   align-items: center;
   color: var(--muted);
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   cursor: pointer;
   gap: 8px;
 }
@@ -97,7 +97,7 @@
   color: var(--text);
   background: var(--field-strong);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   text-transform: uppercase;
 }
 
@@ -116,7 +116,7 @@
   border-radius: var(--radius);
   color: var(--text);
   background: transparent;
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   font-weight: 650;
   cursor: pointer;
   transition:
@@ -132,6 +132,6 @@
 .picker-hint {
   margin: 12px 0 0;
   color: var(--muted);
-  font-size: calc(12px * var(--fs));
+  font-size: calc(13.5px * var(--fs));
   line-height: 1.5;
 }

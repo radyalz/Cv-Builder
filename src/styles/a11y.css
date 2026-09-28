@@ -17,8 +17,10 @@
 .a11y-trigger {
   position: fixed;
   z-index: 45;
+  /* Bottom right in both page languages, so it never moves under the
+     visitor's thumb when they switch to Persian. */
+  right: 20px;
   bottom: 20px;
-  inset-inline-end: 20px;
   display: inline-grid;
   overflow: hidden;
   width: 52px;
@@ -89,7 +91,7 @@ body.preview-open .a11y-trigger {
 
 .a11y-title {
   margin: 0 0 12px;
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   font-weight: 750;
 }
 
@@ -132,7 +134,7 @@ body.preview-open .a11y-trigger {
   border-radius: var(--radius);
   color: var(--muted);
   background: var(--field);
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;

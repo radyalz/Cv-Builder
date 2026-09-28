@@ -22,7 +22,7 @@
 .preview-title {
   overflow: hidden;
   color: var(--accent);
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -140,7 +140,7 @@
   border-radius: 999px;
   color: var(--accent);
   background: var(--accent-soft);
-  font-size: calc(12px * var(--fs));
+  font-size: calc(13.5px * var(--fs));
   font-weight: 650;
   gap: 6px;
   cursor: pointer;
@@ -389,7 +389,7 @@
   padding: 20px;
   color: var(--muted);
   background: var(--panel-2);
-  font-size: calc(13px * var(--fs));
+  font-size: calc(14px * var(--fs));
   line-height: 1.6;
   place-items: center;
   text-align: center;
@@ -406,7 +406,7 @@
 
 .preview-meta {
   color: var(--muted);
-  font-size: calc(12px * var(--fs));
+  font-size: calc(13.5px * var(--fs));
 }
 
 /* -------- Expanded preview --------
@@ -562,7 +562,7 @@
 .pdf-zoom {
   min-width: 46px;
   color: var(--muted);
-  font-size: calc(12px * var(--fs));
+  font-size: calc(13.5px * var(--fs));
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
