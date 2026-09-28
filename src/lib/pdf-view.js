@@ -8,6 +8,7 @@
    is only downloaded the first time a document is opened. */
 
 let library = null;
+let sharedWorker = null;
 
 function loadLibrary() {
   library ??= Promise.all([
@@ -15,6 +16,11 @@ function loadLibrary() {
     import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
   ]).then(([lib, worker]) => {
     lib.GlobalWorkerOptions.workerSrc = worker.default;
+
+    // One worker for every document. Without this PDF.js starts a new one
+    // (and loads its 1 MB script again) for each copy it opens.
+    sharedWorker = new lib.PDFWorker({ name: "cv-preview" });
+
     return lib;
   });
 
@@ -71,11 +77,15 @@ export class PdfView {
   // quickly starts a new open() while an older one is still loading; each
   // only shows its pages while it is still the newest, so an older copy can
   // never land on top of (or mix its pages into) the one asked for last.
-  async open(url) {
+  // `source` is the PDF itself (a Blob, read straight into PDF.js) or, as a
+  // fallback, its URL.
+  async open(source) {
     const token = ++this.token;
     const current = () => token === this.token;
     const lib = await loadLibrary();
-    const doc = await lib.getDocument({ url, isEvalSupported: false }).promise;
+    const input =
+      source instanceof Blob ? { data: new Uint8Array(await source.arrayBuffer()) } : { url: source };
+    const doc = await lib.getDocument({ ...input, worker: sharedWorker, isEvalSupported: false }).promise;
     let first;
 
     try {

@@ -415,9 +415,8 @@ function previewUrlFor(published) {
 
 const previewCache = new Map();
 
-// Copies already downloaded: switching to one of these swaps the pages
-// straight over instead of showing the loading skeleton first.
-const previewReady = new Set();
+// Shortest time the loading skeleton shows when switching copies.
+const SKELETON_MIN_MS = 250;
 
 /* -------- Keeping copies on the device --------
    Every preview URL names one exact copy (it carries the copy's publish
@@ -479,8 +478,7 @@ function cachedPreview(url, { background = false } = {}) {
   if (!previewCache.has(url)) {
     const promise = fetchCopy(url, background)
       .then((blob) => {
-        previewReady.add(url);
-        return URL.createObjectURL(blob);
+        return blob;
       })
       .catch((error) => {
         previewCache.delete(url);
@@ -1014,16 +1012,21 @@ function refreshPreview() {
   if (previewDoc.dataset.url !== url) {
     previewDoc.dataset.url = url;
 
-    // Already downloaded: keep the current pages up until the new ones are
-    // drawn, then swap straight over. Otherwise show the skeleton.
-    if (!previewReady.has(url)) {
-      setPreviewLoading(true);
-    }
+    // Every change goes through the skeleton, however quickly the copy is
+    // ready; it stays at least SKELETON_MIN_MS so the change registers.
+    setPreviewLoading(true);
+    const shownFrom = performance.now();
 
     cachedPreview(url)
       .catch(() => url)
       .then((source) => previewDoc.dataset.url === url && pdfView.open(source))
-      .then((shown) => {
+      .then(async (shown) => {
+        const left = SKELETON_MIN_MS - (performance.now() - shownFrom);
+
+        if (left > 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, left));
+        }
+
         if (shown && previewDoc.dataset.url === url) {
           setPreviewLoading(false);
           planPrefetch();
@@ -1049,7 +1052,16 @@ function refreshPreview() {
 // Clicking through swatches should not fire a request per click.
 function schedulePreview() {
   window.clearTimeout(previewTimer);
-  previewTimer = window.setTimeout(refreshPreview, 180);
+
+  // The skeleton answers the click at once; the copy itself is picked up a
+  // moment later, so clicking through several swatches loads only the last.
+  const published = variantsLoaded || variants.has(selectedKey()) ? variants.get(selectedKey()) : null;
+
+  if (published && previewDoc.dataset.url !== previewUrlFor(published)) {
+    setPreviewLoading(true);
+  }
+
+  previewTimer = window.setTimeout(refreshPreview, 60);
 }
 
 
