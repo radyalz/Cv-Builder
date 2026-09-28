@@ -268,6 +268,7 @@ const EN_FONTS = {
 const FA_FONTS = {
   yekan: { name: ["Yekan Bakh", "یکان بخ"], note: ["A clean, modern Persian sans; the default.", "بی‌میانه‌ای مدرن و تمیز؛ پیش‌فرض."], style: ["Sans", "بی‌میانه"] },
   vazir: { name: ["Vazirmatn", "وزیرمتن"], note: ["Open and very readable Persian sans.", "بی‌میانه‌ای باز و بسیار خوانا."], style: ["Sans", "بی‌میانه"] },
+  doran: { name: ["Doran", "دوران"], note: ["A rounded, friendly Persian sans with open forms.", "بی‌میانه‌ای گرد و صمیمی با فرم‌های باز."], style: ["Sans", "بی‌میانه"] },
   niloofar: { name: ["XB Niloofar", "نیلوفر"], note: ["A classic naskh with book-like contrast.", "نسخی کلاسیک با کنتراست کتابی."], style: ["Naskh", "نسخ"] },
 };
 

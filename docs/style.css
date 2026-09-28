@@ -85,6 +85,38 @@
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
+@font-face {
+  font-family: "CV Doran";
+  src: url("fonts/Doran-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Doran";
+  src: url("fonts/Doran-Medium.woff2") format("woff2");
+  font-weight: 500 600;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Doran";
+  src: url("fonts/Doran-Bold.woff2") format("woff2");
+  font-weight: 650 750;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Doran";
+  src: url("fonts/Doran-ExtraBold.woff2") format("woff2");
+  font-weight: 800 900;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
 /* Niloofar is a naskh face that runs small, hence the size adjustment. */
 @font-face {
   font-family: "CV Niloofar";
@@ -160,6 +192,7 @@
 :root[data-en-font="grotesk"] { --font-en: "CV Grotesk"; }
 :root[data-fa-font="vazir"] { --font-fa: "CV Vazir"; }
 :root[data-fa-font="niloofar"] { --font-fa: "CV Niloofar"; }
+:root[data-fa-font="doran"] { --font-fa: "CV Doran"; }
 
 /* -------- Light appearance --------
    Chosen in the accessibility menu, or taken from the system setting. */
@@ -504,13 +537,12 @@ input {
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   gap: clamp(20px, 3vw, 38px);
   grid-template-columns: minmax(0, 1fr) minmax(0, 470px);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(4px) saturate(140%);
+  -webkit-backdrop-filter: blur(4px) saturate(140%);
 }
 
 /* Light glass: a bright sheen across the top, a white rim catching the
-   light, a hairline outside it so the edge still reads, and a stronger blur
-   so the darker skulls behind turn into soft colour instead of detail. */
+   light, and a hairline outside it so the edge still reads. */
 :root[data-theme="light"] .builder-card {
   background:
     linear-gradient(
@@ -526,8 +558,8 @@ input {
     0 30px 70px rgba(16, 24, 40, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 -1px 0 rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(4px) saturate(160%);
+  -webkit-backdrop-filter: blur(4px) saturate(160%);
 }
 
 /* Without backdrop blur the panel would read as a flat grey wash, so it
@@ -1478,6 +1510,7 @@ body.preview-open .a11y-trigger {
 .font-option[data-en-font="grotesk"] { font-family: "CV Grotesk", sans-serif; }
 .font-option[data-fa-font="yekan"] { font-family: "CV Yekan Bakh", sans-serif; font-size: calc(15px * var(--fs)); }
 .font-option[data-fa-font="vazir"] { font-family: "CV Vazir", sans-serif; font-size: calc(15px * var(--fs)); }
+.font-option[data-fa-font="doran"] { font-family: "CV Doran", sans-serif; font-size: calc(15px * var(--fs)); }
 .font-option[data-fa-font="niloofar"] { font-family: "CV Niloofar", serif; font-size: calc(15px * var(--fs)); }
 
 /* The menu grew with the font pickers; short screens scroll it. */
