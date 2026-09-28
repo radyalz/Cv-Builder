@@ -63,6 +63,23 @@ function loadUiPrefs() {
   }
 }
 
+// The text eases to its new size over about a third of a second (see
+// --fs in tokens.css) and the open menu grows or shrinks with it, so it is
+// kept against its button on every frame until the text has settled.
+function followMenu(menu) {
+  const trigger = document.getElementById("a11yTrigger");
+  const until = performance.now() + 400;
+  const step = () => {
+    positionPopover(trigger, menu);
+
+    if (!menu.hidden && performance.now() < until) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  step();
+}
+
 export function applyPrefs({ save = true } = {}) {
   const root = document.documentElement;
 
@@ -105,7 +122,7 @@ export function applyPrefs({ save = true } = {}) {
     }
 
     if (!menu.hidden) {
-      positionPopover(document.getElementById("a11yTrigger"), menu);
+      followMenu(menu);
     }
   }
 

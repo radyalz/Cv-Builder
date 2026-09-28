@@ -1,3 +1,26 @@
+/* Registered, so the browser can animate them: every font size is
+   calc(<size> * var(--fs)), and --fa-small enlarges small Persian text, so
+   easing these two eases all the text on the page at once when the text
+   size or page language changes. Browsers that cannot register custom
+   properties simply switch without the animation. */
+@property --fs {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --fa-small {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+:root {
+  transition:
+    --fs 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    --fa-small 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
   --bg: #0b0d10;
   --panel: rgba(20, 23, 29, 0.92);
