@@ -1,3 +1,14 @@
+/* Persian UI font, self-hosted. The unicode-range means it is only
+   downloaded when Persian text is on screen; Latin keeps the UI font. To use
+   a different Persian font, replace the file and the family name here. */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("fonts/Vazirmatn-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
 /* =========================================================================
    Radman Alizadeh - CV Builder
    The page is a single non-scrolling viewport: one card, sized to fit.
@@ -32,7 +43,7 @@
   --sk-shine: rgba(255, 255, 255, 0.07);
   --meta-bar: rgba(255, 255, 255, 0.08);
   --meta-shine: rgba(255, 255, 255, 0.14);
-  --backdrop: rgba(6, 7, 10, 0.86);
+  --backdrop: rgba(6, 7, 10, 0.3);
   --skull-opacity: 0.58;
   /* text size chosen in the accessibility menu; every font-size scales by it */
   --fs: 1;
@@ -48,41 +59,49 @@
 /* -------- Light appearance --------
    Chosen in the accessibility menu, or taken from the system setting. */
 :root[data-theme="light"] {
-  --bg: #eef0f4;
-  --panel: rgba(255, 255, 255, 0.92);
-  --panel-2: rgba(0, 0, 0, 0.035);
-  --text: #15171c;
-  --muted: #566070;
-  --line: rgba(0, 0, 0, 0.1);
+  --bg: #f3f2f7;
+  --panel: rgba(255, 255, 255, 0.94);
+  --panel-2: rgba(17, 19, 24, 0.035);
+  --text: #111318;
+  --muted: #5d6272;
+  --line: rgba(17, 19, 24, 0.1);
   --danger: #b42318;
   --success: #146c43;
-  --shadow: 0 24px 80px rgba(20, 24, 34, 0.18);
-  --glass: rgba(255, 255, 255, 0.55);
-  --glass-edge: rgba(255, 255, 255, 0.7);
-  --glass-strong: rgba(255, 255, 255, 0.74);
-  --field: rgba(255, 255, 255, 0.72);
-  --field-strong: rgba(255, 255, 255, 0.82);
-  --edge: rgba(0, 0, 0, 0.18);
-  --menu-bg: rgba(252, 252, 254, 0.98);
-  --menu-shadow: 0 20px 60px rgba(20, 24, 34, 0.2);
-  --underline: rgba(0, 0, 0, 0.3);
-  --track: rgba(0, 0, 0, 0.08);
-  --spinner-track: rgba(0, 0, 0, 0.15);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 24px 64px rgba(16, 24, 40, 0.14);
+  --glass: rgba(255, 255, 255, 0.82);
+  --glass-edge: rgba(17, 19, 24, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --field: #ffffff;
+  --field-strong: #ffffff;
+  --edge: rgba(17, 19, 24, 0.16);
+  --menu-bg: #ffffff;
+  --menu-shadow: 0 12px 40px rgba(16, 24, 40, 0.16);
+  --underline: rgba(17, 19, 24, 0.3);
+  --track: rgba(17, 19, 24, 0.08);
+  --spinner-track: rgba(17, 19, 24, 0.14);
   --sk-page: #ffffff;
-  --sk-bar: #e9eaef;
+  --sk-bar: #ecedf2;
   --sk-shine: rgba(255, 255, 255, 0.9);
-  --meta-bar: rgba(0, 0, 0, 0.07);
+  --meta-bar: rgba(17, 19, 24, 0.07);
   --meta-shine: rgba(255, 255, 255, 0.7);
-  --backdrop: rgba(238, 240, 244, 0.9);
-  --skull-opacity: 0.3;
+  --backdrop: rgba(243, 242, 247, 0.3);
+  --skull-opacity: 0.16;
   color-scheme: light;
+}
+
+/* A faint wash of the accent, so light mode is not flat grey. */
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36rem),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 32rem),
+    var(--bg);
 }
 
 /* -------- Persian page --------
    Letter-spacing breaks the joins in Persian script, so it is dropped, and
    the UI switches to a font that has Persian glyphs. */
 :root[lang="fa"] body {
-  font-family: Vazirmatn, "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  font-family: Vazirmatn, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 :root[lang="fa"] * {
@@ -369,7 +388,7 @@ input {
 .builder-card {
   display: grid;
   overflow: hidden;
-  width: min(1180px, 100%);
+  width: min(1260px, 100%);
   max-height: calc(100dvh - 32px);
   padding: clamp(20px, 3vw, 40px);
   border: 1px solid var(--glass-edge);
@@ -386,7 +405,7 @@ input {
     var(--shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   gap: clamp(20px, 3vw, 38px);
-  grid-template-columns: minmax(0, 1fr) minmax(0, 390px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 470px);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
 }
@@ -1115,8 +1134,6 @@ h1 {
   inset: 0;
   z-index: 60;
   background: var(--backdrop);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 body.preview-open .preview-backdrop {
@@ -1129,14 +1146,19 @@ body.preview-open .builder-card {
   overflow: visible;
 }
 
+/* Grows to just inside the window edges; the page and skulls stay visible
+   around it through the light tint behind. */
 .preview-frame.is-expanded {
   position: fixed;
   z-index: 61;
-  top: 64px;
-  right: 16px;
-  bottom: 16px;
-  left: 16px;
+  top: 60px;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
   max-height: none;
+  border-color: var(--glass-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
 }
 
 .preview-collapse {
@@ -1173,24 +1195,34 @@ body.preview-open .builder-card {
 }
 
 .a11y-trigger {
+  position: fixed;
+  z-index: 45;
+  bottom: 20px;
+  inset-inline-end: 20px;
   display: inline-grid;
-  flex: none;
-  width: 36px;
-  height: 36px;
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
   padding: 0;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 50%;
-  color: var(--text);
-  background: var(--field);
+  color: var(--accent-text);
+  background: var(--accent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   place-items: center;
-  transition: border-color 140ms ease, color 140ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+/* Out of the way while the preview fills the window. */
+body.preview-open .a11y-trigger {
+  display: none;
 }
 
 .a11y-trigger:hover,
 .a11y-trigger[aria-expanded="true"] {
-  border-color: var(--accent);
-  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
 }
 
 .a11y-trigger:focus-visible {
@@ -1199,8 +1231,8 @@ body.preview-open .builder-card {
 }
 
 .a11y-trigger svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .a11y-menu {
@@ -1236,6 +1268,99 @@ body.preview-open .builder-card {
 .segment[data-fs="1"] { font-size: 14px; }
 .segment[data-fs="1.15"] { font-size: 16px; }
 .segment[data-fs="1.3"] { font-size: 18px; }
+
+/* -------- Download button -------- */
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  background: transparent;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.download-button:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.download-button[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.card-main > .secondary-link {
+  align-self: flex-start;
+  margin-top: 14px;
+}
+
+/* -------- Ripple --------
+   A material-style ink ripple from the point of the press. */
+
+.primary-button,
+.ghost-button:not(.preview-collapse),
+.segment,
+.menu-trigger,
+.mobile-preview,
+.download-button,
+.swatch {
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-collapse {
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple 560ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes ripple {
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* -------- Tooltips -------- */
+
+.tooltip {
+  position: fixed;
+  z-index: 95;
+  max-width: 260px;
+  padding: 6px 9px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: rgba(33, 36, 43, 0.95);
+  font-size: calc(12px * var(--fs));
+  font-weight: 500;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.94);
+  transition: opacity 120ms ease, transform 120ms ease;
+  visibility: hidden;
+}
+
+.tooltip.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  visibility: visible;
+}
 
 [hidden] {
   display: none !important;
@@ -1422,9 +1547,61 @@ body.preview-open .builder-card {
     text-align: center;
   }
 
+  .card-main > .secondary-link {
+    align-self: center;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+
+  .a11y-trigger {
+    bottom: 14px;
+    width: 46px;
+    height: 46px;
+  }
+
   .mobile-preview {
     min-height: 48px;
     margin-top: 12px;
+  }
+}
+
+/* -------- Short phones --------
+   Room is tight below ~700px of height, especially at the larger text sizes:
+   the intro line goes, spacing tightens, and the bottom keeps clear of the
+   floating accessibility button. */
+
+@media (max-width: 640px) and (max-height: 700px) {
+  .page-shell {
+    padding-bottom: 68px;
+  }
+
+  .builder-card {
+    max-height: calc(100dvh - 82px);
+    padding-top: 20px;
+    padding-bottom: 18px;
+  }
+
+  .lead {
+    display: none;
+  }
+
+  .controls,
+  .actions {
+    margin-top: 18px;
+  }
+
+  .controls {
+    gap: 12px 10px;
+  }
+
+  .card-main > .secondary-link {
+    margin-top: 10px;
+  }
+
+  .mobile-preview {
+    margin-top: 10px;
   }
 }
 

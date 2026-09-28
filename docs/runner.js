@@ -1,4 +1,5 @@
 const API_URL = "https://cv-api.radyalz.ir";
+const RELEASE_URL = "https://github.com/radyalz/Cv-Builder/releases/download/latest";
 const STORAGE_KEY = "cv-builder-selection";
 const DEFAULT_THEME = "purple";
 const DEFAULT_VARIANT = "digital";
@@ -103,6 +104,28 @@ const STRINGS = {
     hexInvalid: "Enter a colour as six hex digits, for example #FF8800.",
     hintLight: "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better.",
     hintCustom: "The lighter and muted shades of the CV are derived from this colour automatically.",
+    download: "Download published copy",
+    downloadTip: "Download the published copy of this colour, edition and language straight away",
+    generateTip: "Build a fresh copy with today's durations, then download it",
+    allCopiesTip: "See every published copy on GitHub",
+    accentTip: "Choose the CV's accent colour",
+    digitalTip: "Digital edition, with links to the portfolio",
+    printTip: "Print edition, without links",
+    cvEnTip: "Build the CV in English",
+    cvFaTip: "Build the CV in Persian",
+    expandTip: "Expand the preview to fill the window",
+    closeTip: "Close the expanded preview (Esc)",
+    pickTip: "Pick any colour",
+    useTip: "Apply the colour typed in the box",
+    a11yTip: "Accessibility: page language, appearance and text size",
+    uiEnTip: "Show this page in English",
+    uiFaTip: "Show this page in Persian",
+    darkTip: "Dark appearance",
+    lightTip: "Light appearance",
+    sizeSmallTip: "Smaller text",
+    sizeDefaultTip: "Default text size",
+    sizeLargeTip: "Larger text",
+    sizeLargerTip: "Largest text",
   },
   fa: {
     eyebrow: "رزومه به‌روز",
@@ -167,6 +190,28 @@ const STRINGS = {
     hexInvalid: "رنگ را به‌صورت شش رقم هگز وارد کنید، مثلاً #FF8800.",
     hintLight: "رنگ‌های خیلی روشن در رزومه چاپی سخت خوانده می‌شوند. عنوان‌ها خودکار تیره‌تر می‌شوند، اما رنگی با روشنایی متوسط معمولاً خواناتر است.",
     hintCustom: "سایه‌های روشن‌تر و ملایم رزومه خودکار از همین رنگ ساخته می‌شوند.",
+    download: "دانلود نسخه منتشرشده",
+    downloadTip: "دانلود فوری نسخه منتشرشده با همین رنگ، نسخه و زبان",
+    generateTip: "ساخت نسخه‌ای تازه با مدت‌های امروز و دانلود آن",
+    allCopiesTip: "دیدن همه نسخه‌های منتشرشده در گیت‌هاب",
+    accentTip: "انتخاب رنگ رزومه",
+    digitalTip: "نسخه دیجیتال، همراه با پیوند نمونه‌کارها",
+    printTip: "نسخه چاپی، بدون پیوند",
+    cvEnTip: "ساخت رزومه به انگلیسی",
+    cvFaTip: "ساخت رزومه به فارسی",
+    expandTip: "بزرگ‌نمایی پیش‌نمایش به اندازه پنجره",
+    closeTip: "بستن پیش‌نمایش بزرگ (Esc)",
+    pickTip: "انتخاب هر رنگی",
+    useTip: "اعمال رنگ واردشده",
+    a11yTip: "دسترس‌پذیری: زبان صفحه، ظاهر و اندازه متن",
+    uiEnTip: "نمایش این صفحه به انگلیسی",
+    uiFaTip: "نمایش این صفحه به فارسی",
+    darkTip: "ظاهر تیره",
+    lightTip: "ظاهر روشن",
+    sizeSmallTip: "متن کوچک‌تر",
+    sizeDefaultTip: "اندازه پیش‌فرض متن",
+    sizeLargeTip: "متن بزرگ‌تر",
+    sizeLargerTip: "بزرگ‌ترین متن",
   },
 };
 
@@ -253,6 +298,8 @@ const previewCollapse = document.getElementById("previewCollapse");
 const previewBackdrop = document.querySelector(".preview-backdrop");
 const a11yTrigger = document.getElementById("a11yTrigger");
 const a11yMenu = document.getElementById("a11yMenu");
+const downloadLatest = document.getElementById("downloadLatest");
+const tooltip = document.getElementById("tooltip");
 const mobilePreview = document.getElementById("mobilePreview");
 
 let variants = new Map();
@@ -723,6 +770,15 @@ function refreshPreview() {
   // Phones have no inline preview; their button opens the viewer instead.
   mobilePreview.disabled = !published;
 
+  // The download button hands over the published copy directly, no build.
+  if (published) {
+    downloadLatest.href = `${RELEASE_URL}/${published.name}?v=${Date.parse(published.updatedAt)}`;
+    downloadLatest.setAttribute("aria-disabled", "false");
+  } else {
+    downloadLatest.removeAttribute("href");
+    downloadLatest.setAttribute("aria-disabled", "true");
+  }
+
   if (!published) {
     setPreviewLoading(false);
     previewFrame.hidden = true;
@@ -832,7 +888,8 @@ function applyUi({ save = true } = {}) {
 
   for (const swatch of themeGrid.children) {
     const name = themeName(swatch.dataset.slug);
-    swatch.title = name;
+    swatch.removeAttribute("title");
+    swatch.dataset.tipText = name;
     swatch.setAttribute("aria-label", name);
   }
 
@@ -1130,6 +1187,121 @@ async function waitForBuild(buildId, theme, variant, language) {
 }
 
 /* -------------------------------------------------------------------------
+   Ripple and tooltips
+   ---------------------------------------------------------------------- */
+
+const RIPPLE_TARGETS =
+  ".primary-button, .ghost-button, .segment, .menu-trigger, .mobile-preview, .download-button, .swatch, .a11y-trigger";
+
+// A material-style ink ripple from the point of the press.
+document.addEventListener("pointerdown", (event) => {
+  const target = event.target.closest(RIPPLE_TARGETS);
+
+  if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") {
+    return;
+  }
+
+  const rect = target.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const wave = document.createElement("span");
+
+  wave.className = "ripple";
+  wave.style.width = `${size}px`;
+  wave.style.height = `${size}px`;
+  wave.style.left = `${event.clientX - rect.left - size / 2}px`;
+  wave.style.top = `${event.clientY - rect.top - size / 2}px`;
+
+  target.append(wave);
+  wave.addEventListener("animationend", () => wave.remove());
+});
+
+let tipTimer = null;
+let tipTarget = null;
+
+function tipText(element) {
+  return element.dataset.tipText || (element.dataset.tip ? t(element.dataset.tip) : "");
+}
+
+function showTip(element) {
+  const text = tipText(element);
+
+  if (!text) {
+    return;
+  }
+
+  tooltip.textContent = text;
+  tooltip.classList.add("is-visible");
+
+  const rect = element.getBoundingClientRect();
+  const margin = 8;
+  let top = rect.top - tooltip.offsetHeight - margin;
+
+  if (top < margin) {
+    top = rect.bottom + margin;
+  }
+
+  const left = Math.max(
+    margin,
+    Math.min(
+      rect.left + rect.width / 2 - tooltip.offsetWidth / 2,
+      window.innerWidth - tooltip.offsetWidth - margin
+    )
+  );
+
+  tooltip.style.left = `${Math.round(left)}px`;
+  tooltip.style.top = `${Math.round(top)}px`;
+  element.setAttribute("aria-describedby", "tooltip");
+}
+
+function hideTip() {
+  window.clearTimeout(tipTimer);
+
+  if (tipTarget) {
+    tipTarget.removeAttribute("aria-describedby");
+  }
+
+  tipTarget = null;
+  tooltip.classList.remove("is-visible");
+}
+
+// Hover shows the tip after a short delay, as in Material UI; touch skips it.
+document.addEventListener("pointerover", (event) => {
+  if (event.pointerType === "touch") {
+    return;
+  }
+
+  const target = event.target.closest("[data-tip], [data-tip-text]");
+
+  if (target === tipTarget) {
+    return;
+  }
+
+  hideTip();
+
+  if (target) {
+    tipTarget = target;
+    tipTimer = window.setTimeout(() => showTip(target), 450);
+  }
+});
+
+// Keyboard focus shows it at once.
+document.addEventListener("focusin", (event) => {
+  const target = event.target.closest?.("[data-tip], [data-tip-text]");
+
+  if (!target || !target.matches(":focus-visible")) {
+    return;
+  }
+
+  hideTip();
+  tipTarget = target;
+  showTip(target);
+});
+
+document.addEventListener("focusout", hideTip);
+document.addEventListener("pointerdown", hideTip, true);
+window.addEventListener("scroll", hideTip, true);
+
+/* -------------------------------------------------------------------------
    Wiring
    ---------------------------------------------------------------------- */
 
@@ -1419,10 +1591,13 @@ function skullParts(accent) {
   // Bone is pale and only tinted by the accent; the eyes are a bright tint
   // of the accent and the lightning a sibling hue, so each part stands apart
   // without leaving the chosen colour.
-  const boneLight = mixHex(accent, "#fbf6f0", 0.84);
-  const boneMid = mixHex(accent, "#9a908a", 0.58);
-  const boneDark = mixHex(accent, "#1a1413", 0.66);
-  const rim = mixHex(accent, "#ffffff", 0.4);
+  // On the light appearance pale bone would vanish into the page, so the
+  // skull is drawn in deeper shades of the accent instead.
+  const light = uiPrefs.theme === "light";
+  const boneLight = light ? mixHex(accent, "#ffffff", 0.3) : mixHex(accent, "#fbf6f0", 0.84);
+  const boneMid = light ? mixHex(accent, "#000000", 0.2) : mixHex(accent, "#9a908a", 0.58);
+  const boneDark = light ? mixHex(accent, "#000000", 0.55) : mixHex(accent, "#1a1413", 0.66);
+  const rim = light ? mixHex(accent, "#000000", 0.35) : mixHex(accent, "#ffffff", 0.4);
   const eyeHot = mixHex(accent, "#ffffff", 0.62);
   const flashTone = mixHex(accent, "#ffffff", 0.5);
   const spark = electricHue(accent, 0.62);
@@ -1520,11 +1695,14 @@ function skullParts(accent) {
 }
 
 function paintSkulls(accent) {
-  if (accent === skullAccent) {
+  // The art depends on the appearance as well as the accent.
+  const key = `${accent}|${uiPrefs.theme}`;
+
+  if (key === skullAccent) {
     return;
   }
 
-  skullAccent = accent;
+  skullAccent = key;
 
   const parts = skullParts(accent);
   const root = document.documentElement.style;
