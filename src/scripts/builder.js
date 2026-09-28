@@ -356,11 +356,13 @@ function cachedPreview(url) {
    card, then takes its real size once at the end. The viewer fits the page
    to the width either way, so that last swap does not show. */
 
-const GROW_MS = 480;
+const GROW_MS = 620;
 // Closing is unhurried: a slower shrink and a slower return of the text.
-const SHRINK_MS = 650;
+const SHRINK_MS = 720;
 const RETURN_FADE_MS = 420;
-const GROW_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+// Eases in and out, so the card's size changes at the same even pace as
+// the fades around it instead of jumping most of the way at once.
+const GROW_EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
 
 // closed → opening → open → closing → closed
 let expandState = "closed";

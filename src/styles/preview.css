@@ -495,7 +495,7 @@
   align-items: center;
   gap: 10px;
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity 340ms ease;
 }
 
 .builder-card.is-expanded .expanded-bar {
