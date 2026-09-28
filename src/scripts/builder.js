@@ -351,26 +351,33 @@ async function loadVariants() {
 
 // Keyed on the publish time, so the URL only changes when a new copy is
 // published and a cached copy can never be a stale one.
-function previewUrl(published) {
+function previewUrlFor(published) {
   return (
-    `${API_URL}/preview?theme=${encodeURIComponent(selectedSlug())}` +
-    `&variant=${encodeURIComponent(selection.variant)}` +
-    `&language=${encodeURIComponent(selection.language)}` +
+    `${API_URL}/preview?theme=${encodeURIComponent(published.theme)}` +
+    `&variant=${encodeURIComponent(published.variant)}` +
+    `&language=${encodeURIComponent(published.language)}` +
     `&v=${Date.parse(published.updatedAt)}`
   );
 }
 
 const previewCache = new Map();
 
-function cachedPreview(url) {
+// Copies already downloaded: switching to one of these swaps the pages
+// straight over instead of showing the loading skeleton first.
+const previewReady = new Set();
+
+function cachedPreview(url, { background = false } = {}) {
   if (!previewCache.has(url)) {
-    const promise = fetch(url)
-      .then(response => {
+    const promise = fetch(url, { priority: background ? "low" : "high" })
+      .then((response) => {
         if (!response.ok) throw new Error("Preview request failed.");
         return response.blob();
       })
-      .then(blob => URL.createObjectURL(blob))
-      .catch(error => {
+      .then((blob) => {
+        previewReady.add(url);
+        return URL.createObjectURL(blob);
+      })
+      .catch((error) => {
         previewCache.delete(url);
         throw error;
       });
@@ -379,12 +386,102 @@ function cachedPreview(url) {
   return previewCache.get(url);
 }
 
+/* -------- Fetching the likely next copies --------
+   Once the chosen copy is on screen, the copies a visitor is most likely to
+   switch to next are downloaded in the background, one at a time and at
+   low priority, so a switch feels instant: first this colour in the other
+   edition, then in the other CV language, then both, then the neighbouring
+   colours in the picker (one either side, then two). Choosing something
+   else re-plans around the new choice, and hovering a swatch or an
+   edition/language button fetches that copy straight away. Skipped when
+   the visitor has asked to save data or is on a very slow connection. */
+
+const PREFETCH_LIMIT = 7;
+let prefetchQueue = [];
+let prefetching = false;
+
+function saveData() {
+  const connection = navigator.connection;
+
+  return Boolean(connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || "")));
+}
+
+function likelyNext() {
+  const slug = selectedSlug();
+  const { variant, language } = selection;
+  const otherVariant = variant === "digital" ? "print" : "digital";
+  const otherLanguage = language === "en" ? "fa" : "en";
+  const picks = [];
+
+  // A custom colour has no published copies of its own; its neighbours are
+  // still worth having ready.
+  if (slug !== "custom") {
+    picks.push([slug, otherVariant, language], [slug, variant, otherLanguage], [slug, otherVariant, otherLanguage]);
+  }
+
+  const index = THEMES.findIndex((theme) => theme.slug === (slug === "custom" ? DEFAULT_THEME : slug));
+
+  for (const step of [1, -1, 2, -2]) {
+    picks.push([THEMES[(index + step + THEMES.length) % THEMES.length].slug, variant, language]);
+  }
+
+  return picks;
+}
+
+function publishedUrl(theme, variant, language) {
+  const published = variants.get(variantKey(theme, variant, language));
+
+  return published ? previewUrlFor(published) : null;
+}
+
+function pumpPrefetch() {
+  if (prefetching || !prefetchQueue.length) {
+    return;
+  }
+
+  prefetching = true;
+
+  const url = prefetchQueue.shift();
+  const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 150));
+
+  idle(() => {
+    cachedPreview(url, { background: true })
+      .catch(() => {})
+      .finally(() => {
+        prefetching = false;
+        pumpPrefetch();
+      });
+  });
+}
+
+function planPrefetch() {
+  if (saveData()) {
+    return;
+  }
+
+  prefetchQueue = likelyNext()
+    .map(([theme, variant, language]) => publishedUrl(theme, variant, language))
+    .filter((url, index, list) => url && !previewCache.has(url) && list.indexOf(url) === index)
+    .slice(0, PREFETCH_LIMIT);
+
+  pumpPrefetch();
+}
+
+// Hovering a choice: fetch that copy now, ahead of the planned ones.
+function prefetchNow(theme, variant, language) {
+  const url = publishedUrl(theme, variant, language);
+
+  if (url && !previewCache.has(url) && !saveData()) {
+    cachedPreview(url, { background: true }).catch(() => {});
+  }
+}
+
 /* -------- Expanding the preview --------
-   Three steps that never overlap, so nothing fights over the same frame:
-   the rest of the card fades out, the card grows from where it sits to
-   just inside the window (its own rectangle is animated, so the glass and
-   the PDF grow with it), and then the bar with the title and Close fades
-   in. Collapsing plays the same steps backwards.
+   The card grows from where it sits to just inside the window (its own
+   rectangle is animated, so the glass and the PDF grow with it) while the
+   rest of the card slides away and the bar with the title and Close fades
+   in; collapsing runs the same steps backwards. See "Pinning the card's
+   contents" below for how the steps overlap.
 
    While the card grows, the PDF is not resized every frame, which is what
    made it judder. It keeps its starting size and is scaled in step with the
@@ -793,13 +890,18 @@ function refreshPreview() {
     return;
   }
 
-  const url = previewUrl(published);
+  const url = previewUrlFor(published);
 
   // Each copy is downloaded once and kept for the session, so switching
   // back to a colour, or expanding it, never fetches it again.
   if (previewDoc.dataset.url !== url) {
     previewDoc.dataset.url = url;
-    setPreviewLoading(true);
+
+    // Already downloaded: keep the current pages up until the new ones are
+    // drawn, then swap straight over. Otherwise show the skeleton.
+    if (!previewReady.has(url)) {
+      setPreviewLoading(true);
+    }
 
     cachedPreview(url)
       .catch(() => url)
@@ -807,6 +909,7 @@ function refreshPreview() {
       .then((shown) => {
         if (shown && previewDoc.dataset.url === url) {
           setPreviewLoading(false);
+          planPrefetch();
         }
       })
       .catch((error) => {
@@ -1352,6 +1455,31 @@ export function initBuilder() {
   }
 
   resetCv.addEventListener("click", resetSelection);
+
+  // Hover intent: the copy a pointer is resting on is probably next.
+  themeGrid.addEventListener("pointerover", (event) => {
+    const swatch = event.target.closest(".swatch");
+
+    if (swatch) {
+      prefetchNow(swatch.dataset.slug, selection.variant, selection.language);
+    }
+  });
+
+  variantToggle.addEventListener("pointerover", (event) => {
+    const segment = event.target.closest(".segment");
+
+    if (segment) {
+      prefetchNow(selectedSlug(), segment.dataset.variant, selection.language);
+    }
+  });
+
+  languageToggle.addEventListener("pointerover", (event) => {
+    const segment = event.target.closest(".segment");
+
+    if (segment) {
+      prefetchNow(selectedSlug(), selection.variant, segment.dataset.language);
+    }
+  });
 
   // Opening the accessibility menu closes this one.
   document.addEventListener("menus:close", closeMenu);
