@@ -39,16 +39,72 @@
   background: var(--sk-page);
 }
 
-.preview-frame iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
+/* Side by side there is height to spare, so the preview claims most of the
+   window instead of matching the controls' column. */
+@media (min-width: 1001px) {
+  .preview-frame {
+    min-height: min(68dvh, 760px);
+  }
+}
+
+/* The PDF viewer (src/lib/pdf-view.js): pages stacked in a scrolling box,
+   each a canvas with the document's links laid over it. */
+.pdf-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  padding: var(--pdf-pad, 0);
+  background: var(--pdf-bg);
+  gap: var(--pdf-gap, 8px);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  /* The scrollbar's room is kept from the start, so it appearing never
+     narrows the box and knocks fit-to-width off by a few pixels. */
+  scrollbar-gutter: stable;
   transition: opacity 240ms ease;
 }
 
-.preview-frame iframe.is-loading {
+.pdf-view[data-fit="width"] {
+  overflow-x: hidden;
+}
+
+.pdf-view.is-loading {
   opacity: 0;
+}
+
+/* Auto margins centre a page narrower than the box without clipping one
+   that is wider, which align-items: center would. */
+.pdf-page {
+  position: relative;
+  flex: none;
+  margin-inline: auto;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+}
+
+.pdf-page canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pdf-links {
+  position: absolute;
+  inset: 0;
+}
+
+.pdf-link {
+  position: absolute;
+  border-radius: 2px;
+  transition: background-color 120ms ease;
+}
+
+.pdf-link:hover,
+.pdf-link:focus-visible {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: none;
 }
 
 /* -------- Loading skeletons --------
@@ -337,6 +393,7 @@
 }
 
 .builder-card.is-expanded .preview-frame {
+  min-height: 0;
   position: absolute;
   top: var(--expand-bar);
   right: var(--expand-pad);
@@ -384,6 +441,70 @@
   display: none;
 }
 
+/* Fit and zoom, as small outlined icon buttons. */
+.pdf-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-button {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.icon-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.icon-button[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+.icon-button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.pdf-tools-rule {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+.pdf-zoom {
+  min-width: 46px;
+  color: var(--muted);
+  font-size: calc(12px * var(--fs));
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
 @media (max-width: 640px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
@@ -391,7 +512,15 @@
     --expand-bar: 54px;
   }
 
-  .expanded-bar .preview-meta {
+  /* Room is short: the title, zoom readout and second download go; the
+     main download button is one tap away on the card. */
+  .expanded-bar .expanded-info,
+  .expanded-bar .pdf-zoom,
+  .expanded-bar #expandedDownload {
     display: none;
+  }
+
+  .expanded-bar .pdf-tools {
+    margin-inline-end: auto;
   }
 }

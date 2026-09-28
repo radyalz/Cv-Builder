@@ -19,6 +19,7 @@ import { closeA11y, initPrefs, themeName, t, uiPrefs } from "../lib/prefs.js";
 import { positionPopover } from "../lib/popover.js";
 import { hideTip, setTipContent } from "../lib/tooltip.js";
 import { paintSkulls, setSkullsPaused } from "../lib/skulls.js";
+import { PdfView } from "../lib/pdf-view.js";
 
 // The CV builder itself: the selection, the colour menu, the published
 // preview and how it expands, the build flow, and what each tooltip says.
@@ -46,7 +47,11 @@ const variantToggle = document.getElementById("variantToggle");
 const languageToggle = document.getElementById("languageToggle");
 
 const previewPane = document.querySelector(".card-preview");
-const previewFrame = document.getElementById("previewFrame");
+const previewDoc = document.getElementById("previewDoc");
+const pdfZoom = document.getElementById("pdfZoom");
+
+// Created in initBuilder(); draws the published PDF into previewDoc.
+let pdfView = null;
 const previewState = document.getElementById("previewState");
 const previewLabel = document.getElementById("previewLabel");
 const previewMeta = document.getElementById("previewMeta");
@@ -340,8 +345,27 @@ const GROW_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 // closed → opening → open → closing → closed
 let expandState = "closed";
 
+// A click that arrives mid-animation ("close" while it is still growing, or
+// "expand" while it shrinks) is remembered and run as soon as it settles.
+let queued = null;
+
+function runQueued() {
+  const next = queued;
+
+  queued = null;
+
+  if (next === "open") {
+    expandPreview();
+  } else if (next === "close") {
+    collapsePreview();
+  }
+}
+
+// Waits on the animation clock rather than a timer, so the pauses between
+// steps stay in step with the animations themselves, even when a hidden
+// tab throttles timers far harder than it slows animations.
 function wait(ms) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+  return document.body.animate([], { duration: ms }).finished;
 }
 
 function isPhone() {
@@ -392,17 +416,21 @@ function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
   ];
 
   const showing =
-    !previewFrame.hidden &&
-    !previewFrame.classList.contains("is-loading") &&
+    !previewDoc.hidden &&
+    !previewDoc.classList.contains("is-loading") &&
     frameFrom.width > 40 &&
     frameTo.width > 40;
+
+  // No re-rendering mid-grow: the pages are scaled as a picture, then drawn
+  // sharp once, at the final size, when settle() releases the hold.
+  pdfView.hold(true);
 
   if (showing) {
     // The frame's width at any moment is exactly this scale of the PDF's
     // width, because both run on the same timing.
     const scale = frameTo.width / frameFrom.width;
 
-    Object.assign(previewFrame.style, {
+    Object.assign(previewDoc.style, {
       position: "absolute",
       top: "0",
       left: "0",
@@ -412,7 +440,7 @@ function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
     });
 
     animations.push(
-      previewFrame.animate(
+      previewDoc.animate(
         [{ transform: "scale(1)" }, { transform: `scale(${scale})` }],
         timing
       )
@@ -420,7 +448,7 @@ function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
   } else {
     // Nothing on screen to scale (phones start from a button): the page
     // colour grows, and the PDF fades in once the card is in place.
-    previewFrame.style.opacity = "0";
+    previewDoc.style.opacity = "0";
   }
 
   return Promise.all(animations.map((animation) => animation.finished)).then(
@@ -429,20 +457,31 @@ function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
 }
 
 function settle(animations) {
-  const faded = previewFrame.style.opacity === "0";
+  const faded = previewDoc.style.opacity === "0";
 
   for (const animation of animations) {
     animation.cancel();
   }
 
-  previewFrame.removeAttribute("style");
+  // Keep the viewer's own spacing variables; drop only the grow styles.
+  for (const property of ["position", "top", "left", "width", "height", "transform-origin", "opacity"]) {
+    previewDoc.style.removeProperty(property);
+  }
 
   if (faded) {
-    previewFrame.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+    previewDoc.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
   }
+
+  // Draw the pages sharp at their new size.
+  pdfView.hold(false);
 }
 
 async function expandPreview() {
+  if (expandState === "closing") {
+    queued = "open";
+    return;
+  }
+
   if (expandState !== "closed" || !variants.has(selectedKey())) {
     return;
   }
@@ -480,10 +519,16 @@ async function expandPreview() {
 
   // The grown card covers the skulls, so they rest while it is open.
   setSkullsPaused("covered", true);
+  runQueued();
   previewCollapse.focus({ preventScroll: true });
 }
 
 async function collapsePreview() {
+  if (expandState === "opening") {
+    queued = "close";
+    return;
+  }
+
   if (expandState !== "open") {
     return;
   }
@@ -495,6 +540,13 @@ async function collapsePreview() {
   const quick = reducedMotion();
 
   builderCard.classList.remove("is-open");
+
+  // Shrink the same layout it lands on: back to fitting the width first.
+  if (pdfView.fit !== "width" && !previewDoc.hidden) {
+    pdfView.fit = "width";
+    await pdfView.render();
+  }
+
   await wait(quick ? 0 : 150);
 
   const cardFrom = builderCard.getBoundingClientRect();
@@ -521,6 +573,11 @@ async function collapsePreview() {
   document.body.classList.remove("preview-open");
   expandState = "closed";
 
+  if (queued) {
+    runQueued();
+    return;
+  }
+
   (isPhone() ? mobilePreview : previewExpand).focus({ preventScroll: true });
 }
 
@@ -530,7 +587,7 @@ async function collapsePreview() {
 function setPreviewLoading(loading) {
   window.clearTimeout(previewLoadTimer);
   previewSkeleton.hidden = !loading;
-  previewFrame.classList.toggle("is-loading", loading);
+  previewDoc.classList.toggle("is-loading", loading);
 
   if (loading) {
     previewLoadTimer = window.setTimeout(() => setPreviewLoading(false), 10000);
@@ -568,9 +625,9 @@ function refreshPreview() {
 
   if (!published) {
     setPreviewLoading(false);
-    previewFrame.hidden = true;
-    previewFrame.removeAttribute("src");
-    delete previewFrame.dataset.url;
+    previewDoc.hidden = true;
+    pdfView.clear();
+    delete previewDoc.dataset.url;
 
     previewState.hidden = false;
     previewState.textContent =
@@ -588,26 +645,25 @@ function refreshPreview() {
 
   // Each copy is downloaded once and kept for the session, so switching
   // back to a colour, or expanding it, never fetches it again.
-  if (previewFrame.dataset.url !== url) {
-    previewFrame.dataset.url = url;
+  if (previewDoc.dataset.url !== url) {
+    previewDoc.dataset.url = url;
     setPreviewLoading(true);
 
-    // FitH keeps the viewer fitted to the width at every size, so the
-    // page reads the same small and expanded and the grow has no jump.
     cachedPreview(url)
-      .then((objectUrl) => {
-        if (previewFrame.dataset.url === url) {
-          previewFrame.src = `${objectUrl}#view=FitH`;
+      .catch(() => url)
+      .then((source) => previewDoc.dataset.url === url && pdfView.open(source))
+      .then((shown) => {
+        if (shown && previewDoc.dataset.url === url) {
+          setPreviewLoading(false);
         }
       })
-      .catch(() => {
-        if (previewFrame.dataset.url === url) {
-          previewFrame.src = `${url}#view=FitH`;
-        }
+      .catch((error) => {
+        console.error("Preview failed:", error);
+        setPreviewLoading(false);
       });
   }
 
-  previewFrame.hidden = false;
+  previewDoc.hidden = false;
   previewState.hidden = true;
 
   const date = formatPublished(published.updatedAt);
@@ -1217,9 +1273,25 @@ export function initBuilder() {
     themeGrid.querySelector(`[data-slug="${next}"]`).focus();
   });
 
-  previewFrame.addEventListener("load", () => {
-    if (previewFrame.getAttribute("src")) {
-      setPreviewLoading(false);
+  pdfView = new PdfView(previewDoc);
+
+  // Fit and zoom controls in the grown card's bar.
+  builderCard.querySelector(".pdf-tools").addEventListener("click", (event) => {
+    const action = event.target.closest("[data-pdf]")?.dataset.pdf;
+
+    if (action === "fit-width") pdfView.setFit("width");
+    if (action === "fit-page") pdfView.setFit("page");
+    if (action === "zoom-in") pdfView.zoomBy(1.2);
+    if (action === "zoom-out") pdfView.zoomBy(1 / 1.2);
+  });
+
+  // PDF.js scale 1 is one CSS pixel per point; 100% is the page's printed
+  // size on screen, 96/72 of that.
+  previewDoc.addEventListener("pdf:rendered", ({ detail }) => {
+    pdfZoom.textContent = `${Math.round((detail.scale / (96 / 72)) * 100)}%`;
+
+    for (const button of builderCard.querySelectorAll("[data-pdf^=fit]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.pdf === `fit-${pdfView.fit}`));
     }
   });
 

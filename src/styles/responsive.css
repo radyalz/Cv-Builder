@@ -184,7 +184,8 @@
   }
 
   .card-main > .secondary-link {
-    align-self: center;
+    align-self: stretch;
+    min-height: 44px;
   }
 
   .download-button {

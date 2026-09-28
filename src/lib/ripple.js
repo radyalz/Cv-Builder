@@ -3,7 +3,7 @@
 // it too.
 
 const RIPPLE_TARGETS =
-  ".primary-button, .ghost-button, .segment, .font-option, .menu-trigger, .mobile-preview, .download-button, .swatch, .a11y-trigger";
+  ".primary-button, .ghost-button, .segment, .font-option, .menu-trigger, .mobile-preview, .download-button, .secondary-link, .icon-button, .swatch, .a11y-trigger";
 
 let started = false;
 

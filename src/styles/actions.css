@@ -41,15 +41,42 @@
   font-size: calc(19px * var(--fs));
 }
 
+/* A quiet, tonal button: it leaves the page, so it carries an outbound
+   arrow and stays a step below the two main actions. */
 .secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   color: var(--text);
-  font-size: calc(14px * var(--fs));
-  text-decoration-color: var(--underline);
-  text-underline-offset: 5px;
+  background: var(--panel-2);
+  font-size: calc(13px * var(--fs));
+  font-weight: 650;
+  text-decoration: none;
+  gap: 8px;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
 }
 
 .secondary-link:hover {
-  text-decoration-color: currentColor;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.secondary-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.link-arrow {
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+[dir="rtl"] .link-arrow {
+  transform: scaleX(-1);
 }
 
 .build-panel,

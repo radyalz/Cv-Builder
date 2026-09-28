@@ -1,15 +1,16 @@
 /* -------- Tooltips --------
-   Modelled on the ERD schema project's floating tooltip: an inverted,
-   solid bubble that follows the cursor on a spring and squashes a little
-   in the direction it is moving (src/lib/tooltip.js drives the motion). Keyboard
-   focus pins it to the control with an arrow instead. Each one carries a
-   title, a line on what the control does and, where useful, the live
-   details it acts on. */
+   Modelled on the ERD schema project's floating tooltip: a solid bubble in
+   the page's own appearance (dark on dark, white on light) that follows
+   the cursor on a spring and squashes a little in the direction it is
+   moving (src/lib/tooltip.js drives the motion). Keyboard focus pins it to
+   the control with an arrow instead. Each one carries a title, a line on
+   what the control does and, where useful, the live details it acts on. */
 
 .tooltip {
-  --tip-bg: #ffffff;
-  --tip-text: #0b0d10;
-  --tip-rule: rgba(11, 13, 16, 0.1);
+  --tip-bg: #16181d;
+  --tip-text: #f5f7fa;
+  --tip-rule: rgba(255, 255, 255, 0.12);
+  --tip-edge: rgba(255, 255, 255, 0.1);
   position: fixed;
   z-index: 95;
   top: 0;
@@ -22,9 +23,10 @@
 }
 
 :root[data-theme="light"] .tooltip {
-  --tip-bg: #16181d;
-  --tip-text: #f5f7fa;
-  --tip-rule: rgba(255, 255, 255, 0.12);
+  --tip-bg: #ffffff;
+  --tip-text: #111318;
+  --tip-rule: rgba(17, 19, 24, 0.1);
+  --tip-edge: rgba(17, 19, 24, 0.08);
 }
 
 .tooltip.is-visible {
@@ -51,7 +53,7 @@
   border-radius: 6px;
   color: var(--tip-text);
   background: var(--tip-bg);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 0 0 1px var(--tip-edge), 0 10px 30px rgba(0, 0, 0, 0.28);
   font-size: calc(11px * var(--fs));
   font-weight: 500;
   line-height: 1.45;

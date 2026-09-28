@@ -1,6 +1,7 @@
 ---
-// The published-copy preview beside the controls, and the bar it gains
-// when the card grows to fill the window (see "Expanding the preview" in
+// The published-copy preview beside the controls (drawn by
+// src/lib/pdf-view.js), and the bar it gains when the card grows to fill
+// the window (see "Expanding the preview" in
 // src/scripts/builder.js).
 import PreviewSkeleton from "./PreviewSkeleton.astro";
 import { STRINGS } from "../lib/data.js";
@@ -15,13 +16,14 @@ const en = STRINGS.en;
   </div>
 
   <div class="preview-frame">
-    <iframe
-      id="previewFrame"
-      class="is-loading"
-      title={en.previewFrame}
-      data-i18n-title="previewFrame"
+    <div
+      id="previewDoc"
+      class="pdf-view is-loading"
+      role="document"
+      aria-label={en.previewFrame}
+      data-i18n-aria="previewFrame"
       hidden
-    ></iframe>
+    ></div>
 
     <PreviewSkeleton />
 
@@ -39,6 +41,23 @@ const en = STRINGS.en;
     <div class="expanded-info">
       <span id="expandedLabel" class="preview-title"></span>
       <span id="expandedMeta" class="preview-meta"></span>
+    </div>
+
+    <div class="pdf-tools" role="toolbar" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+      <button class="icon-button" type="button" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
+      </button>
+      <button class="icon-button" type="button" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
+      </button>
+      <span class="pdf-tools-rule" aria-hidden="true"></span>
+      <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
+      </button>
+      <span id="pdfZoom" class="pdf-zoom" aria-live="polite">100%</span>
+      <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>
+      </button>
     </div>
 
     <a id="expandedDownload" class="ghost-button" data-i18n="downloadShort" data-tip="download" download>{en.downloadShort}</a>
