@@ -118,7 +118,7 @@ const expandedLabel = document.getElementById("expandedLabel");
 const expandedMeta = document.getElementById("expandedMeta");
 const expandedDownload = document.getElementById("expandedDownload");
 const downloadLatest = document.getElementById("downloadLatest");
-const mobilePreview = document.getElementById("mobilePreview");
+const peekHint = document.querySelector(".peek-hint");
 
 
 let variants = new Map();
@@ -638,18 +638,18 @@ function wait(ms) {
   return document.body.animate([], { duration: ms }).finished;
 }
 
+// Under 600px the inline preview is a peek that opens when tapped.
 function isPhone() {
-  return window.matchMedia("(max-width: 640px)").matches;
+  return window.matchMedia("(max-width: 599px)").matches;
 }
 
 function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Where the preview grows out of: the inline frame, or on phones (which
-// have none) the button that opens it.
+// Where the preview grows out of, and shrinks back to: its inline frame.
 function previewOrigin() {
-  return (isPhone() ? mobilePreview : previewBox).getBoundingClientRect();
+  return previewBox.getBoundingClientRect();
 }
 
 function within(rect, outer = { left: 0, top: 0 }) {
@@ -934,7 +934,7 @@ async function collapsePreview() {
     return;
   }
 
-  (isPhone() ? mobilePreview : previewExpand).focus({ preventScroll: true });
+  (isPhone() ? previewBox : previewExpand).focus({ preventScroll: true });
 }
 
 // Shows the page-shaped skeleton until the PDF has actually loaded. PDFs
@@ -965,8 +965,8 @@ function refreshPreview() {
 
   const published = variants.get(selectedKey());
 
-  // Phones have no inline preview; their button opens the viewer instead.
-  mobilePreview.disabled = !published;
+  // On phones the peek says it opens, when there is something to open.
+  peekHint.hidden = !published;
 
   // The download button hands over the published copy directly, no build.
   if (published) {
@@ -1779,7 +1779,12 @@ export function initBuilder() {
 
 
   previewExpand.addEventListener("click", expandPreview);
-  mobilePreview.addEventListener("click", expandPreview);
+  // Phones: tapping the peek opens the full view.
+  previewBox.addEventListener("click", () => {
+    if (isPhone() && expandState === "closed") {
+      expandPreview();
+    }
+  });
   previewCollapse.addEventListener("click", () => collapsePreview());
 
   // A click in the margin around the grown card closes it.

@@ -589,7 +589,7 @@
   text-align: center;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 599px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
     --expand-pad: 10px;
@@ -610,5 +610,56 @@
 
   .expanded-bar .links-hint-text {
     display: none;
+  }
+}
+
+/* -------- Phone peek --------
+   Under 600px the preview shows the top of page one fading out, with a
+   chip saying it opens; tapping anywhere on it grows the card to full
+   screen, where it scrolls and zooms as usual. */
+
+.peek-hint {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .builder-card:not(.is-expanded) .preview-frame::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 45%;
+    background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--sk-page) 92%, transparent));
+    content: "";
+    pointer-events: none;
+  }
+
+  .builder-card:not(.is-expanded) .peek-hint:not([hidden]) {
+    position: absolute;
+    z-index: 2;
+    bottom: 12px;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--accent-text);
+    background: var(--accent);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    font-size: calc(12px * var(--fs) * var(--fa-small));
+    font-weight: 700;
+    gap: 6px;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .peek-hint svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
   }
 }

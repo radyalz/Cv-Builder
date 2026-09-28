@@ -14,99 +14,98 @@
   100% { left: 110%; }
 }
 
-/* -------- Narrow screens: stack, and let the card breathe -------- */
+/* -------- Layout by screen size --------
+   Desktop, 1024px and up: controls and preview side by side.
+   Tablet, 600 to 1023px: stacked, the preview filling all the height left
+   under the controls, scrollable, with its footer and Expand.
+   Phone, under 600px: stacked, the preview a peek at the top of page one
+   that grows to full screen when tapped.
+   Phones held sideways are short, so they keep the side-by-side layout. */
 
-@media (max-width: 1000px) {
+/* The narrow end of desktop: a slimmer preview column, so the controls
+   (Reset included) stay on one line. */
+@media (min-width: 1024px) and (max-width: 1279px) {
   .builder-card {
-    max-height: calc(100dvh - 24px);
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
+  }
+
+  .controls {
+    gap: 14px;
+  }
+}
+
+/* Tablets and phones: stacked, in a card of fixed height so the preview
+   row has a definite size to fill. */
+@media (max-width: 1023px) {
+  .page-shell {
+    padding: 12px;
+  }
+
+  .builder-card {
+    height: calc(100dvh - 24px);
+    max-height: none;
+    gap: 16px;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
   }
 
-  .page-shell {
-    padding: 12px;
+  .card-main {
+    overflow: visible;
+  }
+
+  .preview-frame {
+    min-height: 150px;
+  }
+
+  /* The floating accessibility button sits over the card's bottom-right
+     corner here; the preview's footer keeps clear of it. */
+  .preview-foot {
+    padding-right: 60px;
+  }
+
+  h1 {
+    font-size: calc(clamp(28px, 6vw, 40px) * var(--fs));
+  }
+
+  .lead {
+    margin-top: 8px;
+  }
+}
+
+/* Phones held sideways: too short to stack, so side by side again, with
+   the controls scrolling if they must. */
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  .builder-card {
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .card-main {
+    overflow-y: auto;
   }
 
   .lead {
     display: none;
   }
-
-  h1 {
-    font-size: calc(clamp(26px, 7vw, 38px) * var(--fs));
-  }
 }
 
-@media (max-width: 560px) {
-  .actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
+/* -------- Phones --------
+   A calmer, roomier card: less blur than desktop with a little more tint,
+   so the skulls show through without the text losing contrast. Controls
+   sit on a grid (accent on its own row; edition, language and Reset
+   below), every tap target full width. */
 
-  .primary-button {
-    width: 100%;
-  }
-
-  .secondary-link {
-    text-align: center;
-  }
-}
-
-/* -------- Phones: no inline preview, an outlined button opens the viewer -------- */
-
-.mobile-preview {
-  display: none;
-}
-
-@media (max-width: 640px) {
-  .card-preview {
-    display: none !important;
-  }
-  .mobile-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 44px;
-    margin-top: 12px;
-    padding: 0 16px;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    color: var(--accent);
-    background: transparent;
-    font-size: calc(14px * var(--fs));
-    font-weight: 650;
-    cursor: pointer;
-    transition: background-color 140ms ease;
-  }
-  .mobile-preview:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-  }
-  .mobile-preview:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-  .mobile-preview:focus-visible {
-    outline: 2px solid var(--text);
-    outline-offset: 2px;
-  }
-}
-
-/* -------- Phones: a calmer, roomier card --------
-   Less blur than desktop with a little more tint instead, so the skulls
-   show through without the text losing contrast. Controls sit on a grid
-   rather than wrapping: accent on its own row, edition and language side
-   by side below it, every tap target full width. */
-
-@media (max-width: 640px) {
+@media (max-width: 599px) {
   .page-shell {
-    padding: 14px;
+    padding: 12px;
   }
 
   .builder-card {
-    max-height: calc(100dvh - 28px);
-    padding: 26px 22px 24px;
+    height: calc(100dvh - 24px);
+    padding: 22px 18px 18px;
     border-radius: 10px;
+    gap: 14px;
     background:
       linear-gradient(
         160deg,
@@ -120,33 +119,26 @@
   }
 
   .eyebrow {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-size: calc(10px * var(--fs) * var(--fa-small));
   }
 
   h1 {
-    font-size: calc(34px * var(--fs));
+    font-size: calc(32px * var(--fs));
     line-height: 1.02;
   }
 
   .lead {
     display: block;
-    margin-top: 10px;
-    font-size: calc(14px * var(--fs));
-    line-height: 1.55;
+    margin-top: 8px;
+    font-size: calc(13.5px * var(--fs));
+    line-height: 1.5;
   }
 
   .controls {
     display: grid;
-    margin-top: 24px;
-    gap: 16px 12px;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* accent spans the full row */
-  /* Accent spans the first row; edition, language and then Reset share the
-     second, the two choices taking equal room. */
-  .controls {
+    margin-top: 18px;
+    gap: 12px 10px;
     grid-template-columns: 1fr 1fr auto;
   }
 
@@ -155,13 +147,13 @@
   }
 
   .reset-control {
-    height: 46px;
+    height: 44px;
     padding: 0 12px;
   }
 
   .menu-trigger {
     width: 100%;
-    height: 46px;
+    height: 44px;
   }
 
   .trigger-caret {
@@ -170,37 +162,35 @@
 
   .segmented {
     width: 100%;
-    height: 46px;
+    height: 44px;
   }
 
   .segment {
     flex: 1;
-    padding: 0 8px;
+    padding: 0 6px;
   }
 
   .actions {
     align-items: stretch;
     flex-direction: column;
-    margin-top: 26px;
-    gap: 14px;
+    margin-top: 16px;
+    gap: 10px;
   }
 
   .primary-button {
     width: 100%;
-    min-height: 52px;
-  }
-
-  .secondary-link {
-    text-align: center;
-  }
-
-  .card-main > .secondary-link {
-    align-self: stretch;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .download-button {
     width: 100%;
+    min-height: 44px;
+  }
+
+  .card-main > .secondary-link {
+    align-self: stretch;
+    min-height: 40px;
+    margin-top: 10px;
   }
 
   .a11y-trigger {
@@ -209,15 +199,63 @@
     height: 46px;
   }
 
-  .mobile-preview {
-    min-height: 48px;
-    margin-top: 12px;
+  /* The preview is a peek: the top of page one, fading out, that opens to
+     full screen when tapped (see "peek-hint" in PreviewPane). Its date and
+     buttons live in the grown view instead. */
+  .preview-head {
+    margin-bottom: 6px;
+  }
+
+  .preview-foot {
+    display: none;
+  }
+
+  .builder-card:not(.is-expanded) .preview-frame {
+    cursor: zoom-in;
+  }
+
+  .builder-card:not(.is-expanded) .pdf-view {
+    overflow: hidden;
+  }
+
+  .builder-card:not(.is-expanded) .pdf-links {
+    pointer-events: none;
+  }
+}
+
+/* The smallest phones: Reset keeps only its icon (its tooltip and label
+   still name it), so edition and language keep their room. */
+@media (max-width: 379px) {
+  .reset-control span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .reset-control {
+    padding: 0 12px;
+  }
+}
+
+/* Short phones: the intro line goes and spacing tightens, leaving the
+   preview peek room. */
+@media (max-width: 599px) and (max-height: 740px) {
+  .lead {
+    display: none;
+  }
+
+  .builder-card {
+    padding-top: 18px;
+    padding-bottom: 14px;
   }
 }
 
 /* Phones keep the lighter 4px blur in the light appearance too, with more
    white to make up for it. */
-@media (max-width: 640px) {
+@media (max-width: 599px) {
   :root[data-theme="light"] .builder-card {
     background:
       linear-gradient(
@@ -229,44 +267,6 @@
       var(--glass-strong);
     -webkit-backdrop-filter: blur(4px) saturate(160%);
     backdrop-filter: blur(4px) saturate(160%);
-  }
-}
-
-/* -------- Short phones --------
-   Room is tight below ~700px of height, especially at the larger text sizes:
-   the intro line goes, spacing tightens, and the bottom keeps clear of the
-   floating accessibility button. */
-
-@media (max-width: 640px) and (max-height: 700px) {
-  .page-shell {
-    padding-bottom: 68px;
-  }
-
-  .builder-card {
-    max-height: calc(100dvh - 82px);
-    padding-top: 20px;
-    padding-bottom: 18px;
-  }
-
-  .lead {
-    display: none;
-  }
-
-  .controls,
-  .actions {
-    margin-top: 18px;
-  }
-
-  .controls {
-    gap: 12px 10px;
-  }
-
-  .card-main > .secondary-link {
-    margin-top: 10px;
-  }
-
-  .mobile-preview {
-    margin-top: 10px;
   }
 }
 
