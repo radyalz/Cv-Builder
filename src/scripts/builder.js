@@ -356,7 +356,7 @@ function cachedPreview(url) {
    card, then takes its real size once at the end. The viewer fits the page
    to the width either way, so that last swap does not show. */
 
-const FADE_MS = 180;
+const FADE_MS = 260;
 const GROW_MS = 480;
 const GROW_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -588,6 +588,10 @@ async function collapsePreview() {
 
   builderCard.classList.remove("is-expanded");
   settle(animations);
+
+  // Let the text column be laid out in its faded, shifted state first, so
+  // removing is-fading slides it back in rather than popping it into view.
+  void builderCard.querySelector(".card-main").offsetWidth;
   builderCard.classList.remove("is-fading");
   document.body.classList.remove("preview-open");
   expandState = "closed";
