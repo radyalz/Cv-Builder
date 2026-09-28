@@ -1,11 +1,106 @@
-/* Persian UI font, self-hosted. The unicode-range means it is only
-   downloaded when Persian text is on screen; Latin keeps the UI font. To use
-   a different Persian font, replace the file and the family name here. */
+/* -------- Fonts --------
+   All self-hosted, and every family is limited to its own script with
+   unicode-range, so one stack serves both page languages: Latin comes from
+   the English font and Persian from the Persian one, each chosen in the
+   accessibility menu. Families carry a "CV" prefix so a copy installed on
+   the visitor's machine is never picked up instead. */
+
 @font-face {
-  font-family: "Vazirmatn";
+  font-family: "CV Inter";
+  src: url("fonts/inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "CV Manrope";
+  src: url("fonts/manrope-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "CV Jakarta";
+  src: url("fonts/plus-jakarta-sans-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "CV Plex";
+  src: url("fonts/ibm-plex-sans-latin.woff2") format("woff2");
+  font-weight: 100 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "CV Grotesk";
+  src: url("fonts/space-grotesk-latin.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "CV Yekan Bakh";
+  src: url("fonts/YekanBakh-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Yekan Bakh";
+  src: url("fonts/YekanBakh-Medium.woff2") format("woff2");
+  font-weight: 500 600;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Yekan Bakh";
+  src: url("fonts/YekanBakh-Bold.woff2") format("woff2");
+  font-weight: 650 750;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Yekan Bakh";
+  src: url("fonts/YekanBakh-Heavy.woff2") format("woff2");
+  font-weight: 800 900;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Vazir";
   src: url("fonts/Vazirmatn-variable.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+/* Niloofar is a naskh face that runs small, hence the size adjustment. */
+@font-face {
+  font-family: "CV Niloofar";
+  src: url("fonts/XBNiloofar-Regular.woff2") format("woff2");
+  font-weight: 100 550;
+  font-display: swap;
+  size-adjust: 118%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "CV Niloofar";
+  src: url("fonts/XBNiloofar-Bold.woff2") format("woff2");
+  font-weight: 600 900;
+  font-display: swap;
+  size-adjust: 118%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -54,7 +149,17 @@
   --skull-row: 150px;
   --skull-bite: 6px;
   --skull-cycle: 6.5s;
+  --font-en: "CV Inter";
+  --font-fa: "CV Yekan Bakh";
+  --font-ui: var(--font-en), var(--font-fa), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
+
+:root[data-en-font="manrope"] { --font-en: "CV Manrope"; }
+:root[data-en-font="jakarta"] { --font-en: "CV Jakarta"; }
+:root[data-en-font="plex"] { --font-en: "CV Plex"; }
+:root[data-en-font="grotesk"] { --font-en: "CV Grotesk"; }
+:root[data-fa-font="vazir"] { --font-fa: "CV Vazir"; }
+:root[data-fa-font="niloofar"] { --font-fa: "CV Niloofar"; }
 
 /* -------- Light appearance --------
    Chosen in the accessibility menu, or taken from the system setting. */
@@ -68,9 +173,9 @@
   --danger: #b42318;
   --success: #146c43;
   --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 24px 64px rgba(16, 24, 40, 0.14);
-  --glass: rgba(255, 255, 255, 0.82);
-  --glass-edge: rgba(17, 19, 24, 0.08);
-  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass: rgba(255, 255, 255, 0.36);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --glass-strong: rgba(255, 255, 255, 0.5);
   --field: #ffffff;
   --field-strong: #ffffff;
   --edge: rgba(17, 19, 24, 0.16);
@@ -85,7 +190,7 @@
   --meta-bar: rgba(17, 19, 24, 0.07);
   --meta-shine: rgba(255, 255, 255, 0.7);
   --backdrop: rgba(243, 242, 247, 0.3);
-  --skull-opacity: 0.16;
+  --skull-opacity: 0.5;
   color-scheme: light;
 }
 
@@ -98,12 +203,7 @@
 }
 
 /* -------- Persian page --------
-   Letter-spacing breaks the joins in Persian script, so it is dropped, and
-   the UI switches to a font that has Persian glyphs. */
-:root[lang="fa"] body {
-  font-family: Vazirmatn, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
+   Letter-spacing breaks the joins in Persian script, so it is dropped. */
 :root[lang="fa"] * {
   letter-spacing: 0 !important;
 }
@@ -126,9 +226,7 @@ body {
   margin: 0;
   overflow: hidden;
   font-size: calc(16px * var(--fs));
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   color: var(--text);
   background:
     radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
@@ -410,6 +508,28 @@ input {
   -webkit-backdrop-filter: blur(12px) saturate(140%);
 }
 
+/* Light glass: a bright sheen across the top, a white rim catching the
+   light, a hairline outside it so the edge still reads, and a stronger blur
+   so the darker skulls behind turn into soft colour instead of detail. */
+:root[data-theme="light"] .builder-card {
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.62),
+      rgba(255, 255, 255, 0.16) 44%,
+      rgba(255, 255, 255, 0.34)
+    ),
+    var(--glass);
+  box-shadow:
+    0 0 0 1px rgba(17, 19, 24, 0.07),
+    0 2px 6px rgba(16, 24, 40, 0.05),
+    0 30px 70px rgba(16, 24, 40, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
 /* Without backdrop blur the panel would read as a flat grey wash, so it
    falls back to something solid enough to stay legible over the skulls. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -532,10 +652,8 @@ h1 {
     background-color 140ms ease;
 }
 
-/* The UI font has no Persian glyphs; without this the fallback renders
-   the label tiny. */
+/* Persian letters sit visibly smaller than Latin at the same size. */
 .segment[lang="fa"] {
-  font-family: Vazirmatn, "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   font-size: calc(16px * var(--fs));
 }
 
@@ -1125,57 +1243,106 @@ h1 {
 }
 
 /* -------- Expanded preview --------
-   The preview frame itself grows to fill the screen, so the PDF already
-   loaded in it is reused rather than fetched again. */
+   The card itself grows. Everything else in it fades out first, then the
+   card (fixed, animated from its own rectangle by runner.js) grows to just
+   inside the window with the PDF filling it, and the bar with the title,
+   download and close fades in last. The glass never switches off, so
+   nothing jumps. */
 
-.preview-backdrop {
-  display: none;
+.card-main,
+.preview-head,
+.preview-foot {
+  transition: opacity 180ms ease;
+}
+
+.builder-card.is-fading .card-main,
+.builder-card.is-fading .preview-head,
+.builder-card.is-fading .preview-foot {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.builder-card.is-expanded {
+  --expand-gap: 14px;
+  --expand-pad: 14px;
+  --expand-bar: 58px;
   position: fixed;
-  inset: 0;
   z-index: 60;
-  background: var(--backdrop);
-}
-
-body.preview-open .preview-backdrop {
+  inset: var(--expand-gap);
   display: block;
-}
-
-body.preview-open .builder-card {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  overflow: visible;
-}
-
-/* Grows to just inside the window edges; the page and skulls stay visible
-   around it through the light tint behind. */
-.preview-frame.is-expanded {
-  position: fixed;
-  z-index: 61;
-  top: 60px;
-  right: 14px;
-  bottom: 14px;
-  left: 14px;
+  width: auto;
   max-height: none;
-  border-color: var(--glass-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  padding: 0;
 }
 
-.preview-collapse {
-  position: fixed;
-  z-index: 62;
-  top: 16px;
-  inset-inline-end: 16px;
+.builder-card.is-expanded .card-main,
+.builder-card.is-expanded .preview-head,
+.builder-card.is-expanded .preview-foot {
+  display: none;
+}
+
+.builder-card.is-expanded .card-preview {
+  position: absolute;
+  inset: 0;
+  display: block !important;
+}
+
+.builder-card.is-expanded .preview-frame {
+  position: absolute;
+  top: var(--expand-bar);
+  right: var(--expand-pad);
+  bottom: var(--expand-pad);
+  left: var(--expand-pad);
+}
+
+.expanded-bar {
+  position: absolute;
+  top: 0;
+  right: var(--expand-pad, 14px);
+  left: var(--expand-pad, 14px);
+  display: none;
+  height: var(--expand-bar, 58px);
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.builder-card.is-expanded .expanded-bar {
+  display: flex;
+}
+
+.builder-card.is-open .expanded-bar {
+  opacity: 1;
+}
+
+.expanded-info {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.expanded-bar .ghost-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  text-decoration: none;
+}
+
+.expanded-bar .ghost-button[aria-disabled="true"] {
+  display: none;
 }
 
 @media (max-width: 640px) {
-  body.preview-open .card-preview {
-    display: block !important;
-    height: 0;
-    overflow: visible;
+  .builder-card.is-expanded {
+    --expand-gap: 10px;
+    --expand-pad: 10px;
+    --expand-bar: 54px;
   }
-  body.preview-open .preview-head,
-  body.preview-open .preview-foot {
+
+  .expanded-bar .preview-meta {
     display: none;
   }
 }
@@ -1211,12 +1378,14 @@ body.preview-open .builder-card {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   place-items: center;
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: transform 200ms ease, box-shadow 160ms ease, opacity 200ms ease;
 }
 
 /* Out of the way while the preview fills the window. */
 body.preview-open .a11y-trigger {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
 }
 
 .a11y-trigger:hover,
@@ -1263,6 +1432,61 @@ body.preview-open .a11y-trigger {
   padding: 0 6px;
 }
 
+/* Each font option is set in its own face, so the menu is the sample. */
+.font-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.font-option {
+  position: relative;
+  overflow: hidden;
+  min-height: 36px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: var(--field);
+  font-size: calc(13px * var(--fs));
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.font-option:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.font-option[aria-checked="true"] {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+.font-option:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.font-option[data-en-font="inter"] { font-family: "CV Inter", sans-serif; }
+.font-option[data-en-font="manrope"] { font-family: "CV Manrope", sans-serif; }
+.font-option[data-en-font="jakarta"] { font-family: "CV Jakarta", sans-serif; }
+.font-option[data-en-font="plex"] { font-family: "CV Plex", sans-serif; }
+.font-option[data-en-font="grotesk"] { font-family: "CV Grotesk", sans-serif; }
+.font-option[data-fa-font="yekan"] { font-family: "CV Yekan Bakh", sans-serif; font-size: calc(15px * var(--fs)); }
+.font-option[data-fa-font="vazir"] { font-family: "CV Vazir", sans-serif; font-size: calc(15px * var(--fs)); }
+.font-option[data-fa-font="niloofar"] { font-family: "CV Niloofar", serif; font-size: calc(15px * var(--fs)); }
+
+/* The menu grew with the font pickers; short screens scroll it. */
+.a11y-menu {
+  overflow-y: auto;
+  max-height: calc(100dvh - 24px);
+  scrollbar-width: thin;
+}
+
 /* the size buttons show their own size, so they are exempt from --fs */
 .segment[data-fs="0.9"] { font-size: 12px; }
 .segment[data-fs="1"] { font-size: 14px; }
@@ -1293,7 +1517,7 @@ body.preview-open .a11y-trigger {
 
 .download-button[aria-disabled="true"] {
   opacity: 0.45;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .card-main > .secondary-link {
@@ -1305,17 +1529,13 @@ body.preview-open .a11y-trigger {
    A material-style ink ripple from the point of the press. */
 
 .primary-button,
-.ghost-button:not(.preview-collapse),
+.ghost-button,
 .segment,
 .menu-trigger,
 .mobile-preview,
 .download-button,
 .swatch {
   position: relative;
-  overflow: hidden;
-}
-
-.preview-collapse {
   overflow: hidden;
 }
 
@@ -1336,30 +1556,165 @@ body.preview-open .a11y-trigger {
   }
 }
 
-/* -------- Tooltips -------- */
+/* -------- Tooltips --------
+   Modelled on the ERD schema project's floating tooltip: an inverted,
+   solid bubble that follows the cursor on a spring and squashes a little
+   in the direction it is moving (runner.js drives the motion). Keyboard
+   focus pins it to the control with an arrow instead. Each one carries a
+   title, a line on what the control does and, where useful, the live
+   details it acts on. */
 
 .tooltip {
+  --tip-bg: #ffffff;
+  --tip-text: #0b0d10;
+  --tip-rule: rgba(11, 13, 16, 0.1);
   position: fixed;
   z-index: 95;
-  max-width: 260px;
-  padding: 6px 9px;
-  border-radius: 4px;
-  color: #ffffff;
-  background: rgba(33, 36, 43, 0.95);
-  font-size: calc(12px * var(--fs));
-  font-weight: 500;
-  line-height: 1.4;
-  opacity: 0;
+  top: 0;
+  left: 0;
   pointer-events: none;
-  transform: scale(0.94);
-  transition: opacity 120ms ease, transform 120ms ease;
   visibility: hidden;
+  will-change: transform;
+  /* stays visible for the fade out */
+  transition: visibility 0s linear 150ms;
+}
+
+:root[data-theme="light"] .tooltip {
+  --tip-bg: #16181d;
+  --tip-text: #f5f7fa;
+  --tip-rule: rgba(255, 255, 255, 0.12);
 }
 
 .tooltip.is-visible {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.tip-pop {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.tooltip.is-visible .tip-pop {
   opacity: 1;
   transform: scale(1);
-  visibility: visible;
+}
+
+.tip-bubble {
+  position: relative;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 24px));
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: var(--tip-text);
+  background: var(--tip-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  font-size: calc(11px * var(--fs));
+  font-weight: 500;
+  line-height: 1.45;
+  will-change: transform;
+}
+
+.tip-arrow {
+  position: absolute;
+  display: none;
+  width: 10px;
+  height: 10px;
+  background: var(--tip-bg);
+  transform: rotate(45deg);
+}
+
+.tooltip[data-mode="arrow"] .tip-arrow {
+  display: block;
+  left: calc(50% - 5px);
+}
+
+.tooltip[data-side="top"] .tip-arrow {
+  bottom: -4px;
+}
+
+.tooltip[data-side="bottom"] .tip-arrow {
+  top: -4px;
+}
+
+.tip-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tip-content.is-swapping {
+  animation: tip-swap 150ms ease-out;
+}
+
+@keyframes tip-swap {
+  from { opacity: 0; }
+}
+
+.tip-title {
+  font-size: calc(12px * var(--fs));
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.tip-body {
+  max-width: 34ch;
+  margin: 0;
+  font-size: calc(11px * var(--fs));
+  opacity: 0.72;
+}
+
+.tip-facts {
+  display: grid;
+  margin: 6px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--tip-rule);
+  gap: 3px 14px;
+  grid-template-columns: auto minmax(0, 1fr);
+  font-size: calc(10.5px * var(--fs));
+}
+
+.tip-facts dt {
+  opacity: 0.58;
+  white-space: nowrap;
+}
+
+.tip-facts dd {
+  overflow: hidden;
+  margin: 0;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tip-facts .is-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95em;
+}
+
+.tip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--tip-rule);
+  vertical-align: -0.5px;
+}
+
+.tip-hint {
+  margin-top: 4px;
+  font-size: calc(10px * var(--fs));
+  opacity: 0.55;
+}
+
+.tip-kbd {
+  padding: 0 4px;
+  border: 1px solid var(--tip-rule);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 [hidden] {
@@ -1564,6 +1919,23 @@ body.preview-open .a11y-trigger {
   .mobile-preview {
     min-height: 48px;
     margin-top: 12px;
+  }
+}
+
+/* Phones keep the lighter 4px blur in the light appearance too, with more
+   white to make up for it. */
+@media (max-width: 640px) {
+  :root[data-theme="light"] .builder-card {
+    background:
+      linear-gradient(
+        160deg,
+        rgba(255, 255, 255, 0.6),
+        rgba(255, 255, 255, 0.2) 45%,
+        rgba(255, 255, 255, 0.36)
+      ),
+      var(--glass-strong);
+    backdrop-filter: blur(4px) saturate(160%);
+    -webkit-backdrop-filter: blur(4px) saturate(160%);
   }
 }
 

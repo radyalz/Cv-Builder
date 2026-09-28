@@ -105,27 +105,9 @@ const STRINGS = {
     hintLight: "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better.",
     hintCustom: "The lighter and muted shades of the CV are derived from this colour automatically.",
     download: "Download published copy",
-    downloadTip: "Download the published copy of this colour, edition and language straight away",
-    generateTip: "Build a fresh copy with today's durations, then download it",
-    allCopiesTip: "See every published copy on GitHub",
-    accentTip: "Choose the CV's accent colour",
-    digitalTip: "Digital edition, with links to the portfolio",
-    printTip: "Print edition, without links",
-    cvEnTip: "Build the CV in English",
-    cvFaTip: "Build the CV in Persian",
-    expandTip: "Expand the preview to fill the window",
-    closeTip: "Close the expanded preview (Esc)",
-    pickTip: "Pick any colour",
-    useTip: "Apply the colour typed in the box",
-    a11yTip: "Accessibility: page language, appearance and text size",
-    uiEnTip: "Show this page in English",
-    uiFaTip: "Show this page in Persian",
-    darkTip: "Dark appearance",
-    lightTip: "Light appearance",
-    sizeSmallTip: "Smaller text",
-    sizeDefaultTip: "Default text size",
-    sizeLargeTip: "Larger text",
-    sizeLargerTip: "Largest text",
+    downloadShort: "Download",
+    enFont: "English font",
+    faFont: "Persian font",
   },
   fa: {
     eyebrow: "رزومه به‌روز",
@@ -191,28 +173,102 @@ const STRINGS = {
     hintLight: "رنگ‌های خیلی روشن در رزومه چاپی سخت خوانده می‌شوند. عنوان‌ها خودکار تیره‌تر می‌شوند، اما رنگی با روشنایی متوسط معمولاً خواناتر است.",
     hintCustom: "سایه‌های روشن‌تر و ملایم رزومه خودکار از همین رنگ ساخته می‌شوند.",
     download: "دانلود نسخه منتشرشده",
-    downloadTip: "دانلود فوری نسخه منتشرشده با همین رنگ، نسخه و زبان",
-    generateTip: "ساخت نسخه‌ای تازه با مدت‌های امروز و دانلود آن",
-    allCopiesTip: "دیدن همه نسخه‌های منتشرشده در گیت‌هاب",
-    accentTip: "انتخاب رنگ رزومه",
-    digitalTip: "نسخه دیجیتال، همراه با پیوند نمونه‌کارها",
-    printTip: "نسخه چاپی، بدون پیوند",
-    cvEnTip: "ساخت رزومه به انگلیسی",
-    cvFaTip: "ساخت رزومه به فارسی",
-    expandTip: "بزرگ‌نمایی پیش‌نمایش به اندازه پنجره",
-    closeTip: "بستن پیش‌نمایش بزرگ (Esc)",
-    pickTip: "انتخاب هر رنگی",
-    useTip: "اعمال رنگ واردشده",
-    a11yTip: "دسترس‌پذیری: زبان صفحه، ظاهر و اندازه متن",
-    uiEnTip: "نمایش این صفحه به انگلیسی",
-    uiFaTip: "نمایش این صفحه به فارسی",
-    darkTip: "ظاهر تیره",
-    lightTip: "ظاهر روشن",
-    sizeSmallTip: "متن کوچک‌تر",
-    sizeDefaultTip: "اندازه پیش‌فرض متن",
-    sizeLargeTip: "متن بزرگ‌تر",
-    sizeLargerTip: "بزرگ‌ترین متن",
+    downloadShort: "دانلود",
+    enFont: "قلم انگلیسی",
+    faFont: "قلم فارسی",
   },
+};
+
+// Tooltip text: a title and a line on what the control does for each
+// data-tip key. tipContent() adds the live details (file, colour, date…).
+const TIPS = {
+  en: {
+    generate: ["Generate a fresh copy", "Compiles the CV from source with today's experience durations, then downloads it. If the published copy is already current, that one downloads at once."],
+    download: ["Download the published copy", "Downloads the copy already built for this selection, with no waiting."],
+    downloadMissing: ["Not published yet", "Nothing has been built for this combination. Use Generate Latest CV and it becomes available here."],
+    downloadCustom: ["No published copy", "Custom colours are only built on request. Use Generate Latest CV to make one."],
+    allCopies: ["All published copies", "Opens the GitHub release that holds every colour, edition and language built so far."],
+    accent: ["Accent colour", "Colours the name, headings, rules and dates in the CV. Choose a preset or any colour of your own."],
+    digital: ["Digital edition", "Keeps the clickable links to the portfolio, email and profiles. Best for reading on screen or sending on."],
+    print: ["Print edition", "Leaves out the portfolio links and is laid out for paper."],
+    cvEn: ["English CV", "Left to right, with Gregorian dates."],
+    cvFa: ["Persian CV", "Right to left, with Solar Hijri dates and durations."],
+    expand: ["Expand the preview", "Grows the card to fill the window so the CV can be read at full size."],
+    close: ["Close the preview", "Shrinks the card back to the builder."],
+    pick: ["Pick any colour", "Opens the colour picker. The lighter and muted shades of the CV are derived from it automatically."],
+    use: ["Apply this colour", "Uses the hex value typed in the box as the accent."],
+    a11y: ["Accessibility", "Page language, appearance, text size and fonts. Remembered on this device."],
+    uiEn: ["English page", "Shows this page in English. The CV's own language is set under CV language."],
+    uiFa: ["Persian page", "Shows this page in Persian, right to left. The CV's own language is set under CV language."],
+    dark: ["Dark appearance", "Light text on a dark page."],
+    light: ["Light appearance", "Dark text on a bright page."],
+    sizeSmall: ["Small text", "Scales every piece of text on this page."],
+    sizeDefault: ["Default text size", "Scales every piece of text on this page."],
+    sizeLarge: ["Large text", "Scales every piece of text on this page."],
+    sizeLarger: ["Larger text", "Scales every piece of text on this page."],
+    swatch: ["{name}", "Sets this preset as the CV's accent colour."],
+  },
+  fa: {
+    generate: ["ساخت نسخه تازه", "رزومه را با مدت سوابق تا امروز از نو می‌سازد و دانلود می‌کند. اگر نسخه منتشرشده به‌روز باشد، همان فوراً دانلود می‌شود."],
+    download: ["دانلود نسخه منتشرشده", "نسخه‌ای را که برای همین انتخاب ساخته شده، بی‌درنگ دانلود می‌کند."],
+    downloadMissing: ["هنوز منتشر نشده", "برای این ترکیب نسخه‌ای ساخته نشده است. با «ساخت جدیدترین رزومه» بسازید تا این‌جا در دسترس باشد."],
+    downloadCustom: ["نسخه منتشرشده‌ای نیست", "رنگ‌های دلخواه فقط هنگام درخواست ساخته می‌شوند. با «ساخت جدیدترین رزومه» یکی بسازید."],
+    allCopies: ["همه نسخه‌های منتشرشده", "صفحه انتشار گیت‌هاب را باز می‌کند که همه رنگ‌ها، نسخه‌ها و زبان‌های ساخته‌شده را دارد."],
+    accent: ["رنگ رزومه", "رنگ نام، عنوان‌ها، خط‌ها و تاریخ‌های رزومه. یکی از رنگ‌های آماده یا هر رنگ دلخواه."],
+    digital: ["نسخه دیجیتال", "پیوندهای نمونه‌کار، ایمیل و پروفایل‌ها را نگه می‌دارد. مناسب خواندن روی صفحه و ارسال."],
+    print: ["نسخه چاپی", "بدون پیوندهای نمونه‌کار و چیده‌شده برای کاغذ."],
+    cvEn: ["رزومه انگلیسی", "چپ‌به‌راست، با تاریخ میلادی."],
+    cvFa: ["رزومه فارسی", "راست‌به‌چپ، با تاریخ و مدت‌های شمسی."],
+    expand: ["بزرگ‌نمایی پیش‌نمایش", "کارت را به اندازه پنجره بزرگ می‌کند تا رزومه در اندازه کامل خوانده شود."],
+    close: ["بستن پیش‌نمایش", "کارت را به سازنده برمی‌گرداند."],
+    pick: ["انتخاب هر رنگی", "انتخابگر رنگ را باز می‌کند. سایه‌های روشن‌تر و ملایم رزومه خودکار از آن ساخته می‌شوند."],
+    use: ["اعمال این رنگ", "کد هگز واردشده را رنگ رزومه می‌کند."],
+    a11y: ["دسترس‌پذیری", "زبان صفحه، ظاهر، اندازه متن و قلم‌ها. روی همین دستگاه به خاطر سپرده می‌شود."],
+    uiEn: ["صفحه انگلیسی", "این صفحه را به انگلیسی نشان می‌دهد. زبان خود رزومه در «زبان رزومه» انتخاب می‌شود."],
+    uiFa: ["صفحه فارسی", "این صفحه را به فارسی و راست‌به‌چپ نشان می‌دهد. زبان خود رزومه در «زبان رزومه» انتخاب می‌شود."],
+    dark: ["ظاهر تیره", "متن روشن روی زمینه تیره."],
+    light: ["ظاهر روشن", "متن تیره روی زمینه روشن."],
+    sizeSmall: ["متن کوچک", "همه متن‌های این صفحه را مقیاس می‌دهد."],
+    sizeDefault: ["اندازه پیش‌فرض", "همه متن‌های این صفحه را مقیاس می‌دهد."],
+    sizeLarge: ["متن بزرگ", "همه متن‌های این صفحه را مقیاس می‌دهد."],
+    sizeLarger: ["متن بزرگ‌تر", "همه متن‌های این صفحه را مقیاس می‌دهد."],
+    swatch: ["{name}", "این رنگ آماده را رنگ رزومه می‌کند."],
+  },
+};
+
+// Labels for the detail rows under a tooltip.
+const FACTS = {
+  en: {
+    file: "File", colour: "Colour", edition: "Edition", language: "Language",
+    published: "Published", size: "Size", status: "Status", shortcut: "Shortcut",
+    copies: "Copies", latest: "Latest", opens: "Opens", newTab: "In a new tab",
+    notYet: "Not built yet", buildTime: "Build time", buildTimeValue: "About half a minute",
+    scale: "Scale", style: "Style", page: "Page", fonts: "Fonts",
+    appearance: "Appearance", text: "Text size", hex: "Hex", builtCopies: "Built copies",
+  },
+  fa: {
+    file: "فایل", colour: "رنگ", edition: "نسخه", language: "زبان",
+    published: "انتشار", size: "حجم", status: "وضعیت", shortcut: "میان‌بر",
+    copies: "نسخه‌ها", latest: "آخرین", opens: "باز شدن", newTab: "در زبانه تازه",
+    notYet: "هنوز ساخته نشده", buildTime: "زمان ساخت", buildTimeValue: "حدود نیم دقیقه",
+    scale: "مقیاس", style: "سبک", page: "صفحه", fonts: "قلم‌ها",
+    appearance: "ظاهر", text: "اندازه متن", hex: "هگز", builtCopies: "نسخه‌های ساخته‌شده",
+  },
+};
+
+// Page fonts offered in the accessibility menu: [English, Persian] text.
+const EN_FONTS = {
+  inter: { name: "Inter", note: ["Neutral and very legible; the original look of this page.", "خنثی و بسیار خوانا؛ ظاهر اصلی این صفحه."], style: ["Grotesque sans", "بی‌میانه گروتسک"] },
+  manrope: { name: "Manrope", note: ["Geometric, with softer and rounder curves.", "هندسی، با انحناهای نرم‌تر و گردتر."], style: ["Geometric sans", "بی‌میانه هندسی"] },
+  jakarta: { name: "Plus Jakarta Sans", note: ["Modern and slightly condensed, with a friendly tone.", "مدرن و کمی فشرده، با حسی دوستانه."], style: ["Geometric sans", "بی‌میانه هندسی"] },
+  plex: { name: "IBM Plex Sans", note: ["Engineered and a little technical.", "مهندسی‌شده و کمی فنی."], style: ["Neo-grotesque", "نئوگروتسک"] },
+  grotesk: { name: "Space Grotesk", note: ["A quirky display grotesque with character.", "گروتسکی نمایشی و پرشخصیت."], style: ["Display grotesque", "گروتسک نمایشی"] },
+};
+
+const FA_FONTS = {
+  yekan: { name: ["Yekan Bakh", "یکان بخ"], note: ["A clean, modern Persian sans; the default.", "بی‌میانه‌ای مدرن و تمیز؛ پیش‌فرض."], style: ["Sans", "بی‌میانه"] },
+  vazir: { name: ["Vazirmatn", "وزیرمتن"], note: ["Open and very readable Persian sans.", "بی‌میانه‌ای باز و بسیار خوانا."], style: ["Sans", "بی‌میانه"] },
+  niloofar: { name: ["XB Niloofar", "نیلوفر"], note: ["A classic naskh with book-like contrast.", "نسخی کلاسیک با کنتراست کتابی."], style: ["Naskh", "نسخ"] },
 };
 
 const FA_COLOURS = {
@@ -241,7 +297,7 @@ const TEXT_SIZES = [0.9, 1, 1.15, 1.3];
 
 // Page language, appearance and text size from the accessibility menu.
 // Appearance starts from the system setting until the visitor picks one.
-let uiPrefs = { lang: "en", theme: "dark", fs: 1 };
+let uiPrefs = { lang: "en", theme: "dark", fs: 1, enFont: "inter", faFont: "yekan" };
 
 function t(key, vars = {}) {
   let text = (STRINGS[uiPrefs.lang] || STRINGS.en)[key] ?? STRINGS.en[key] ?? key;
@@ -295,11 +351,17 @@ const previewSkeleton = document.getElementById("previewSkeleton");
 const skullField = document.querySelector(".skull-field");
 const previewBox = document.querySelector(".preview-frame");
 const previewCollapse = document.getElementById("previewCollapse");
-const previewBackdrop = document.querySelector(".preview-backdrop");
+const builderCard = document.querySelector(".builder-card");
+const expandedLabel = document.getElementById("expandedLabel");
+const expandedMeta = document.getElementById("expandedMeta");
+const expandedDownload = document.getElementById("expandedDownload");
 const a11yTrigger = document.getElementById("a11yTrigger");
 const a11yMenu = document.getElementById("a11yMenu");
 const downloadLatest = document.getElementById("downloadLatest");
 const tooltip = document.getElementById("tooltip");
+const tipPop = tooltip.querySelector(".tip-pop");
+const tipBubble = tooltip.querySelector(".tip-bubble");
+const tipContentBox = tooltip.querySelector(".tip-content");
 const mobilePreview = document.getElementById("mobilePreview");
 
 let variants = new Map();
@@ -697,49 +759,203 @@ function cachedPreview(url) {
   return previewCache.get(url);
 }
 
-function expandPreview() {
-  if (!variants.has(selectedKey()) || previewBox.classList.contains("is-expanded")) return;
-  const first = previewBox.getBoundingClientRect();
-  document.body.classList.add("preview-open");
-  previewBox.classList.add("is-expanded");
-  const last = previewBox.getBoundingClientRect();
-  if (first.width > 0) {
-    previewBox.style.transformOrigin = "0 0";
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
-    const sx = first.width / last.width;
-    const sy = first.height / last.height;
-    previewBox.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-    void previewBox.offsetWidth;
-    previewBox.style.transition = "transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-    previewBox.style.transform = "";
-  }
-  previewCollapse.hidden = false;
-  previewCollapse.focus();
+/* -------- Expanding the preview --------
+   Three steps that never overlap, so nothing fights over the same frame:
+   the rest of the card fades out, the card grows from where it sits to
+   just inside the window (its own rectangle is animated, so the glass and
+   the PDF grow with it), and then the bar with the title and Close fades
+   in. Collapsing plays the same steps backwards.
+
+   While the card grows, the PDF is not resized every frame, which is what
+   made it judder. It keeps its starting size and is scaled in step with the
+   card, then takes its real size once at the end. The viewer fits the page
+   to the width either way, so that last swap does not show. */
+
+const FADE_MS = 180;
+const GROW_MS = 480;
+const GROW_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+// closed → opening → open → closing → closed
+let expandState = "closed";
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
-function collapsePreview() {
-  if (!previewBox.classList.contains("is-expanded")) return;
-  const first = previewBox.getBoundingClientRect();
-  previewBox.classList.remove("is-expanded");
-  document.body.classList.remove("preview-open");
-  previewCollapse.hidden = true;
-  const last = previewBox.getBoundingClientRect();
-  if (last.width > 0) {
-    previewBox.style.transition = "none";
-    previewBox.style.transformOrigin = "0 0";
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
-    const sx = first.width / last.width;
-    const sy = first.height / last.height;
-    previewBox.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-    void previewBox.offsetWidth;
-    previewBox.style.transition = "transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-    previewBox.style.transform = "";
+function isPhone() {
+  return window.matchMedia("(max-width: 640px)").matches;
+}
+
+function reducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// Where the preview grows out of: the inline frame, or on phones (which
+// have none) the button that opens it.
+function previewOrigin() {
+  return (isPhone() ? mobilePreview : previewBox).getBoundingClientRect();
+}
+
+function within(rect, outer = { left: 0, top: 0 }) {
+  return {
+    left: rect.left - outer.left,
+    top: rect.top - outer.top,
+    width: rect.width,
+    height: rect.height,
+  };
+}
+
+// right and bottom stay auto in both frames: the box is otherwise
+// over-constrained, and on right-to-left pages the browser would drop
+// `left` rather than `right`.
+function boxFrame(rect) {
+  return {
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
+    right: "auto",
+    bottom: "auto",
+  };
+}
+
+// Animates the card, the frame inside it and the PDF together. They hold
+// their last frame until the caller has switched the classes over and then
+// settle() cancels them, so no frame of the in-between layout is painted.
+function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
+  const timing = { duration, easing: GROW_EASE, fill: "forwards" };
+  const animations = [
+    builderCard.animate([boxFrame(cardFrom), boxFrame(cardTo)], timing),
+    previewBox.animate([boxFrame(frameFrom), boxFrame(frameTo)], timing),
+  ];
+
+  const showing =
+    !previewFrame.hidden &&
+    !previewFrame.classList.contains("is-loading") &&
+    frameFrom.width > 40 &&
+    frameTo.width > 40;
+
+  if (showing) {
+    // The frame's width at any moment is exactly this scale of the PDF's
+    // width, because both run on the same timing.
+    const scale = frameTo.width / frameFrom.width;
+
+    Object.assign(previewFrame.style, {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      width: `${frameFrom.width}px`,
+      height: `${Math.max(frameFrom.height, frameTo.height / scale)}px`,
+      transformOrigin: "0 0",
+    });
+
+    animations.push(
+      previewFrame.animate(
+        [{ transform: "scale(1)" }, { transform: `scale(${scale})` }],
+        timing
+      )
+    );
   } else {
-    previewBox.style.transform = "";
-    previewBox.style.transition = "";
+    // Nothing on screen to scale (phones start from a button): the page
+    // colour grows, and the PDF fades in once the card is in place.
+    previewFrame.style.opacity = "0";
   }
+
+  return Promise.all(animations.map((animation) => animation.finished)).then(
+    () => animations
+  );
+}
+
+function settle(animations) {
+  const faded = previewFrame.style.opacity === "0";
+
+  for (const animation of animations) {
+    animation.cancel();
+  }
+
+  previewFrame.removeAttribute("style");
+
+  if (faded) {
+    previewFrame.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+  }
+}
+
+async function expandPreview() {
+  if (expandState !== "closed" || !variants.has(selectedKey())) {
+    return;
+  }
+
+  expandState = "opening";
+  hideTip();
+  closeMenu();
+  closeA11y();
+
+  const quick = reducedMotion();
+
+  document.body.classList.add("preview-open");
+  builderCard.classList.add("is-fading");
+  await wait(quick ? 0 : FADE_MS);
+
+  const cardFrom = builderCard.getBoundingClientRect();
+  const frameFrom = within(previewOrigin(), cardFrom);
+
+  builderCard.classList.add("is-expanded");
+
+  const cardTo = builderCard.getBoundingClientRect();
+  const frameTo = within(previewBox.getBoundingClientRect(), cardTo);
+
+  const animations = await growBetween(
+    within(cardFrom),
+    within(cardTo),
+    frameFrom,
+    frameTo,
+    quick ? 0 : GROW_MS
+  );
+
+  settle(animations);
+  builderCard.classList.add("is-open");
+  expandState = "open";
+  previewCollapse.focus({ preventScroll: true });
+}
+
+async function collapsePreview() {
+  if (expandState !== "open") {
+    return;
+  }
+
+  expandState = "closing";
+  hideTip();
+
+  const quick = reducedMotion();
+
+  builderCard.classList.remove("is-open");
+  await wait(quick ? 0 : 150);
+
+  const cardFrom = builderCard.getBoundingClientRect();
+  const frameFrom = within(previewBox.getBoundingClientRect(), cardFrom);
+
+  // Measure where it returns to, then put the grown layout back for the
+  // animation. Both happen before the browser paints.
+  builderCard.classList.remove("is-expanded");
+  const cardTo = builderCard.getBoundingClientRect();
+  const frameTo = within(previewOrigin(), cardTo);
+  builderCard.classList.add("is-expanded");
+
+  const animations = await growBetween(
+    within(cardFrom),
+    within(cardTo),
+    frameFrom,
+    frameTo,
+    quick ? 0 : GROW_MS
+  );
+
+  builderCard.classList.remove("is-expanded");
+  settle(animations);
+  builderCard.classList.remove("is-fading");
+  document.body.classList.remove("preview-open");
+  expandState = "closed";
+
+  (isPhone() ? mobilePreview : previewExpand).focus({ preventScroll: true });
 }
 
 // Shows the page-shaped skeleton until the PDF has actually loaded. PDFs
@@ -758,6 +974,7 @@ function setPreviewLoading(loading) {
 
 function refreshPreview() {
   previewLabel.textContent = selectionLabel();
+  expandedLabel.textContent = selectionLabel();
 
   if (!variantsLoaded) {
     return;
@@ -772,11 +989,15 @@ function refreshPreview() {
 
   // The download button hands over the published copy directly, no build.
   if (published) {
-    downloadLatest.href = `${RELEASE_URL}/${published.name}?v=${Date.parse(published.updatedAt)}`;
-    downloadLatest.setAttribute("aria-disabled", "false");
+    for (const link of [downloadLatest, expandedDownload]) {
+      link.href = `${RELEASE_URL}/${published.name}?v=${Date.parse(published.updatedAt)}`;
+      link.setAttribute("aria-disabled", "false");
+    }
   } else {
-    downloadLatest.removeAttribute("href");
-    downloadLatest.setAttribute("aria-disabled", "true");
+    for (const link of [downloadLatest, expandedDownload]) {
+      link.removeAttribute("href");
+      link.setAttribute("aria-disabled", "true");
+    }
   }
 
   if (!published) {
@@ -805,15 +1026,17 @@ function refreshPreview() {
     previewFrame.dataset.url = url;
     setPreviewLoading(true);
 
+    // FitH keeps the viewer fitted to the width at every size, so the
+    // page reads the same small and expanded and the grow has no jump.
     cachedPreview(url)
       .then((objectUrl) => {
         if (previewFrame.dataset.url === url) {
-          previewFrame.src = objectUrl;
+          previewFrame.src = `${objectUrl}#view=FitH`;
         }
       })
       .catch(() => {
         if (previewFrame.dataset.url === url) {
-          previewFrame.src = url;
+          previewFrame.src = `${url}#view=FitH`;
         }
       });
   }
@@ -824,6 +1047,7 @@ function refreshPreview() {
   const date = formatPublished(published.updatedAt);
 
   previewMeta.textContent = date ? t("published", { date }) : "";
+  expandedMeta.textContent = previewMeta.textContent;
   previewExpand.hidden = false;
 
 }
@@ -860,6 +1084,14 @@ function loadUiPrefs() {
       if (TEXT_SIZES.includes(stored.fs)) {
         uiPrefs.fs = stored.fs;
       }
+
+      if (Object.hasOwn(EN_FONTS, stored.enFont)) {
+        uiPrefs.enFont = stored.enFont;
+      }
+
+      if (Object.hasOwn(FA_FONTS, stored.faFont)) {
+        uiPrefs.faFont = stored.faFont;
+      }
     }
   } catch {
     // A blocked or corrupt store just means the defaults are used.
@@ -873,6 +1105,8 @@ function applyUi({ save = true } = {}) {
   root.dir = uiPrefs.lang === "fa" ? "rtl" : "ltr";
   root.dataset.theme = uiPrefs.theme;
   root.style.setProperty("--fs", String(uiPrefs.fs));
+  root.dataset.enFont = uiPrefs.enFont;
+  root.dataset.faFont = uiPrefs.faFont;
 
   for (const el of document.querySelectorAll("[data-i18n]")) {
     el.textContent = t(el.dataset.i18n);
@@ -889,7 +1123,7 @@ function applyUi({ save = true } = {}) {
   for (const swatch of themeGrid.children) {
     const name = themeName(swatch.dataset.slug);
     swatch.removeAttribute("title");
-    swatch.dataset.tipText = name;
+    swatch.dataset.tip = "swatch";
     swatch.setAttribute("aria-label", name);
   }
 
@@ -902,6 +1136,15 @@ function applyUi({ save = true } = {}) {
           : Number(segment.dataset.fs) === uiPrefs.fs;
 
     segment.setAttribute("aria-checked", current ? "true" : "false");
+  }
+
+  for (const option of a11yMenu.querySelectorAll(".font-option")) {
+    const current =
+      option.dataset.enFont !== undefined
+        ? option.dataset.enFont === uiPrefs.enFont
+        : option.dataset.faFont === uiPrefs.faFont;
+
+    option.setAttribute("aria-checked", current ? "true" : "false");
   }
 
   if (save) {
@@ -1215,46 +1458,401 @@ document.addEventListener("pointerdown", (event) => {
   wave.addEventListener("animationend", () => wave.remove());
 });
 
-let tipTimer = null;
-let tipTarget = null;
+/* -------- Tooltip content --------
+   Every tooltip says what the control does and, where it matters, exactly
+   what it will act on right now: the file, colour, edition, language,
+   publish date and so on. Built fresh each time it opens. */
 
-function tipText(element) {
-  return element.dataset.tipText || (element.dataset.tip ? t(element.dataset.tip) : "");
+function assetNameFor(theme, variant, language) {
+  return (
+    "RadmanAlizadeh-Cv" +
+    (theme === DEFAULT_THEME ? "" : `-${theme}`) +
+    (variant === "print" ? "-print" : "") +
+    (language === "fa" ? "-fa" : "") +
+    ".pdf"
+  );
 }
 
-function showTip(element) {
-  const text = tipText(element);
-
-  if (!text) {
-    return;
+function formatSize(bytes) {
+  if (!bytes) {
+    return "";
   }
 
-  tooltip.textContent = text;
-  tooltip.classList.add("is-visible");
+  const kb = Math.round(bytes / 1024);
 
+  return uiPrefs.lang === "fa" ? `${kb.toLocaleString("fa-IR")} کیلوبایت` : `${kb} KB`;
+}
+
+function publishedFor(variant, language) {
+  return variants.get(variantKey(selectedSlug(), variant, language));
+}
+
+function tipContent(element) {
+  const lang = uiPrefs.lang;
+  const key = element.dataset.tip;
+  const fact = (name) => FACTS[lang][name] ?? FACTS.en[name];
+  const base = (name) => (TIPS[lang] && TIPS[lang][name]) || TIPS.en[name] || [name, ""];
+  const colourRow = [fact("colour"), colourLabel(), { dot: selectedHex() }];
+  const editionRow = [fact("edition"), t(selection.variant)];
+  const languageRow = [fact("language"), t(`lang_${selection.language}`)];
+  const statusOf = (item) => [
+    fact("status"),
+    item ? t("published", { date: formatPublished(item.updatedAt) }) : fact("notYet"),
+  ];
+
+  let [title, body] = base(key);
+  let facts = [];
+  let hint = "";
+
+  switch (key) {
+    case "generate": {
+      facts = [colourRow, editionRow, languageRow];
+
+      if (selection.mode !== "custom") {
+        facts.unshift([fact("file"), assetNameFor(selection.theme, selection.variant, selection.language), { mono: true }]);
+      }
+
+      facts.push([fact("buildTime"), fact("buildTimeValue")]);
+      break;
+    }
+
+    case "download": {
+      const published = variants.get(selectedKey());
+
+      if (selection.mode === "custom") {
+        [title, body] = base("downloadCustom");
+        facts = [colourRow];
+      } else if (!published) {
+        [title, body] = base("downloadMissing");
+        facts = [colourRow, editionRow, languageRow];
+      } else {
+        facts = [
+          [fact("file"), published.name, { mono: true }],
+          colourRow,
+          editionRow,
+          languageRow,
+          [fact("published"), formatPublished(published.updatedAt)],
+          [fact("size"), formatSize(published.size)],
+        ];
+      }
+      break;
+    }
+
+    case "allCopies": {
+      if (variantsLoaded) {
+        const latest = Math.max(0, ...[...variants.values()].map((item) => Date.parse(item.updatedAt) || 0));
+
+        facts = [
+          [fact("copies"), uiPrefs.lang === "fa" ? variants.size.toLocaleString("fa-IR") : String(variants.size)],
+          [fact("latest"), latest ? formatPublished(latest) : "—"],
+        ];
+      }
+
+      facts.push([fact("opens"), fact("newTab")]);
+      break;
+    }
+
+    case "accent":
+      facts = [colourRow, [fact("hex"), selectedHex(), { mono: true }]];
+      break;
+
+    case "digital":
+    case "print":
+      facts = [colourRow, languageRow, statusOf(publishedFor(key, selection.language))];
+      break;
+
+    case "cvEn":
+    case "cvFa": {
+      const language = key === "cvFa" ? "fa" : "en";
+
+      facts = [colourRow, editionRow, statusOf(publishedFor(selection.variant, language))];
+      break;
+    }
+
+    case "expand": {
+      const published = variants.get(selectedKey());
+
+      facts = [colourRow, editionRow, languageRow];
+
+      if (published) {
+        facts.push([fact("published"), formatPublished(published.updatedAt)]);
+      }
+
+      hint = "Esc";
+      break;
+    }
+
+    case "close":
+      hint = "Esc";
+      break;
+
+    case "pick":
+      facts = [[fact("hex"), customColor.value.toUpperCase(), { mono: true, dot: customColor.value }]];
+      break;
+
+    case "use": {
+      const hex = normaliseHex(customHex.value);
+
+      facts = [[fact("hex"), hex || customHex.value, { mono: true, dot: hex || undefined }]];
+      break;
+    }
+
+    case "a11y": {
+      const en = EN_FONTS[uiPrefs.enFont];
+      const fa = FA_FONTS[uiPrefs.faFont];
+      const index = lang === "fa" ? 1 : 0;
+
+      facts = [
+        [fact("page"), t(`lang_${uiPrefs.lang}`)],
+        [fact("appearance"), t(uiPrefs.theme)],
+        [fact("text"), `${Math.round(uiPrefs.fs * 100)}%`],
+        [fact("fonts"), `${en.name} · ${fa.name[index]}`],
+      ];
+      break;
+    }
+
+    case "sizeSmall":
+    case "sizeDefault":
+    case "sizeLarge":
+    case "sizeLarger":
+      facts = [[fact("scale"), `${Math.round(Number(element.dataset.fs) * 100)}%`]];
+      break;
+
+    case "swatch": {
+      const theme = THEME_BY_SLUG.get(element.dataset.slug);
+      const built = [...variants.values()].filter((item) => item.theme === element.dataset.slug).length;
+
+      title = themeName(element.dataset.slug);
+      facts = [[fact("hex"), theme.hex, { mono: true, dot: theme.hex }]];
+
+      if (variantsLoaded) {
+        facts.push([fact("builtCopies"), lang === "fa" ? `${built.toLocaleString("fa-IR")} از ۴` : `${built} of 4`]);
+      }
+      break;
+    }
+
+    case "font": {
+      const index = lang === "fa" ? 1 : 0;
+      const font = element.dataset.enFont ? EN_FONTS[element.dataset.enFont] : FA_FONTS[element.dataset.faFont];
+
+      title = Array.isArray(font.name) ? font.name[index] : font.name;
+      body = font.note[index];
+      facts = [[fact("style"), font.style[index]]];
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return { title, body, facts: facts.filter((row) => row[1]), hint };
+}
+
+function renderTip({ title, body, facts, hint }) {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("span");
+
+  heading.className = "tip-title";
+  heading.textContent = title;
+  fragment.append(heading);
+
+  if (body) {
+    const text = document.createElement("p");
+
+    text.className = "tip-body";
+    text.textContent = body;
+    fragment.append(text);
+  }
+
+  if (facts.length) {
+    const list = document.createElement("dl");
+
+    list.className = "tip-facts";
+
+    for (const [label, value, options = {}] of facts) {
+      const term = document.createElement("dt");
+      const detail = document.createElement("dd");
+
+      term.textContent = label;
+
+      if (options.dot) {
+        const dot = document.createElement("span");
+
+        dot.className = "tip-dot";
+        dot.style.background = options.dot;
+        detail.append(dot);
+      }
+
+      const valueText = document.createElement("span");
+
+      valueText.textContent = value;
+
+      if (options.mono) {
+        valueText.className = "is-mono";
+        valueText.dir = "ltr";
+      }
+
+      detail.append(valueText);
+      list.append(term, detail);
+    }
+
+    fragment.append(list);
+  }
+
+  if (hint) {
+    const line = document.createElement("div");
+    const key = document.createElement("span");
+
+    line.className = "tip-hint";
+    key.className = "tip-kbd";
+    key.textContent = hint;
+    line.append(`${FACTS[uiPrefs.lang].shortcut ?? FACTS.en.shortcut} `, key);
+    fragment.append(line);
+  }
+
+  tipContentBox.replaceChildren(fragment);
+}
+
+/* -------- Tooltip motion --------
+   Like the ERD schema tooltip: with a mouse it trails the cursor on a
+   spring (stiffness 750, damping 45) and stretches slightly in the
+   direction of travel, tilting with the speed. Keyboard focus pins it
+   above the control with an arrow instead. */
+
+const TIP_GAP_X = 12;
+const TIP_GAP_Y = 16;
+const TIP_SPRING = { stiffness: 750, damping: 45 };
+
+let tipTimer = null;
+let tipHideTimer = null;
+let tipTarget = null;
+let tipMode = "cursor";
+let tipFrame = null;
+let tipLastTime = 0;
+
+const tipMouse = { x: 0, y: 0 };
+const tipPos = { x: 0, y: 0 };
+const tipVel = { x: 0, y: 0 };
+
+function clamp(value, low, high) {
+  return Math.min(high, Math.max(low, value));
+}
+
+function tipIsVisible() {
+  return tooltip.classList.contains("is-visible");
+}
+
+function placeCursorTip() {
+  const width = tipBubble.offsetWidth;
+  const height = tipBubble.offsetHeight;
+  const flipX = tipMouse.x + TIP_GAP_X + width > window.innerWidth - 8;
+  const flipY = tipMouse.y + TIP_GAP_Y + height > window.innerHeight - 8;
+  const offsetX = flipX ? `calc(-100% - ${TIP_GAP_X}px)` : `${TIP_GAP_X}px`;
+  const offsetY = flipY ? `calc(-100% - ${TIP_GAP_X}px)` : `${TIP_GAP_Y}px`;
+
+  tooltip.style.transform =
+    `translate3d(${tipPos.x}px, ${tipPos.y}px, 0) translate(${offsetX}, ${offsetY})`;
+  tipPop.style.transformOrigin = `${flipX ? "right" : "left"} ${flipY ? "bottom" : "top"}`;
+
+  // Stretch along the direction of travel, as the ERD tooltip does.
+  const vx = clamp(tipVel.x, -1000, 1000) / 1000;
+  const vy = clamp(tipVel.y, -1000, 1000) / 1000;
+  const scaleX = vx < 0 ? 1 + vx * 0.1 : 1 + vx * 0.15;
+  const scaleY = vy < 0 ? 1 - vy * 0.15 : 1 - vy * 0.1;
+
+  tipBubble.style.transform =
+    `scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}) skew(${(vx * 3).toFixed(2)}deg, ${(vy * 3).toFixed(2)}deg)`;
+}
+
+function tipStep(time) {
+  const dt = Math.min(1 / 30, (time - (tipLastTime || time)) / 1000 || 1 / 60);
+
+  tipLastTime = time;
+
+  for (const axis of ["x", "y"]) {
+    const force = TIP_SPRING.stiffness * (tipMouse[axis] - tipPos[axis]) - TIP_SPRING.damping * tipVel[axis];
+
+    tipVel[axis] += force * dt;
+    tipPos[axis] += tipVel[axis] * dt;
+  }
+
+  const settled =
+    Math.abs(tipMouse.x - tipPos.x) < 0.2 &&
+    Math.abs(tipMouse.y - tipPos.y) < 0.2 &&
+    Math.abs(tipVel.x) < 2 &&
+    Math.abs(tipVel.y) < 2;
+
+  if (settled) {
+    tipPos.x = tipMouse.x;
+    tipPos.y = tipMouse.y;
+    tipVel.x = 0;
+    tipVel.y = 0;
+  }
+
+  placeCursorTip();
+  tipFrame = settled || tipMode !== "cursor" ? null : requestAnimationFrame(tipStep);
+}
+
+function runTipSpring() {
+  if (!tipFrame) {
+    tipLastTime = 0;
+    tipFrame = requestAnimationFrame(tipStep);
+  }
+}
+
+function placeArrowTip(element) {
   const rect = element.getBoundingClientRect();
-  const margin = 8;
-  let top = rect.top - tooltip.offsetHeight - margin;
+  const width = tipBubble.offsetWidth;
+  const height = tipBubble.offsetHeight;
+  const above = rect.top - height - 12 >= 8;
+  const centre = rect.left + rect.width / 2;
+  const left = clamp(centre - width / 2, 8, window.innerWidth - width - 8);
+  const top = above ? rect.top - height - 12 : rect.bottom + 12;
 
-  if (top < margin) {
-    top = rect.bottom + margin;
+  tooltip.dataset.side = above ? "top" : "bottom";
+  tooltip.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+  tipPop.style.transformOrigin = `${centre - left}px ${above ? "100%" : "0"}`;
+  tipBubble.style.transform = "";
+  tooltip.querySelector(".tip-arrow").style.left = `${clamp(centre - left - 5, 8, width - 18)}px`;
+}
+
+function showTip(element, mode) {
+  window.clearTimeout(tipHideTimer);
+
+  const wasVisible = tipIsVisible();
+
+  renderTip(tipContent(element));
+  tipMode = mode;
+  tooltip.dataset.mode = mode;
+  element.setAttribute("aria-describedby", "tooltip");
+
+  if (wasVisible) {
+    // Moving between controls keeps the bubble and swaps its contents.
+    tipContentBox.classList.remove("is-swapping");
+    void tipContentBox.offsetWidth;
+    tipContentBox.classList.add("is-swapping");
   }
 
-  const left = Math.max(
-    margin,
-    Math.min(
-      rect.left + rect.width / 2 - tooltip.offsetWidth / 2,
-      window.innerWidth - tooltip.offsetWidth - margin
-    )
-  );
+  if (mode === "cursor") {
+    if (!wasVisible) {
+      tipPos.x = tipMouse.x;
+      tipPos.y = tipMouse.y;
+      tipVel.x = 0;
+      tipVel.y = 0;
+    }
 
-  tooltip.style.left = `${Math.round(left)}px`;
-  tooltip.style.top = `${Math.round(top)}px`;
-  element.setAttribute("aria-describedby", "tooltip");
+    placeCursorTip();
+    runTipSpring();
+  } else {
+    placeArrowTip(element);
+  }
+
+  tooltip.classList.add("is-visible");
 }
 
 function hideTip() {
   window.clearTimeout(tipTimer);
+  window.clearTimeout(tipHideTimer);
 
   if (tipTarget) {
     tipTarget.removeAttribute("aria-describedby");
@@ -1264,29 +1862,62 @@ function hideTip() {
   tooltip.classList.remove("is-visible");
 }
 
-// Hover shows the tip after a short delay, as in Material UI; touch skips it.
+document.addEventListener(
+  "pointermove",
+  (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+
+    tipMouse.x = event.clientX;
+    tipMouse.y = event.clientY;
+
+    if (tipMode === "cursor" && tipIsVisible()) {
+      runTipSpring();
+    }
+  },
+  { passive: true }
+);
+
+// Hover opens it after a short pause; once one is open, moving onto the
+// next control switches it straight away. Touch never shows it.
 document.addEventListener("pointerover", (event) => {
   if (event.pointerType === "touch") {
     return;
   }
 
-  const target = event.target.closest("[data-tip], [data-tip-text]");
+  const target = event.target.closest("[data-tip]");
 
   if (target === tipTarget) {
     return;
   }
 
-  hideTip();
+  window.clearTimeout(tipTimer);
 
-  if (target) {
-    tipTarget = target;
-    tipTimer = window.setTimeout(() => showTip(target), 450);
+  if (!target) {
+    // A short grace period, so crossing the gap between two segments does
+    // not close and reopen it.
+    window.clearTimeout(tipHideTimer);
+    tipHideTimer = window.setTimeout(hideTip, 90);
+    return;
+  }
+
+  if (tipTarget) {
+    tipTarget.removeAttribute("aria-describedby");
+  }
+
+  tipTarget = target;
+
+  if (tipIsVisible()) {
+    showTip(target, "cursor");
+  } else {
+    tipTimer = window.setTimeout(() => showTip(target, "cursor"), 320);
   }
 });
 
-// Keyboard focus shows it at once.
+// Keyboard focus shows it at once, pinned to the control.
 document.addEventListener("focusin", (event) => {
-  const target = event.target.closest?.("[data-tip], [data-tip-text]");
+  const target = event.target.closest?.("[data-tip]");
 
   if (!target || !target.matches(":focus-visible")) {
     return;
@@ -1294,12 +1925,17 @@ document.addEventListener("focusin", (event) => {
 
   hideTip();
   tipTarget = target;
-  showTip(target);
+  showTip(target, "arrow");
 });
 
-document.addEventListener("focusout", hideTip);
+document.addEventListener("focusout", () => {
+  if (tipMode === "arrow") {
+    hideTip();
+  }
+});
 document.addEventListener("pointerdown", hideTip, true);
 window.addEventListener("scroll", hideTip, true);
+window.addEventListener("blur", hideTip);
 
 /* -------------------------------------------------------------------------
    Wiring
@@ -1347,13 +1983,17 @@ a11yTrigger.addEventListener("click", (event) => {
 a11yMenu.addEventListener("click", (event) => {
   event.stopPropagation();
 
-  const segment = event.target.closest(".segment");
+  const segment = event.target.closest(".segment, .font-option");
 
   if (!segment) {
     return;
   }
 
-  if (segment.dataset.uiLang) {
+  if (segment.dataset.enFont) {
+    uiPrefs.enFont = segment.dataset.enFont;
+  } else if (segment.dataset.faFont) {
+    uiPrefs.faFont = segment.dataset.faFont;
+  } else if (segment.dataset.uiLang) {
     uiPrefs.lang = segment.dataset.uiLang;
   } else if (segment.dataset.theme) {
     uiPrefs.theme = segment.dataset.theme;
@@ -1369,7 +2009,7 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (previewBox.classList.contains("is-expanded")) {
+  if (expandState !== "closed") {
     collapsePreview();
     return;
   }
@@ -1465,8 +2105,14 @@ previewFrame.addEventListener("load", () => {
 
 previewExpand.addEventListener("click", expandPreview);
 mobilePreview.addEventListener("click", expandPreview);
-previewCollapse.addEventListener("click", collapsePreview);
-previewBackdrop.addEventListener("click", collapsePreview);
+previewCollapse.addEventListener("click", () => collapsePreview());
+
+// A click in the margin around the grown card closes it.
+document.addEventListener("click", (event) => {
+  if (expandState === "open" && !builderCard.contains(event.target)) {
+    collapsePreview();
+  }
+});
 
 button.addEventListener("click", async () => {
   try {
@@ -1594,10 +2240,10 @@ function skullParts(accent) {
   // On the light appearance pale bone would vanish into the page, so the
   // skull is drawn in deeper shades of the accent instead.
   const light = uiPrefs.theme === "light";
-  const boneLight = light ? mixHex(accent, "#ffffff", 0.3) : mixHex(accent, "#fbf6f0", 0.84);
-  const boneMid = light ? mixHex(accent, "#000000", 0.2) : mixHex(accent, "#9a908a", 0.58);
-  const boneDark = light ? mixHex(accent, "#000000", 0.55) : mixHex(accent, "#1a1413", 0.66);
-  const rim = light ? mixHex(accent, "#000000", 0.35) : mixHex(accent, "#ffffff", 0.4);
+  const boneLight = light ? mixHex(accent, "#000000", 0.12) : mixHex(accent, "#fbf6f0", 0.84);
+  const boneMid = light ? mixHex(accent, "#000000", 0.42) : mixHex(accent, "#9a908a", 0.58);
+  const boneDark = light ? mixHex(accent, "#000000", 0.72) : mixHex(accent, "#1a1413", 0.66);
+  const rim = light ? mixHex(accent, "#000000", 0.6) : mixHex(accent, "#ffffff", 0.4);
   const eyeHot = mixHex(accent, "#ffffff", 0.62);
   const flashTone = mixHex(accent, "#ffffff", 0.5);
   const spark = electricHue(accent, 0.62);

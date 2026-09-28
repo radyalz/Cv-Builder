@@ -68,7 +68,7 @@
 
             <button
               id="colourTrigger"
-              data-tip="accentTip"
+              data-tip="accent"
               class="menu-trigger"
               type="button"
               aria-haspopup="dialog"
@@ -96,7 +96,7 @@
                 role="radio"
                 data-variant="digital"
                 data-i18n="digital"
-                data-tip="digitalTip"
+                data-tip="digital"
                 aria-checked="true"
               >Digital</button>
 
@@ -106,7 +106,7 @@
                 role="radio"
                 data-variant="print"
                 data-i18n="print"
-                data-tip="printTip"
+                data-tip="print"
                 aria-checked="false"
               >Print</button>
             </div>
@@ -127,7 +127,7 @@
                 type="button"
                 role="radio"
                 data-language="en"
-                data-tip="cvEnTip"
+                data-tip="cvEn"
                 aria-checked="true"
               >EN</button>
 
@@ -136,7 +136,7 @@
                 type="button"
                 role="radio"
                 data-language="fa"
-                data-tip="cvFaTip"
+                data-tip="cvFa"
                 lang="fa"
                 aria-checked="false"
               >فا</button>
@@ -145,7 +145,7 @@
         </div>
 
         <div class="actions">
-          <button id="generateButton" class="primary-button" type="button" data-tip="generateTip">
+          <button id="generateButton" class="primary-button" type="button" data-tip="generate">
             <span class="button-label" data-i18n="generate">Generate Latest CV</span>
             <span class="button-arrow" aria-hidden="true">→</span>
           </button>
@@ -154,7 +154,7 @@
             id="downloadLatest"
             class="download-button"
             data-i18n="download"
-            data-tip="downloadTip"
+            data-tip="download"
             aria-disabled="true"
             download
           >Download published copy</a>
@@ -163,13 +163,13 @@
         <a
           class="secondary-link"
           data-i18n="allCopies"
-          data-tip="allCopiesTip"
+          data-tip="allCopies"
           href="https://github.com/radyalz/Cv-Builder/releases/latest"
           target="_blank"
           rel="noopener noreferrer"
         >All published copies</a>
 
-        <button id="mobilePreview" class="mobile-preview" type="button" data-i18n="expandPreview" data-tip="expandTip" disabled>Expand preview</button>
+        <button id="mobilePreview" class="mobile-preview" type="button" data-i18n="expandPreview" data-tip="expand" disabled>Expand preview</button>
 
         <section id="buildPanel" class="build-panel" hidden aria-live="polite">
           <div class="status-row">
@@ -308,17 +308,26 @@
             class="ghost-button"
             type="button"
             hidden
-           data-i18n="expand" data-tip="expandTip">Expand</button>
+           data-i18n="expand" data-tip="expand">Expand</button>
         </div>
 
-        <div class="preview-backdrop" aria-hidden="true"></div>
+        <!-- Shown once the card has grown to fill the window. -->
+        <div class="expanded-bar">
+          <div class="expanded-info">
+            <span id="expandedLabel" class="preview-title"></span>
+            <span id="expandedMeta" class="preview-meta"></span>
+          </div>
 
-        <button
-          id="previewCollapse"
-          class="ghost-button preview-collapse"
-          type="button"
-          hidden
-         data-i18n="close" data-tip="closeTip">Close</button>
+          <a id="expandedDownload" class="ghost-button" data-i18n="downloadShort" data-tip="download" download>Download</a>
+
+          <button
+            id="previewCollapse"
+            class="ghost-button"
+            type="button"
+            data-i18n="close"
+            data-tip="close"
+          >Close</button>
+        </div>
       </aside>
     </section>
   </main>
@@ -330,7 +339,7 @@
     aria-haspopup="dialog"
     aria-expanded="false"
     data-i18n-aria="a11y"
-    data-tip="a11yTip"
+    data-tip="a11y"
     aria-label="Accessibility"
           ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="1.8"/><path d="M4.5 8.2c2.4.7 4.9 1 7.5 1s5.1-.3 7.5-1"/><path d="M12 9.2v5.3"/><path d="M8.6 21l3.4-6.5 3.4 6.5"/></svg></button>
 
@@ -352,7 +361,7 @@
 
     <div class="custom-row">
       <label class="custom-swatch" for="customColor">
-        <input id="customColor" type="color" data-tip="pickTip" value="#7030A0">
+        <input id="customColor" type="color" data-tip="pick" value="#7030A0">
         <span data-i18n="custom">Custom</span>
       </label>
 
@@ -367,7 +376,7 @@
         value="#7030A0"
       >
 
-      <button id="customApply" class="ghost-button" type="button" data-i18n="use" data-tip="useTip">Use</button>
+      <button id="customApply" class="ghost-button" type="button" data-i18n="use" data-tip="use">Use</button>
     </div>
 
     <p id="themeHint" class="picker-hint" hidden></p>
@@ -386,31 +395,58 @@
     <div class="a11y-group">
       <span class="control-label" data-i18n="pageLanguage">Page language</span>
       <div class="segmented" role="radiogroup" data-a11y="ui-lang">
-        <button class="segment" type="button" role="radio" data-ui-lang="en" data-tip="uiEnTip" aria-checked="false">English</button>
-        <button class="segment" type="button" role="radio" data-ui-lang="fa" data-tip="uiFaTip" lang="fa" aria-checked="false">فارسی</button>
+        <button class="segment" type="button" role="radio" data-ui-lang="en" data-tip="uiEn" aria-checked="false">English</button>
+        <button class="segment" type="button" role="radio" data-ui-lang="fa" data-tip="uiFa" lang="fa" aria-checked="false">فارسی</button>
       </div>
     </div>
 
     <div class="a11y-group">
       <span class="control-label" data-i18n="appearance">Appearance</span>
       <div class="segmented" role="radiogroup" data-a11y="theme">
-        <button class="segment" type="button" role="radio" data-theme="dark" data-tip="darkTip" data-i18n="dark" aria-checked="false">Dark</button>
-        <button class="segment" type="button" role="radio" data-theme="light" data-tip="lightTip" data-i18n="light" aria-checked="false">Light</button>
+        <button class="segment" type="button" role="radio" data-theme="dark" data-tip="dark" data-i18n="dark" aria-checked="false">Dark</button>
+        <button class="segment" type="button" role="radio" data-theme="light" data-tip="light" data-i18n="light" aria-checked="false">Light</button>
       </div>
     </div>
 
     <div class="a11y-group">
       <span class="control-label" data-i18n="textSize">Text size</span>
       <div class="segmented" role="radiogroup" data-a11y="fs">
-        <button class="segment" type="button" role="radio" data-fs="0.9" data-i18n-aria="sizeSmall" data-tip="sizeSmallTip" aria-label="Small" aria-checked="false">A</button>
-        <button class="segment" type="button" role="radio" data-fs="1" data-i18n-aria="sizeDefault" data-tip="sizeDefaultTip" aria-label="Default" aria-checked="false">A</button>
-        <button class="segment" type="button" role="radio" data-fs="1.15" data-i18n-aria="sizeLarge" data-tip="sizeLargeTip" aria-label="Large" aria-checked="false">A</button>
-        <button class="segment" type="button" role="radio" data-fs="1.3" data-i18n-aria="sizeLarger" data-tip="sizeLargerTip" aria-label="Larger" aria-checked="false">A</button>
+        <button class="segment" type="button" role="radio" data-fs="0.9" data-i18n-aria="sizeSmall" data-tip="sizeSmall" aria-label="Small" aria-checked="false">A</button>
+        <button class="segment" type="button" role="radio" data-fs="1" data-i18n-aria="sizeDefault" data-tip="sizeDefault" aria-label="Default" aria-checked="false">A</button>
+        <button class="segment" type="button" role="radio" data-fs="1.15" data-i18n-aria="sizeLarge" data-tip="sizeLarge" aria-label="Large" aria-checked="false">A</button>
+        <button class="segment" type="button" role="radio" data-fs="1.3" data-i18n-aria="sizeLarger" data-tip="sizeLarger" aria-label="Larger" aria-checked="false">A</button>
+      </div>
+    </div>
+
+    <div class="a11y-group">
+      <span class="control-label" data-i18n="enFont">English font</span>
+      <div class="font-grid" role="radiogroup" data-a11y="en-font">
+        <button class="font-option" type="button" role="radio" data-en-font="inter" data-tip="font" aria-checked="false">Inter</button>
+        <button class="font-option" type="button" role="radio" data-en-font="manrope" data-tip="font" aria-checked="false">Manrope</button>
+        <button class="font-option" type="button" role="radio" data-en-font="jakarta" data-tip="font" aria-checked="false">Jakarta</button>
+        <button class="font-option" type="button" role="radio" data-en-font="plex" data-tip="font" aria-checked="false">Plex Sans</button>
+        <button class="font-option" type="button" role="radio" data-en-font="grotesk" data-tip="font" aria-checked="false">Grotesk</button>
+      </div>
+    </div>
+
+    <div class="a11y-group">
+      <span class="control-label" data-i18n="faFont">Persian font</span>
+      <div class="font-grid" role="radiogroup" data-a11y="fa-font">
+        <button class="font-option" type="button" role="radio" data-fa-font="yekan" data-tip="font" lang="fa" aria-checked="false">یکان بخ</button>
+        <button class="font-option" type="button" role="radio" data-fa-font="vazir" data-tip="font" lang="fa" aria-checked="false">وزیر</button>
+        <button class="font-option" type="button" role="radio" data-fa-font="niloofar" data-tip="font" lang="fa" aria-checked="false">نیلوفر</button>
       </div>
     </div>
   </div>
 
-  <div id="tooltip" class="tooltip" role="tooltip"></div>
+  <div id="tooltip" class="tooltip" role="tooltip">
+    <div class="tip-pop">
+      <div class="tip-bubble">
+        <span class="tip-arrow" aria-hidden="true"></span>
+        <div class="tip-content"></div>
+      </div>
+    </div>
+  </div>
 
   <script src="runner.js"></script>
 </body>
