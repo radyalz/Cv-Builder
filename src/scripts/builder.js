@@ -356,8 +356,10 @@ function cachedPreview(url) {
    card, then takes its real size once at the end. The viewer fits the page
    to the width either way, so that last swap does not show. */
 
-const FADE_MS = 260;
 const GROW_MS = 480;
+// Closing is unhurried: a slower shrink and a slower return of the text.
+const SHRINK_MS = 650;
+const RETURN_FADE_MS = 420;
 const GROW_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 // closed → opening → open → closing → closed
@@ -494,6 +496,76 @@ function settle(animations) {
   pdfView.hold(false);
 }
 
+/* -------- Pinning the card's contents --------
+   The steps overlap rather than running one after another: the text column
+   fades and slides away while the card is already growing, and slides back
+   in while it is still shrinking. For that it stays on screen during the
+   grow, held at the spot it occupies in the small card (absolutely placed
+   inside the card, so it rides along with the card's edge), even though
+   the grown layout would normally hide it. */
+
+const pinnedParts = [".card-main", ".preview-head", ".preview-foot"].map((selector) =>
+  builderCard.querySelector(selector)
+);
+
+// Where each part sits inside the card, measured without the fade's slide
+// so a part caught mid-fade is still pinned at its true place.
+function measureParts() {
+  const card = builderCard.getBoundingClientRect();
+
+  return pinnedParts.map((part) => {
+    part.style.transition = "none";
+    part.style.transform = "none";
+
+    const rect = part.getBoundingClientRect();
+
+    part.style.transform = "";
+    void part.offsetWidth;
+    part.style.transition = "";
+
+    return rect.width
+      ? {
+          left: rect.left - card.left - builderCard.clientLeft,
+          top: rect.top - card.top - builderCard.clientTop,
+          width: rect.width,
+          height: rect.height,
+        }
+      : null;
+  });
+}
+
+function pinParts(boxes) {
+  pinnedParts.forEach((part, index) => {
+    const box = boxes[index];
+
+    if (!box) {
+      return;
+    }
+
+    part.dataset.pinned = "";
+    Object.assign(part.style, {
+      left: `${box.left}px`,
+      top: `${box.top}px`,
+      width: `${box.width}px`,
+      height: `${box.height}px`,
+    });
+  });
+
+  builderCard.classList.add("is-growing");
+}
+
+function unpinParts() {
+  builderCard.classList.remove("is-growing");
+
+  for (const part of pinnedParts) {
+    delete part.dataset.pinned;
+
+    for (const property of ["left", "top", "width", "height"]) {
+      part.style.removeProperty(property);
+    }
+  }
+}
+
 async function expandPreview() {
   if (expandState === "closing") {
     queued = "open";
@@ -510,29 +582,28 @@ async function expandPreview() {
   closeA11y();
 
   const quick = reducedMotion();
-
-  document.body.classList.add("preview-open");
-  builderCard.classList.add("is-fading");
-  await wait(quick ? 0 : FADE_MS);
-
   const cardFrom = builderCard.getBoundingClientRect();
   const frameFrom = within(previewOrigin(), cardFrom);
+  const parts = measureParts();
 
-  builderCard.classList.add("is-expanded");
+  document.body.classList.add("preview-open");
+  pinParts(parts);
+
+  // One change: the card starts growing as the text starts to leave.
+  builderCard.classList.add("is-expanded", "is-fading");
 
   const cardTo = builderCard.getBoundingClientRect();
   const frameTo = within(previewBox.getBoundingClientRect(), cardTo);
+  const growing = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : GROW_MS);
 
-  const animations = await growBetween(
-    within(cardFrom),
-    within(cardTo),
-    frameFrom,
-    frameTo,
-    quick ? 0 : GROW_MS
-  );
+  // The bar with the title and Close starts fading in early in the grow.
+  await wait(quick ? 0 : GROW_MS * 0.2);
+  builderCard.classList.add("is-open");
+
+  const animations = await growing;
 
   settle(animations);
-  builderCard.classList.add("is-open");
+  unpinParts();
   expandState = "open";
 
   // The grown card covers the skulls, so they rest while it is open.
@@ -558,42 +629,43 @@ async function collapsePreview() {
 
   const quick = reducedMotion();
 
-  builderCard.classList.remove("is-open");
-
   // Shrink the same layout it lands on: back to fitting the width first.
   if (pdfView.fit !== "width" && !previewDoc.hidden) {
     pdfView.fit = "width";
     await pdfView.render();
   }
 
-  await wait(quick ? 0 : 150);
-
   const cardFrom = builderCard.getBoundingClientRect();
   const frameFrom = within(previewBox.getBoundingClientRect(), cardFrom);
 
-  // Measure where it returns to, then put the grown layout back for the
-  // animation. Both happen before the browser paints.
+  // Measure where everything returns to, then put the grown layout back for
+  // the animation. All of it happens before the browser paints.
   builderCard.classList.remove("is-expanded");
   const cardTo = builderCard.getBoundingClientRect();
   const frameTo = within(previewOrigin(), cardTo);
+  const parts = measureParts();
   builderCard.classList.add("is-expanded");
+  pinParts(parts);
 
-  const animations = await growBetween(
-    within(cardFrom),
-    within(cardTo),
-    frameFrom,
-    frameTo,
-    quick ? 0 : GROW_MS
-  );
+  // The bar fades as the card starts to shrink…
+  builderCard.classList.remove("is-open");
+  const shrinking = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : SHRINK_MS);
+
+  // …and the text slides back in, more slowly than it left.
+  await wait(quick ? 0 : SHRINK_MS * 0.35);
+  builderCard.style.setProperty("--fade-ms", `${RETURN_FADE_MS}ms`);
+  builderCard.classList.remove("is-fading");
+
+  const animations = await shrinking;
 
   builderCard.classList.remove("is-expanded");
   settle(animations);
-
-  // Let the text column be laid out in its faded, shifted state first, so
-  // removing is-fading slides it back in rather than popping it into view.
-  void builderCard.querySelector(".card-main").offsetWidth;
-  builderCard.classList.remove("is-fading");
+  unpinParts();
   document.body.classList.remove("preview-open");
+
+  // The text's return outlasts the shrink a little; restore the normal
+  // fade speed once it is back.
+  wait(quick ? 0 : RETURN_FADE_MS).then(() => builderCard.style.removeProperty("--fade-ms"));
   expandState = "closed";
 
   if (queued) {

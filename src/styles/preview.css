@@ -424,8 +424,8 @@
 .preview-head,
 .preview-foot {
   transition:
-    opacity 260ms ease,
-    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity var(--fade-ms, 240ms) ease,
+    transform var(--fade-ms, 240ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .builder-card.is-fading .card-main,
@@ -460,6 +460,14 @@
 .builder-card.is-expanded .preview-head,
 .builder-card.is-expanded .preview-foot {
   display: none;
+}
+
+/* While the card grows or shrinks, the parts that are fading stay on
+   screen at the place they hold in the small card (set by builder.js). */
+.builder-card.is-expanded.is-growing [data-pinned] {
+  position: absolute;
+  z-index: 2;
+  display: flex;
 }
 
 .builder-card.is-expanded .card-preview {
