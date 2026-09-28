@@ -7,7 +7,6 @@ import {
   FACTS,
   FA_FONTS,
   LANGUAGES,
-  RELEASE_URL,
   STORAGE_KEY,
   THEMES,
   THEME_BY_SLUG,
@@ -613,7 +612,11 @@ function refreshPreview() {
   // The download button hands over the published copy directly, no build.
   if (published) {
     for (const link of [downloadLatest, expandedDownload]) {
-      link.href = `${RELEASE_URL}/${published.name}?v=${Date.parse(published.updatedAt)}`;
+      // The service sends each copy's download link; the release address
+      // only covers a service from before copies moved to storage.
+      link.href =
+        published.downloadUrl ||
+        `https://github.com/radyalz/Cv-Builder/releases/download/latest/${published.name}`;
       link.setAttribute("aria-disabled", "false");
     }
   } else {
@@ -900,9 +903,15 @@ async function getBuildStatus(buildId, theme, variant, language) {
   return result;
 }
 
+// A build takes about fifteen seconds, so there is no point asking before
+// then; after that the service is asked every second and a half, so the
+// download starts within moments of the copy being stored.
 async function waitForBuild(buildId, theme, variant, language) {
+  let first = true;
+
   while (true) {
-    await new Promise((resolve) => window.setTimeout(resolve, 5000));
+    await new Promise((resolve) => window.setTimeout(resolve, first ? 9000 : 1500));
+    first = false;
 
     const result = await getBuildStatus(buildId, theme, variant, language);
 

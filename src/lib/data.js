@@ -3,7 +3,6 @@
 // the .astro components at build time and by the scripts in the browser.
 
 export const API_URL = "https://cv-api.radyalz.ir";
-export const RELEASE_URL = "https://github.com/radyalz/Cv-Builder/releases/download/latest";
 export const STORAGE_KEY = "cv-builder-selection";
 export const DEFAULT_THEME = "purple";
 export const DEFAULT_VARIANT = "digital";
