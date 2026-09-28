@@ -34,18 +34,189 @@ const THEMES = [
 const THEME_BY_SLUG = new Map(THEMES.map((theme) => [theme.slug, theme]));
 const VARIANTS = new Set([DEFAULT_VARIANT, "print"]);
 
-const VARIANT_LABEL = {
-  digital: "Digital",
-  print: "Print",
-};
-
 const DEFAULT_LANGUAGE = "en";
 const LANGUAGES = new Set([DEFAULT_LANGUAGE, "fa"]);
 
-const LANGUAGE_LABEL = {
-  en: "English",
-  fa: "فارسی",
+// Page text in both languages. The accessibility menu switches between
+// them; English fills any key Persian is missing.
+const STRINGS = {
+  en: {
+    eyebrow: "ON-DEMAND CV",
+    name: "Radman Alizadeh",
+    lead: "Generate the newest version of my CV, in whichever colour and edition you prefer.",
+    accent: "Accent",
+    edition: "Edition",
+    cvLanguage: "CV language",
+    digital: "Digital",
+    print: "Print",
+    generate: "Generate Latest CV",
+    generateAgain: "Generate Again",
+    tryAgain: "Try Again",
+    building: "Building CV…",
+    allCopies: "All published copies",
+    preview: "Preview",
+    previewFrame: "Published CV preview",
+    expand: "Expand",
+    expandPreview: "Expand preview",
+    close: "Close",
+    chooseAccent: "Choose an accent colour",
+    presets: "Preset colours",
+    custom: "Custom",
+    customHex: "Custom colour, hex value",
+    use: "Use",
+    typical: "Typical build: under a minute",
+    readyTitle: "Latest CV is ready",
+    readyText: "Your download should start automatically.",
+    failedTitle: "Build failed",
+    a11y: "Accessibility",
+    pageLanguage: "Page language",
+    appearance: "Appearance",
+    dark: "Dark",
+    light: "Light",
+    textSize: "Text size",
+    sizeSmall: "Small",
+    sizeDefault: "Default",
+    sizeLarge: "Large",
+    sizeLarger: "Larger",
+    lang_en: "English",
+    lang_fa: "Persian",
+    published: "Published {date}",
+    notGenerated: "This combination has not been generated yet. Use Generate Latest CV to build it, and the result appears here.",
+    elapsed: "Elapsed: {time}",
+    requestingTitle: "Requesting a fresh build…",
+    requestingText: "Connecting to the CV build service. {selection}.",
+    startedTitle: "Build started",
+    startedText: "Build #{id} is running. You can keep this tab open.",
+    renderingTitle: "Rendering the latest CV…",
+    renderingText: "Compiling the document and recalculating current experience durations.",
+    queuedTitle: "Build queued…",
+    queuedText: "The request was accepted and is waiting for a runner.",
+    completeTitle: "Build complete",
+    publishedStarting: "The newest CV has been published. Starting your download…",
+    upToDate: "This copy is already up to date. Starting your download…",
+    errStart: "Unable to start CV generation.",
+    errNoId: "The build service did not return a build ID.",
+    errStatus: "Unable to check CV generation status.",
+    errNoUrl: "The build completed without a download URL.",
+    errFailed: "The CV build failed.",
+    errGeneric: "CV generation failed. Please try again.",
+    hexInvalid: "Enter a colour as six hex digits, for example #FF8800.",
+    hintLight: "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better.",
+    hintCustom: "The lighter and muted shades of the CV are derived from this colour automatically.",
+  },
+  fa: {
+    eyebrow: "رزومه به‌روز",
+    name: "رادمان علیزاده",
+    lead: "جدیدترین نسخه رزومه‌ام را با رنگ و نسخه دلخواه‌تان بسازید.",
+    accent: "رنگ",
+    edition: "نسخه",
+    cvLanguage: "زبان رزومه",
+    digital: "دیجیتال",
+    print: "چاپی",
+    generate: "ساخت جدیدترین رزومه",
+    generateAgain: "ساخت دوباره",
+    tryAgain: "تلاش دوباره",
+    building: "در حال ساخت رزومه…",
+    allCopies: "همه نسخه‌های منتشرشده",
+    preview: "پیش‌نمایش",
+    previewFrame: "پیش‌نمایش رزومه منتشرشده",
+    expand: "بزرگ‌نمایی",
+    expandPreview: "بزرگ‌نمایی پیش‌نمایش",
+    close: "بستن",
+    chooseAccent: "انتخاب رنگ",
+    presets: "رنگ‌های آماده",
+    custom: "دلخواه",
+    customHex: "رنگ دلخواه، کد هگز",
+    use: "اعمال",
+    typical: "زمان معمول ساخت: کمتر از یک دقیقه",
+    readyTitle: "رزومه آماده است",
+    readyText: "دانلود باید خودکار آغاز شود.",
+    failedTitle: "ساخت ناموفق بود",
+    a11y: "دسترس‌پذیری",
+    pageLanguage: "زبان صفحه",
+    appearance: "ظاهر",
+    dark: "تیره",
+    light: "روشن",
+    textSize: "اندازه متن",
+    sizeSmall: "کوچک",
+    sizeDefault: "پیش‌فرض",
+    sizeLarge: "بزرگ",
+    sizeLarger: "بزرگ‌تر",
+    lang_en: "انگلیسی",
+    lang_fa: "فارسی",
+    published: "منتشرشده در {date}",
+    notGenerated: "این ترکیب هنوز ساخته نشده است. با «ساخت جدیدترین رزومه» آن را بسازید تا نتیجه همین‌جا نمایش داده شود.",
+    elapsed: "زمان سپری‌شده: {time}",
+    requestingTitle: "درخواست ساخت تازه…",
+    requestingText: "در حال اتصال به سرویس ساخت رزومه. {selection}.",
+    startedTitle: "ساخت آغاز شد",
+    startedText: "ساخت شماره {id} در حال اجراست. می‌توانید این صفحه را باز نگه دارید.",
+    renderingTitle: "در حال ساخت جدیدترین رزومه…",
+    renderingText: "در حال کامپایل سند و محاسبه دوباره مدت سوابق کاری.",
+    queuedTitle: "در صف ساخت…",
+    queuedText: "درخواست پذیرفته شد و منتظر اجراست.",
+    completeTitle: "ساخت کامل شد",
+    publishedStarting: "جدیدترین رزومه منتشر شد. دانلود آغاز می‌شود…",
+    upToDate: "این نسخه به‌روز است. دانلود آغاز می‌شود…",
+    errStart: "آغاز ساخت رزومه ممکن نشد.",
+    errNoId: "سرویس ساخت شناسه‌ای برنگرداند.",
+    errStatus: "بررسی وضعیت ساخت ممکن نشد.",
+    errNoUrl: "ساخت کامل شد اما پیوند دانلودی برنگشت.",
+    errFailed: "ساخت رزومه ناموفق بود.",
+    errGeneric: "ساخت رزومه ناموفق بود. دوباره تلاش کنید.",
+    hexInvalid: "رنگ را به‌صورت شش رقم هگز وارد کنید، مثلاً #FF8800.",
+    hintLight: "رنگ‌های خیلی روشن در رزومه چاپی سخت خوانده می‌شوند. عنوان‌ها خودکار تیره‌تر می‌شوند، اما رنگی با روشنایی متوسط معمولاً خواناتر است.",
+    hintCustom: "سایه‌های روشن‌تر و ملایم رزومه خودکار از همین رنگ ساخته می‌شوند.",
+  },
 };
+
+const FA_COLOURS = {
+  purple: "بنفش",
+  violet: "بنفشه‌ای",
+  indigo: "نیلی",
+  blue: "آبی",
+  sky: "آبی آسمانی",
+  teal: "سبزآبی",
+  emerald: "زمردی",
+  green: "سبز",
+  olive: "زیتونی",
+  amber: "کهربایی",
+  orange: "نارنجی",
+  red: "قرمز",
+  rose: "گلبهی",
+  burgundy: "زرشکی",
+  brown: "قهوه‌ای",
+  slate: "سنگی",
+  graphite: "گرافیتی",
+  mono: "سیاه و سفید",
+};
+
+const UI_KEY = "cv-builder-a11y";
+const TEXT_SIZES = [0.9, 1, 1.15, 1.3];
+
+// Page language, appearance and text size from the accessibility menu.
+// Appearance starts from the system setting until the visitor picks one.
+let uiPrefs = { lang: "en", theme: "dark", fs: 1 };
+
+function t(key, vars = {}) {
+  let text = (STRINGS[uiPrefs.lang] || STRINGS.en)[key] ?? STRINGS.en[key] ?? key;
+
+  for (const [name, value] of Object.entries(vars)) {
+    text = text.replace(`{${name}}`, value);
+  }
+
+  return text;
+}
+
+function themeName(slug) {
+  if (uiPrefs.lang === "fa" && FA_COLOURS[slug]) {
+    return FA_COLOURS[slug];
+  }
+
+  const theme = THEME_BY_SLUG.get(slug);
+
+  return theme ? theme.label : "Purple";
+}
 
 const button = document.getElementById("generateButton");
 const buildPanel = document.getElementById("buildPanel");
@@ -80,6 +251,8 @@ const skullField = document.querySelector(".skull-field");
 const previewBox = document.querySelector(".preview-frame");
 const previewCollapse = document.getElementById("previewCollapse");
 const previewBackdrop = document.querySelector(".preview-backdrop");
+const a11yTrigger = document.getElementById("a11yTrigger");
+const a11yMenu = document.getElementById("a11yMenu");
 const mobilePreview = document.getElementById("mobilePreview");
 
 let variants = new Map();
@@ -165,6 +338,15 @@ function mixWithWhite(hex, amount) {
 function uiAccent(hex) {
   let accent = hex;
 
+  // On the light appearance the problem flips: pale accents are darkened.
+  if (uiPrefs.theme === "light") {
+    for (let step = 0; step < 12 && relativeLuminance(accent) > 0.3; step++) {
+      accent = mixHex(accent, "#000000", 0.18);
+    }
+
+    return accent;
+  }
+
   for (let step = 0; step < 12 && relativeLuminance(accent) < 0.22; step++) {
     accent = mixWithWhite(accent, 0.18);
   }
@@ -215,11 +397,11 @@ function colourLabel() {
 
   const theme = THEME_BY_SLUG.get(selection.theme);
 
-  return theme ? theme.label : "Purple";
+  return theme ? themeName(theme.slug) : themeName(DEFAULT_THEME);
 }
 
 function selectionLabel() {
-  return `${colourLabel()} · ${VARIANT_LABEL[selection.variant]} · ${LANGUAGE_LABEL[selection.language]}`;
+  return `${colourLabel()} · ${t(selection.variant)} · ${t(`lang_${selection.language}`)}`;
 }
 
 function variantKey(theme, variant, language) {
@@ -285,13 +467,15 @@ function menuIsOpen() {
 
 // The card clips its own overflow so the page never scrolls, so the menu
 // lives at the top level and is placed against its trigger instead.
-function positionMenu() {
-  const rect = colourTrigger.getBoundingClientRect();
-  const width = colourMenu.offsetWidth;
-  const height = colourMenu.offsetHeight;
+// Menus sit outside the card, which clips its own overflow, and are placed
+// against their trigger: its start edge, which is the right edge in RTL.
+function positionPopover(trigger, menu) {
+  const rect = trigger.getBoundingClientRect();
+  const width = menu.offsetWidth;
+  const height = menu.offsetHeight;
   const margin = 8;
 
-  let left = rect.left;
+  let left = document.documentElement.dir === "rtl" ? rect.right - width : rect.left;
   let top = rect.bottom + margin;
 
   left = Math.min(left, window.innerWidth - width - margin);
@@ -301,11 +485,16 @@ function positionMenu() {
     top = Math.max(margin, rect.top - height - margin);
   }
 
-  colourMenu.style.left = `${Math.round(left)}px`;
-  colourMenu.style.top = `${Math.round(top)}px`;
+  menu.style.left = `${Math.round(left)}px`;
+  menu.style.top = `${Math.round(top)}px`;
+}
+
+function positionMenu() {
+  positionPopover(colourTrigger, colourMenu);
 }
 
 function openMenu() {
+  closeA11y();
   colourMenu.hidden = false;
   colourTrigger.setAttribute("aria-expanded", "true");
   positionMenu();
@@ -363,7 +552,7 @@ function applyCustomColour(value) {
 
   if (!hex) {
     customHex.setAttribute("aria-invalid", "true");
-    setHint("Enter a colour as six hex digits, for example #FF8800.");
+    setHint(t("hexInvalid"));
     return false;
   }
 
@@ -389,7 +578,8 @@ function formatPublished(value) {
     return "";
   }
 
-  return date.toLocaleDateString(undefined, {
+  // fa-IR also switches the calendar to Solar Hijri.
+  return date.toLocaleDateString(uiPrefs.lang === "fa" ? "fa-IR" : undefined, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -458,20 +648,6 @@ function cachedPreview(url) {
     previewCache.set(url, promise);
   }
   return previewCache.get(url);
-}
-
-// Phones get the copy in its own tab rather than the inline preview:
-// Chrome on Android cannot render a PDF inside a page, so the browser hands
-// it to the phone's own viewer instead. Called straight from the click so
-// pop-up blockers allow it.
-function openPreviewInTab() {
-  const published = variants.get(selectedKey());
-
-  if (!published) {
-    return;
-  }
-
-  window.open(previewUrl(published), "_blank", "noopener");
 }
 
 function expandPreview() {
@@ -555,7 +731,7 @@ function refreshPreview() {
 
     previewState.hidden = false;
     previewState.textContent =
-      "This combination has not been generated yet. Use Generate Latest CV to build it, and the result appears here.";
+      t("notGenerated");
 
     previewMeta.textContent = "";
     previewExpand.hidden = true;
@@ -591,7 +767,7 @@ function refreshPreview() {
 
   const date = formatPublished(published.updatedAt);
 
-  previewMeta.textContent = date ? `Published ${date}` : "";
+  previewMeta.textContent = date ? t("published", { date }) : "";
   previewExpand.hidden = false;
 
 }
@@ -603,6 +779,100 @@ function schedulePreview() {
 }
 
 
+
+/* -------------------------------------------------------------------------
+   Accessibility: page language, appearance, text size
+   ---------------------------------------------------------------------- */
+
+function loadUiPrefs() {
+  uiPrefs.theme = window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+
+  try {
+    const stored = JSON.parse(localStorage.getItem(UI_KEY) || "null");
+
+    if (stored && typeof stored === "object") {
+      if (stored.lang === "en" || stored.lang === "fa") {
+        uiPrefs.lang = stored.lang;
+      }
+
+      if (stored.theme === "dark" || stored.theme === "light") {
+        uiPrefs.theme = stored.theme;
+      }
+
+      if (TEXT_SIZES.includes(stored.fs)) {
+        uiPrefs.fs = stored.fs;
+      }
+    }
+  } catch {
+    // A blocked or corrupt store just means the defaults are used.
+  }
+}
+
+function applyUi({ save = true } = {}) {
+  const root = document.documentElement;
+
+  root.lang = uiPrefs.lang;
+  root.dir = uiPrefs.lang === "fa" ? "rtl" : "ltr";
+  root.dataset.theme = uiPrefs.theme;
+  root.style.setProperty("--fs", String(uiPrefs.fs));
+
+  for (const el of document.querySelectorAll("[data-i18n]")) {
+    el.textContent = t(el.dataset.i18n);
+  }
+
+  for (const el of document.querySelectorAll("[data-i18n-aria]")) {
+    el.setAttribute("aria-label", t(el.dataset.i18nAria));
+  }
+
+  for (const el of document.querySelectorAll("[data-i18n-title]")) {
+    el.title = t(el.dataset.i18nTitle);
+  }
+
+  for (const swatch of themeGrid.children) {
+    const name = themeName(swatch.dataset.slug);
+    swatch.title = name;
+    swatch.setAttribute("aria-label", name);
+  }
+
+  for (const segment of a11yMenu.querySelectorAll(".segment")) {
+    const current =
+      segment.dataset.uiLang !== undefined
+        ? segment.dataset.uiLang === uiPrefs.lang
+        : segment.dataset.theme !== undefined
+          ? segment.dataset.theme === uiPrefs.theme
+          : Number(segment.dataset.fs) === uiPrefs.fs;
+
+    segment.setAttribute("aria-checked", current ? "true" : "false");
+  }
+
+  if (save) {
+    try {
+      localStorage.setItem(UI_KEY, JSON.stringify(uiPrefs));
+    } catch {
+      // Remembering the choice is a convenience, never a requirement.
+    }
+  }
+
+  syncInterface();
+
+  if (!a11yMenu.hidden) {
+    positionPopover(a11yTrigger, a11yMenu);
+  }
+}
+
+function openA11y() {
+  closeMenu();
+  a11yMenu.hidden = false;
+  a11yTrigger.setAttribute("aria-expanded", "true");
+  positionPopover(a11yTrigger, a11yMenu);
+}
+
+function closeA11y() {
+  a11yMenu.hidden = true;
+  a11yTrigger.setAttribute("aria-expanded", "false");
+}
 
 /* -------------------------------------------------------------------------
    Interface sync
@@ -644,8 +914,8 @@ function syncInterface() {
   if (selection.mode === "custom") {
     setHint(
       relativeLuminance(selection.color) > 0.7
-        ? "Very light colours can be hard to read on a printed CV. The headings are darkened automatically, but a mid-tone colour usually reads better."
-        : "The lighter and muted shades of the CV are derived from this colour automatically."
+        ? t("hintLight")
+        : t("hintCustom")
     );
   } else {
     setHint("");
@@ -692,11 +962,11 @@ function formatElapsed(milliseconds) {
 
 function startElapsedTimer() {
   buildStartedAt = Date.now();
-  elapsedTime.textContent = "Elapsed: 0:00";
+  elapsedTime.textContent = t("elapsed", { time: "0:00" });
 
   elapsedTimer = window.setInterval(() => {
     elapsedTime.textContent =
-      `Elapsed: ${formatElapsed(Date.now() - buildStartedAt)}`;
+      t("elapsed", { time: formatElapsed(Date.now() - buildStartedAt) });
   }, 1000);
 }
 
@@ -713,13 +983,13 @@ function showBuilding() {
   buildPanel.hidden = false;
 
   button.disabled = true;
-  button.querySelector(".button-label").textContent = "Building CV…";
+  button.querySelector(".button-label").textContent = t("building");
   setControlsEnabled(false);
   closeMenu();
 
   setBuildStatus(
-    "Requesting a fresh build…",
-    `Connecting to the CV build service. ${selectionLabel()}.`
+    t("requestingTitle"),
+    t("requestingText", { selection: selectionLabel() })
   );
 
   startElapsedTimer();
@@ -733,7 +1003,7 @@ function showSuccess() {
   successPanel.hidden = false;
 
   button.disabled = false;
-  button.querySelector(".button-label").textContent = "Generate Again";
+  button.querySelector(".button-label").textContent = t("generateAgain");
   setControlsEnabled(true);
 }
 
@@ -747,7 +1017,7 @@ function showError(message) {
   errorText.textContent = message;
 
   button.disabled = false;
-  button.querySelector(".button-label").textContent = "Try Again";
+  button.querySelector(".button-label").textContent = t("tryAgain");
   setControlsEnabled(true);
 }
 
@@ -773,11 +1043,11 @@ async function startBuild() {
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.error || "Unable to start CV generation.");
+    throw new Error(result.error || t("errStart"));
   }
 
   if (!result.buildId) {
-    throw new Error("The build service did not return a build ID.");
+    throw new Error(t("errNoId"));
   }
 
   return {
@@ -791,7 +1061,7 @@ async function startBuild() {
 }
 
 async function deliver(downloadUrl, message) {
-  setBuildStatus("Build complete", message);
+  setBuildStatus(t("completeTitle"), message);
 
   await new Promise((resolve) => window.setTimeout(resolve, 650));
 
@@ -816,7 +1086,7 @@ async function getBuildStatus(buildId, theme, variant, language) {
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.error || "Unable to check CV generation status.");
+    throw new Error(result.error || t("errStatus"));
   }
 
   return result;
@@ -830,31 +1100,31 @@ async function waitForBuild(buildId, theme, variant, language) {
 
     if (result.status === "completed") {
       if (!result.downloadUrl) {
-        throw new Error("The build completed without a download URL.");
+        throw new Error(t("errNoUrl"));
       }
 
       await deliver(
         result.downloadUrl,
-        "The newest CV has been published. Starting your download…"
+        t("publishedStarting")
       );
       return;
     }
 
     if (result.status === "failed") {
-      throw new Error("The CV build failed.");
+      throw new Error(t("errFailed"));
     }
 
     if (result.status === "running") {
       setBuildStatus(
-        "Rendering the latest CV…",
-        "Compiling the document and recalculating current experience durations."
+        t("renderingTitle"),
+        t("renderingText")
       );
       continue;
     }
 
     setBuildStatus(
-      "Build queued…",
-      "The request was accepted and is waiting for a runner."
+      t("queuedTitle"),
+      t("queuedText")
     );
   }
 }
@@ -869,7 +1139,8 @@ loadSelection();
 customColor.value = selectedHex().toLowerCase();
 customHex.value = selectedHex();
 
-syncInterface();
+loadUiPrefs();
+applyUi({ save: false });
 loadVariants().then(refreshPreview);
 
 colourTrigger.addEventListener("click", (event) => {
@@ -885,6 +1156,40 @@ document.addEventListener("click", () => {
   if (menuIsOpen()) {
     closeMenu();
   }
+
+  if (!a11yMenu.hidden) {
+    closeA11y();
+  }
+});
+
+a11yTrigger.addEventListener("click", (event) => {
+  event.stopPropagation();
+
+  if (a11yMenu.hidden) {
+    openA11y();
+  } else {
+    closeA11y();
+  }
+});
+
+a11yMenu.addEventListener("click", (event) => {
+  event.stopPropagation();
+
+  const segment = event.target.closest(".segment");
+
+  if (!segment) {
+    return;
+  }
+
+  if (segment.dataset.uiLang) {
+    uiPrefs.lang = segment.dataset.uiLang;
+  } else if (segment.dataset.theme) {
+    uiPrefs.theme = segment.dataset.theme;
+  } else if (segment.dataset.fs) {
+    uiPrefs.fs = Number(segment.dataset.fs);
+  }
+
+  applyUi();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -897,6 +1202,12 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
+  if (!a11yMenu.hidden) {
+    closeA11y();
+    a11yTrigger.focus();
+    return;
+  }
+
   if (menuIsOpen()) {
     closeMenu();
     colourTrigger.focus();
@@ -904,6 +1215,10 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("resize", () => {
+  if (!a11yMenu.hidden) {
+    positionPopover(a11yTrigger, a11yMenu);
+  }
+
   if (menuIsOpen()) {
     positionMenu();
   }
@@ -977,7 +1292,7 @@ previewFrame.addEventListener("load", () => {
 
 
 previewExpand.addEventListener("click", expandPreview);
-mobilePreview.addEventListener("click", openPreviewInTab);
+mobilePreview.addEventListener("click", expandPreview);
 previewCollapse.addEventListener("click", collapsePreview);
 previewBackdrop.addEventListener("click", collapsePreview);
 
@@ -990,14 +1305,14 @@ button.addEventListener("click", async () => {
     if (downloadUrl) {
       await deliver(
         downloadUrl,
-        "This copy is already up to date. Starting your download…"
+        t("upToDate")
       );
       return;
     }
 
     setBuildStatus(
-      "Build started",
-      `Build #${buildId} is running. You can keep this tab open.`
+      t("startedTitle"),
+      t("startedText", { id: buildId })
     );
 
     await waitForBuild(buildId, theme, variant, language);
@@ -1007,7 +1322,7 @@ button.addEventListener("click", async () => {
     showError(
       error instanceof Error
         ? error.message
-        : "CV generation failed. Please try again."
+        : t("errGeneric")
     );
   }
 });
