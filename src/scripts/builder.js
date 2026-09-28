@@ -50,6 +50,10 @@ const previewDoc = document.getElementById("previewDoc");
 const pdfZoom = document.getElementById("pdfZoom");
 
 const resetCv = document.getElementById("resetCv");
+// Phones show Reset as an icon at the top of the card instead.
+const resetButtons = [resetCv, document.getElementById("resetCvTop")];
+const previewError = document.getElementById("previewError");
+const previewRetry = document.getElementById("previewRetry");
 
 const DEFAULT_SELECTION = {
   mode: "theme",
@@ -396,7 +400,11 @@ async function loadVariants() {
 
     return true;
   } catch {
-    previewPane.classList.add("is-unavailable");
+    // Nothing known at all (not even a kept listing): say so in the
+    // preview, with a retry, instead of leaving it empty.
+    if (!variants.size) {
+      showPreviewError("listing");
+    }
 
     return false;
   }
@@ -946,8 +954,52 @@ function setPreviewLoading(loading) {
   previewDoc.classList.toggle("is-loading", loading);
 
   if (loading) {
-    previewLoadTimer = window.setTimeout(() => setPreviewLoading(false), 10000);
+    previewError.hidden = true;
+
+    // Taking too long: say so and offer a retry. If the copy still arrives
+    // it replaces the message.
+    previewLoadTimer = window.setTimeout(() => showPreviewError("copy"), 10000);
   }
+}
+
+/* -------- When a preview cannot be fetched --------
+   "copy": the PDF itself failed (or is taking too long); Retry forgets it
+   and fetches it again. "listing": the list of copies could not be had;
+   Retry asks the service again. */
+
+function showPreviewError(kind) {
+  window.clearTimeout(previewLoadTimer);
+  previewSkeleton.hidden = true;
+  previewDoc.classList.remove("is-loading");
+  previewState.hidden = true;
+  previewExpand.hidden = true;
+  peekHint.hidden = true;
+  previewError.dataset.kind = kind;
+  previewError.querySelector(".preview-error-text").textContent =
+    t(kind === "listing" ? "listingFailed" : "previewFailed");
+  previewError.hidden = false;
+}
+
+async function retryPreview() {
+  previewError.hidden = true;
+  setPreviewLoading(true);
+
+  if (previewError.dataset.kind === "listing") {
+    if (await loadVariants()) {
+      refreshPreview();
+      planPrefetch();
+    } else {
+      showPreviewError("listing");
+    }
+
+    return;
+  }
+
+  const url = previewDoc.dataset.url;
+
+  previewCache.delete(url);
+  delete previewDoc.dataset.url;
+  refreshPreview();
 }
 
 
@@ -1028,13 +1080,19 @@ function refreshPreview() {
         }
 
         if (shown && previewDoc.dataset.url === url) {
+          previewError.hidden = true;
+          previewExpand.hidden = false;
+          peekHint.hidden = false;
           setPreviewLoading(false);
           planPrefetch();
         }
       })
       .catch((error) => {
         console.error("Preview failed:", error);
-        setPreviewLoading(false);
+
+        if (previewDoc.dataset.url === url) {
+          showPreviewError("copy");
+        }
       });
   }
 
@@ -1081,7 +1139,9 @@ function syncInterface() {
 
   colourTriggerLabel.textContent = colourLabel();
 
-  resetCv.disabled = isDefaultSelection() || button.disabled;
+  for (const reset of resetButtons) {
+    reset.disabled = isDefaultSelection() || button.disabled;
+  }
 
   // The loading skeleton stands in for the CV, so it is laid out in the
   // CV's direction (a Persian CV right to left), not the page's.
@@ -1136,7 +1196,9 @@ function setControlsEnabled(enabled) {
   }
 
   colourTrigger.disabled = !enabled;
-  resetCv.disabled = !enabled || isDefaultSelection();
+  for (const reset of resetButtons) {
+    reset.disabled = !enabled || isDefaultSelection();
+  }
   customColor.disabled = !enabled;
   customHex.disabled = !enabled;
   customApply.disabled = !enabled;
@@ -1607,7 +1669,11 @@ export function initBuilder() {
     hint.addEventListener("click", () => pdfView.flashLinks());
   }
 
-  resetCv.addEventListener("click", resetSelection);
+  for (const reset of resetButtons) {
+    reset.addEventListener("click", resetSelection);
+  }
+
+  previewRetry.addEventListener("click", retryPreview);
 
   // Hover intent: the copy a pointer is resting on is probably next.
   themeGrid.addEventListener("pointerover", (event) => {

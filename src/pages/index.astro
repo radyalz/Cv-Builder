@@ -18,6 +18,10 @@ const en = STRINGS.en;
       <div class="card-top">
         <div class="eyebrow" data-i18n="eyebrow">{en.eyebrow}</div>
 
+        <!-- Phones: Reset as an icon up here, freeing the controls row. -->
+        <button id="resetCvTop" class="reset-icon reset-top" type="button" data-tip="resetCv" aria-label={en.reset} data-i18n-aria="reset" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
+        </button>
       </div>
 
       <h1 id="page-title" data-i18n="name">{en.name}</h1>

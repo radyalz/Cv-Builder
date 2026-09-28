@@ -248,3 +248,9 @@ body.preview-open .a11y-trigger {
 .a11y-head .a11y-title {
   margin: 0;
 }
+
+/* Reset's phone form: an icon at the top of the card (shown under 600px,
+   where the one in the controls row is hidden). */
+.reset-top {
+  display: none;
+}

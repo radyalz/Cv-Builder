@@ -29,6 +29,15 @@ const en = STRINGS.en;
 
     <div id="previewState" class="preview-state" hidden></div>
 
+    <!-- Shown when the copy (or the list of copies) cannot be fetched. -->
+    <div id="previewError" class="preview-error" role="alert" hidden>
+      <p class="preview-error-text"></p>
+      <button id="previewRetry" class="ghost-button retry-button" type="button" data-tip="retry">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
+        <span data-i18n="retry">{en.retry}</span>
+      </button>
+    </div>
+
     <!-- Phones: the preview is a peek that opens when tapped. -->
     <span class="peek-hint" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h5v5M9 20H4v-5M20 4l-6.5 6.5M4 20l6.5-6.5"/></svg>

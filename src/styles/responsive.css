@@ -135,25 +135,36 @@
     line-height: 1.5;
   }
 
+  /* Reset moves to an icon at the top of the card. */
+  .reset-top {
+    display: inline-grid;
+    width: 30px;
+    height: 30px;
+    margin: -6px -6px -6px 0;
+  }
+
+  .control-reset {
+    display: none;
+  }
+
   .controls {
     display: grid;
-    margin-top: 18px;
-    gap: 12px 10px;
-    grid-template-columns: 1fr 1fr auto;
+    margin-top: 14px;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
   }
 
   .controls .control:first-child {
     grid-column: 1 / -1;
   }
 
-  .reset-control {
-    height: 44px;
-    padding: 0 12px;
+  .control-label {
+    margin-bottom: 5px;
   }
 
   .menu-trigger {
     width: 100%;
-    height: 44px;
+    height: 38px;
   }
 
   .trigger-caret {
@@ -162,7 +173,7 @@
 
   .segmented {
     width: 100%;
-    height: 44px;
+    height: 38px;
   }
 
   .segment {
@@ -170,27 +181,29 @@
     padding: 0 6px;
   }
 
+  /* Buttons sized for a thumb but no bigger: 42, 38 and 34px. */
   .actions {
     align-items: stretch;
     flex-direction: column;
-    margin-top: 16px;
-    gap: 10px;
+    margin-top: 14px;
+    gap: 8px;
   }
 
   .primary-button {
     width: 100%;
-    min-height: 48px;
+    min-height: 42px;
+    padding-block: 0;
   }
 
   .download-button {
     width: 100%;
-    min-height: 44px;
+    min-height: 38px;
   }
 
   .card-main > .secondary-link {
     align-self: stretch;
-    min-height: 40px;
-    margin-top: 10px;
+    min-height: 34px;
+    margin-top: 8px;
   }
 
   .a11y-trigger {
@@ -220,23 +233,6 @@
 
   .builder-card:not(.is-expanded) .pdf-links {
     pointer-events: none;
-  }
-}
-
-/* The smallest phones: Reset keeps only its icon (its tooltip and label
-   still name it), so edition and language keep their room. */
-@media (max-width: 379px) {
-  .reset-control span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .reset-control {
-    padding: 0 12px;
   }
 }
 
