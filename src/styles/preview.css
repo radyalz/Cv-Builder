@@ -107,6 +107,68 @@
   outline: none;
 }
 
+/* Lit up for a moment so readers see what can be clicked. */
+.pdf-view.is-hinting .pdf-link {
+  animation: link-hint 2.2s ease-out;
+}
+
+@keyframes link-hint {
+  0%, 12% {
+    background: color-mix(in srgb, var(--accent) 34%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  45% {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+/* "9 clickable links": a small accent pill under the preview and in the
+   grown card's bar. */
+.links-hint {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-size: calc(12px * var(--fs));
+  font-weight: 650;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.links-hint:hover {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.links-hint:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.links-hint svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.preview-foot .links-hint {
+  margin-inline-end: auto;
+}
+
 /* -------- Loading skeletons --------
    A page-shaped placeholder that shimmers until the PDF has loaded, in the
    accent colour so it already looks like the CV it stands in for. */
@@ -522,5 +584,9 @@
 
   .expanded-bar .pdf-tools {
     margin-inline-end: auto;
+  }
+
+  .expanded-bar .links-hint-text {
+    display: none;
   }
 }

@@ -33,6 +33,12 @@ const en = STRINGS.en;
   <div class="preview-foot">
     <span id="previewMeta" class="preview-meta is-loading"></span>
 
+    <!-- The PDF's links work in the preview; this says so, and lights them. -->
+    <button class="links-hint" type="button" data-tip="linksHint" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>
+      <span class="links-hint-text"></span>
+    </button>
+
     <button id="previewExpand" class="ghost-button" type="button" hidden data-i18n="expand" data-tip="expand">{en.expand}</button>
   </div>
 
@@ -42,6 +48,11 @@ const en = STRINGS.en;
       <span id="expandedLabel" class="preview-title"></span>
       <span id="expandedMeta" class="preview-meta"></span>
     </div>
+
+    <button class="links-hint" type="button" data-tip="linksHint" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>
+      <span class="links-hint-text"></span>
+    </button>
 
     <div class="pdf-tools" role="toolbar" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
       <button class="icon-button" type="button" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">

@@ -115,6 +115,8 @@ export const STRINGS = {
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     font: "Font",
+    linksHint: "{n} clickable links",
+    linksHintOne: "1 clickable link",
   },
   fa: {
     eyebrow: "رزومه به‌روز",
@@ -187,6 +189,8 @@ export const STRINGS = {
     zoomIn: "بزرگ‌نمایی",
     zoomOut: "کوچک‌نمایی",
     font: "قلم",
+    linksHint: "{n} پیوند قابل کلیک",
+    linksHintOne: "۱ پیوند قابل کلیک",
   },
 };
 
@@ -222,6 +226,7 @@ export const TIPS = {
     fitPage: ["Fit page", "A whole page at once."],
     zoomIn: ["Zoom in", "Enlarges the pages."],
     zoomOut: ["Zoom out", "Shrinks the pages."],
+    linksHint: ["Clickable links", "The contact details, websites and portfolio entries in this copy open when clicked, here and in the downloaded PDF. Click to highlight them."],
   },
   fa: {
     generate: ["ساخت نسخه تازه", "رزومه را با مدت سوابق تا امروز از نو می‌سازد و دانلود می‌کند. اگر نسخه منتشرشده به‌روز باشد، همان فوراً دانلود می‌شود."],
@@ -252,6 +257,7 @@ export const TIPS = {
     fitPage: ["کل صفحه", "یک صفحه کامل در یک نگاه."],
     zoomIn: ["بزرگ‌نمایی", "صفحه‌ها را بزرگ‌تر می‌کند."],
     zoomOut: ["کوچک‌نمایی", "صفحه‌ها را کوچک‌تر می‌کند."],
+    linksHint: ["پیوندهای قابل کلیک", "اطلاعات تماس، وب‌سایت‌ها و نمونه‌کارهای این نسخه با کلیک باز می‌شوند، هم این‌جا و هم در PDF دانلودشده. برای دیدنشان کلیک کنید."],
   },
 };
 

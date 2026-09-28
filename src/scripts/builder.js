@@ -51,6 +51,25 @@ const pdfZoom = document.getElementById("pdfZoom");
 
 // Created in initBuilder(); draws the published PDF into previewDoc.
 let pdfView = null;
+
+/* -------- Clickable links hint --------
+   Readers do not expect a CV preview to have working links, so the preview
+   says how many it has and lights them up: once when a copy first shows,
+   again when it is expanded, and whenever the hint is clicked. */
+
+const linksHints = document.querySelectorAll(".links-hint");
+let linkCount = 0;
+let flashedUrl = "";
+
+function showLinksHint() {
+  const count = uiPrefs.lang === "fa" ? linkCount.toLocaleString("fa-IR") : String(linkCount);
+  const text = linkCount === 1 ? t("linksHintOne") : t("linksHint", { n: count });
+
+  for (const hint of linksHints) {
+    hint.hidden = linkCount === 0;
+    hint.querySelector(".links-hint-text").textContent = text;
+  }
+}
 const previewState = document.getElementById("previewState");
 const previewLabel = document.getElementById("previewLabel");
 const previewMeta = document.getElementById("previewMeta");
@@ -518,6 +537,7 @@ async function expandPreview() {
 
   // The grown card covers the skulls, so they rest while it is open.
   setSkullsPaused("covered", true);
+  window.setTimeout(() => pdfView.flashLinks(), 350);
   runQueued();
   previewCollapse.focus({ preventScroll: true });
 }
@@ -630,6 +650,8 @@ function refreshPreview() {
     setPreviewLoading(false);
     previewDoc.hidden = true;
     pdfView.clear();
+    linkCount = 0;
+    showLinksHint();
     delete previewDoc.dataset.url;
 
     previewState.hidden = false;
@@ -1166,9 +1188,14 @@ export function initBuilder() {
 
   // Page language or appearance changed in the accessibility menu.
   document.addEventListener("prefs:change", () => {
+    showLinksHint();
     localiseSwatches();
     syncInterface();
   });
+
+  for (const hint of linksHints) {
+    hint.addEventListener("click", () => pdfView.flashLinks());
+  }
 
   // Opening the accessibility menu closes this one.
   document.addEventListener("menus:close", closeMenu);
@@ -1297,6 +1324,15 @@ export function initBuilder() {
   // PDF.js scale 1 is one CSS pixel per point; 100% is the page's printed
   // size on screen, 96/72 of that.
   previewDoc.addEventListener("pdf:rendered", ({ detail }) => {
+    linkCount = detail.links;
+    showLinksHint();
+
+    // Light the links the first time each copy is on screen.
+    if (previewDoc.dataset.url !== flashedUrl && previewDoc.clientWidth) {
+      flashedUrl = previewDoc.dataset.url;
+      pdfView.flashLinks();
+    }
+
     pdfZoom.textContent = `${Math.round((detail.scale / (96 / 72)) * 100)}%`;
 
     for (const button of builderCard.querySelectorAll("[data-pdf^=fit]")) {

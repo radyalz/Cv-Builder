@@ -177,7 +177,9 @@ export class PdfView {
       })
     );
 
-    this.host.dispatchEvent(new CustomEvent("pdf:rendered", { detail: { scale: this.scale } }));
+    this.host.dispatchEvent(
+      new CustomEvent("pdf:rendered", { detail: { scale: this.scale, links: this.linkCount() } })
+    );
   }
 
   pad() {
@@ -209,6 +211,23 @@ export class PdfView {
           return link;
         })
     );
+  }
+
+  // How many web links the document has, across all pages.
+  linkCount() {
+    return this.pages.reduce(
+      (total, entry) => total + entry.annotations.filter((item) => item.subtype === "Link" && item.url).length,
+      0
+    );
+  }
+
+  // Briefly lights up every link, so readers see what can be clicked.
+  flashLinks() {
+    this.host.classList.remove("is-hinting");
+    void this.host.offsetWidth;
+    this.host.classList.add("is-hinting");
+    window.clearTimeout(this.hintTimer);
+    this.hintTimer = window.setTimeout(() => this.host.classList.remove("is-hinting"), 2200);
   }
 
   setFit(mode) {
