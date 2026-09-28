@@ -21,6 +21,11 @@ function loadLibrary() {
   return library;
 }
 
+// PDF.js documents are freed through the task that loaded them.
+function release(doc) {
+  doc?.loadingTask?.destroy();
+}
+
 const MIN_ZOOM = 0.3;
 const MAX_ZOOM = 4;
 
@@ -60,49 +65,67 @@ export class PdfView {
     this.observer.observe(host);
   }
 
-  // Loads a document and draws it; resolves once the first page is on
-  // screen. A newer open() cancels an older one still loading.
+  // Loads a document and draws it; resolves true once it is on screen.
+  // Switching copies quickly starts a new open() while an older one is
+  // still loading: each builds its pages privately and only swaps them in
+  // if it is still the newest, so an older copy can never land on top of
+  // (or mix its pages into) the one asked for last.
   async open(url) {
     const token = ++this.token;
+    const current = () => token === this.token;
     const lib = await loadLibrary();
     const doc = await lib.getDocument({ url, isEvalSupported: false }).promise;
+    const pages = [];
 
-    if (token !== this.token) {
-      doc.destroy();
+    try {
+      for (let number = 1; number <= doc.numPages; number++) {
+        const page = await doc.getPage(number);
+
+        if (!current()) {
+          release(doc);
+          return false;
+        }
+
+        const shell = document.createElement("div");
+        const canvas = document.createElement("canvas");
+        const links = document.createElement("div");
+
+        shell.className = "pdf-page";
+        links.className = "pdf-links";
+        shell.append(canvas, links);
+
+        pages.push({
+          page,
+          shell,
+          canvas,
+          links,
+          size: page.getViewport({ scale: 1 }),
+          annotations: await page.getAnnotations(),
+          task: null,
+        });
+      }
+    } catch (error) {
+      release(doc);
+      throw error;
+    }
+
+    if (!current()) {
+      release(doc);
       return false;
     }
 
-    this.doc?.destroy();
-    this.doc = doc;
-    this.pages = [];
-    this.host.replaceChildren();
-
-    for (let number = 1; number <= doc.numPages; number++) {
-      const page = await doc.getPage(number);
-      const shell = document.createElement("div");
-      const canvas = document.createElement("canvas");
-      const links = document.createElement("div");
-
-      shell.className = "pdf-page";
-      links.className = "pdf-links";
-      shell.append(canvas, links);
-      this.host.append(shell);
-
-      this.pages.push({
-        page,
-        shell,
-        canvas,
-        links,
-        size: page.getViewport({ scale: 1 }),
-        annotations: await page.getAnnotations(),
-        task: null,
-      });
+    for (const entry of this.pages) {
+      entry.task?.cancel();
     }
 
+    release(this.doc);
+    this.doc = doc;
+    this.pages = pages;
+    this.host.replaceChildren(...pages.map((entry) => entry.shell));
     this.host.scrollTop = 0;
     await this.render();
 
-    return token === this.token;
+    return current();
   }
 
   // The scale the current fit mode asks for, from the first page's size.
@@ -253,7 +276,7 @@ export class PdfView {
 
   clear() {
     this.token++;
-    this.doc?.destroy();
+    release(this.doc);
     this.doc = null;
     this.pages = [];
     this.host.replaceChildren();
