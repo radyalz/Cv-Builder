@@ -531,6 +531,7 @@ function measureParts() {
     return rect.width
       ? {
           left: rect.left - card.left - builderCard.clientLeft,
+          right: card.right - rect.right - (builderCard.offsetWidth - builderCard.clientWidth - builderCard.clientLeft),
           top: rect.top - card.top - builderCard.clientTop,
           width: rect.width,
           height: rect.height,
@@ -539,7 +540,7 @@ function measureParts() {
   });
 }
 
-function pinParts(boxes) {
+function pinParts(boxes, { leaving = false } = {}) {
   pinnedParts.forEach((part, index) => {
     const box = boxes[index];
 
@@ -547,9 +548,15 @@ function pinParts(boxes) {
       return;
     }
 
+    // Leaving in Persian, the text column is held by the card's right edge
+    // (its own side), so the growing card carries it away from the preview,
+    // the way it is sliding. Everything else is held by the left edge.
+    const byRight = leaving && part === pinnedParts[0] && document.documentElement.dir === "rtl";
+
     part.dataset.pinned = "";
     Object.assign(part.style, {
-      left: `${box.left}px`,
+      left: byRight ? "auto" : `${box.left}px`,
+      right: byRight ? `${box.right}px` : "auto",
       top: `${box.top}px`,
       width: `${box.width}px`,
       height: `${box.height}px`,
@@ -565,7 +572,7 @@ function unpinParts() {
   for (const part of pinnedParts) {
     delete part.dataset.pinned;
 
-    for (const property of ["left", "top", "width", "height"]) {
+    for (const property of ["left", "right", "top", "width", "height"]) {
       part.style.removeProperty(property);
     }
   }
@@ -592,7 +599,7 @@ async function expandPreview() {
   const parts = measureParts();
 
   document.body.classList.add("preview-open");
-  pinParts(parts);
+  pinParts(parts, { leaving: true });
 
   // The card starts growing at once; the text starts to leave a moment
   // later (a transition delay, so it stays in step with the grow).
