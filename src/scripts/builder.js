@@ -324,6 +324,34 @@ function keyed(items) {
   ]);
 }
 
+// The last full listing, kept on the device so a returning visitor's
+// preview can start at once from the kept copies; the fresh listing then
+// replaces it, and only copies rebuilt since are fetched again.
+const LISTING_KEY = "cv-builder-listing";
+
+function restoreListing() {
+  try {
+    const kept = JSON.parse(localStorage.getItem(LISTING_KEY) || "null");
+
+    if (kept && Array.isArray(kept.variants)) {
+      variants = new Map(keyed(kept.variants));
+      return true;
+    }
+  } catch {
+    // Nothing kept, or storage blocked.
+  }
+
+  return false;
+}
+
+function keepListing(list) {
+  try {
+    localStorage.setItem(LISTING_KEY, JSON.stringify({ variants: list }));
+  } catch {
+    // Keeping it is only a speed-up.
+  }
+}
+
 // Asks about just the copy about to be shown, so its preview can start
 // before the whole listing (every colour, edition and language) is in.
 async function loadCurrentVariant() {
@@ -360,6 +388,8 @@ async function loadVariants() {
     const data = await response.json();
 
     variants = new Map(keyed(data.variants));
+    keepListing(data.variants || []);
+    pruneDeviceCache();
 
     variantsLoaded = true;
     previewPane.classList.remove("is-unavailable");
@@ -389,13 +419,65 @@ const previewCache = new Map();
 // straight over instead of showing the loading skeleton first.
 const previewReady = new Set();
 
+/* -------- Keeping copies on the device --------
+   Every preview URL names one exact copy (it carries the copy's publish
+   time), so a downloaded copy is kept in the browser's Cache Storage and
+   reused on later visits without asking the network again, until that
+   copy is rebuilt, which changes its URL. Copies that have been rebuilt
+   since are removed once the fresh listing is in. Custom colours never
+   reach this cache: they have no preview. */
+
+const DEVICE_CACHE = "cv-previews-v1";
+
+async function deviceCache() {
+  try {
+    return "caches" in window ? await caches.open(DEVICE_CACHE) : null;
+  } catch {
+    return null; // private windows and blocked storage
+  }
+}
+
+async function fetchCopy(url, background) {
+  const store = await deviceCache();
+  const kept = store && (await store.match(url));
+
+  if (kept) {
+    return kept.blob();
+  }
+
+  const response = await fetch(url, { priority: background ? "low" : "high" });
+
+  if (!response.ok) {
+    throw new Error("Preview request failed.");
+  }
+
+  if (store) {
+    store.put(url, response.clone()).catch(() => {});
+  }
+
+  return response.blob();
+}
+
+// Drops kept copies that are no longer current (rebuilt since).
+async function pruneDeviceCache() {
+  const store = await deviceCache();
+
+  if (!store) {
+    return;
+  }
+
+  const current = new Set([...variants.values()].map(previewUrlFor));
+
+  for (const request of await store.keys()) {
+    if (!current.has(request.url)) {
+      store.delete(request).catch(() => {});
+    }
+  }
+}
+
 function cachedPreview(url, { background = false } = {}) {
   if (!previewCache.has(url)) {
-    const promise = fetch(url, { priority: background ? "low" : "high" })
-      .then((response) => {
-        if (!response.ok) throw new Error("Preview request failed.");
-        return response.blob();
-      })
+    const promise = fetchCopy(url, background)
       .then((blob) => {
         previewReady.add(url);
         return URL.createObjectURL(blob);
@@ -410,18 +492,20 @@ function cachedPreview(url, { background = false } = {}) {
 }
 
 /* -------- Fetching the likely next copies --------
-   Once the chosen copy is on screen, the copies a visitor is most likely to
-   switch to next are downloaded in the background, one at a time and at
-   low priority, so a switch feels instant: first this colour in the other
-   edition, then in the other CV language, then both, then the neighbouring
-   colours in the picker (one either side, then two). Choosing something
-   else re-plans around the new choice, and hovering a swatch or an
+   Planned per accent, not per selection. When an accent is chosen (or the
+   page opens), every version of it is fetched (digital and print, English
+   and Persian), and at the same time the neighbouring accents in the
+   picker in the current edition and language, a few downloads at once and
+   at low priority. Switching edition or language then needs nothing new:
+   those copies are already here. Only choosing another accent plans again,
+   and nothing already downloaded is fetched twice. Hovering a swatch or an
    edition/language button fetches that copy straight away. Skipped when
    the visitor has asked to save data or is on a very slow connection. */
 
-const PREFETCH_LIMIT = 7;
+const PREFETCH_PARALLEL = 3;
 let prefetchQueue = [];
-let prefetching = false;
+let prefetchActive = 0;
+let plannedAccent = "";
 
 function saveData() {
   const connection = navigator.connection;
@@ -432,16 +516,18 @@ function saveData() {
 function likelyNext() {
   const slug = selectedSlug();
   const { variant, language } = selection;
-  const otherVariant = variant === "digital" ? "print" : "digital";
-  const otherLanguage = language === "en" ? "fa" : "en";
   const picks = [];
 
-  // A custom colour has no published copies of its own; its neighbours are
-  // still worth having ready.
+  // Every version of this accent (a custom colour has none published).
   if (slug !== "custom") {
-    picks.push([slug, otherVariant, language], [slug, variant, otherLanguage], [slug, otherVariant, otherLanguage]);
+    for (const edition of ["digital", "print"]) {
+      for (const lang of ["en", "fa"]) {
+        picks.push([slug, edition, lang]);
+      }
+    }
   }
 
+  // The neighbouring accents, one either side, then two.
   const index = THEMES.findIndex((theme) => theme.slug === (slug === "custom" ? DEFAULT_THEME : slug));
 
   for (const step of [1, -1, 2, -2]) {
@@ -458,36 +544,42 @@ function publishedUrl(theme, variant, language) {
 }
 
 function pumpPrefetch() {
-  if (prefetching || !prefetchQueue.length) {
-    return;
-  }
+  while (prefetchActive < PREFETCH_PARALLEL && prefetchQueue.length) {
+    const url = prefetchQueue.shift();
 
-  prefetching = true;
+    if (previewCache.has(url)) {
+      continue;
+    }
 
-  const url = prefetchQueue.shift();
-  const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 150));
-
-  idle(() => {
+    prefetchActive += 1;
     cachedPreview(url, { background: true })
       .catch(() => {})
       .finally(() => {
-        prefetching = false;
+        prefetchActive -= 1;
         pumpPrefetch();
       });
-  });
+  }
 }
 
+// Plans once per accent; switching edition or language keeps the plan.
 function planPrefetch() {
-  if (saveData()) {
+  const accent = selectedSlug() === "custom" ? `custom:${selection.color}` : selectedSlug();
+
+  if (saveData() || !variantsLoaded || accent === plannedAccent) {
     return;
   }
 
+  plannedAccent = accent;
   prefetchQueue = likelyNext()
     .map(([theme, variant, language]) => publishedUrl(theme, variant, language))
-    .filter((url, index, list) => url && !previewCache.has(url) && list.indexOf(url) === index)
-    .slice(0, PREFETCH_LIMIT);
+    .filter((url, index, list) => url && !previewCache.has(url) && list.indexOf(url) === index);
 
-  pumpPrefetch();
+  // Start when the page is idle, but within a second even if it never is.
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(pumpPrefetch, { timeout: 1000 });
+  } else {
+    window.setTimeout(pumpPrefetch, 150);
+  }
 }
 
 // Hovering a choice: fetch that copy now, ahead of the planned ones.
@@ -1468,7 +1560,15 @@ export function initBuilder() {
   syncInterface();
   // The copy on screen first, then everything else, then the likely next
   // copies (which need the full listing to find the neighbours).
-  loadCurrentVariant()
+  // A returning visitor's kept listing lets the preview start at once; the
+  // question about the current copy is then unnecessary.
+  const restored = restoreListing();
+
+  if (restored) {
+    refreshPreview();
+  }
+
+  (restored ? Promise.resolve() : loadCurrentVariant())
     .then(() => {
       if (variants.size) {
         refreshPreview();
