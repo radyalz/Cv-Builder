@@ -98,6 +98,37 @@
   letter-spacing: 0 !important;
 }
 
+/* Persian type uses the full range of weights each font has: the name in
+   its heaviest cut, headings and labels bold, the intro line light. Latin
+   text on the page keeps its own weights. */
+:root[lang="fa"] h1 {
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+:root[lang="fa"] .eyebrow,
+:root[lang="fa"] .a11y-title {
+  font-weight: 800;
+}
+
+:root[lang="fa"] .control-label,
+:root[lang="fa"] .preview-title,
+:root[lang="fa"] .status-title,
+:root[lang="fa"] .tip-title {
+  font-weight: 750;
+}
+
+:root[lang="fa"] .primary-button,
+:root[lang="fa"] .download-button {
+  font-weight: 700;
+}
+
+:root[lang="fa"] .lead,
+:root[lang="fa"] .tip-body,
+:root[lang="fa"] .status-text {
+  font-weight: 300;
+}
+
 [dir="rtl"] .button-arrow {
   transform: scaleX(-1);
 }

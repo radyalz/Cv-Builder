@@ -1095,7 +1095,7 @@ function tipContent(element) {
         [fact("page"), t(`lang_${uiPrefs.lang}`)],
         [fact("appearance"), t(uiPrefs.theme)],
         [fact("text"), `${Math.round(uiPrefs.fs * 100)}%`],
-        [fact("fonts"), `${en.name} · ${fa.name[index]}`],
+        [fact("fonts"), lang === "fa" ? fa.name[index] : en.name],
       ];
       break;
     }

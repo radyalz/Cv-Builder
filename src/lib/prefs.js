@@ -88,6 +88,10 @@ export function applyPrefs({ save = true } = {}) {
   const menu = document.getElementById("a11yMenu");
 
   if (menu) {
+    for (const group of menu.querySelectorAll("[data-font-lang]")) {
+      group.hidden = group.dataset.fontLang !== uiPrefs.lang;
+    }
+
     for (const option of menu.querySelectorAll("[role=radio]")) {
       const { uiLang, theme, fs, enFont, faFont } = option.dataset;
       const current =
