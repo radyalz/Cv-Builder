@@ -1,23 +1,8 @@
 ---
-// The animated skull background. Two brick-offset sets of rows, each one
-// skull built from stacked still layers (see src/lib/skulls.js for the art
-// and src/styles/skulls.css for the motion). paintSkulls() colours it.
-const LAYERS = ["cranium", "flash", "veins1", "veins2"];
+// The animated skull background: one canvas, drawn by src/lib/skulls.js.
+// Kept across page changes with transition:persist by the layout.
 ---
 
 <div class="skull-field" aria-hidden="true" {...Astro.props}>
-  {["a", "b"].map((set) => (
-    <div class={`skull-rows skull-rows-${set}`}>
-      <div class="skull-shake">
-        {LAYERS.map((layer) => <div class={`skull-layer skull-${layer}`} />)}
-        <div class="skull-bite">
-          <div class="skull-layer skull-jaw" />
-          <div class="skull-layer skull-veins3" />
-        </div>
-        <div class="skull-layer skull-eyes" />
-        <div class="skull-layer skull-flare" />
-      </div>
-      <div class="skull-layer skull-bolt" />
-    </div>
-  ))}
+  <canvas></canvas>
 </div>

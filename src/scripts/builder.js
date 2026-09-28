@@ -18,7 +18,7 @@ import { normaliseHex, relativeLuminance, textOn, uiAccent } from "../lib/colour
 import { closeA11y, initPrefs, themeName, t, uiPrefs } from "../lib/prefs.js";
 import { positionPopover } from "../lib/popover.js";
 import { hideTip, setTipContent } from "../lib/tooltip.js";
-import { paintSkulls } from "../lib/skulls.js";
+import { paintSkulls, setSkullsPaused } from "../lib/skulls.js";
 
 // The CV builder itself: the selection, the colour menu, the published
 // preview and how it expands, the build flow, and what each tooltip says.
@@ -477,6 +477,9 @@ async function expandPreview() {
   settle(animations);
   builderCard.classList.add("is-open");
   expandState = "open";
+
+  // The grown card covers the skulls, so they rest while it is open.
+  setSkullsPaused("covered", true);
   previewCollapse.focus({ preventScroll: true });
 }
 
@@ -487,6 +490,7 @@ async function collapsePreview() {
 
   expandState = "closing";
   hideTip();
+  setSkullsPaused("covered", false);
 
   const quick = reducedMotion();
 

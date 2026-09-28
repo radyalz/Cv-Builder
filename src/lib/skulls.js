@@ -2,8 +2,7 @@
    Skull artwork
    Every piece of the skull is a still SVG image, rebuilt here whenever the
    accent changes because an image cannot read CSS variables. Nothing moves
-   inside these images: the page animates the layers that hold them, which
-   the browser can do cheaply and reliably.
+   inside these images: the renderer below moves and fades them.
 
    Each tile is 100 x 130. The top 30 units are sky for the lightning; the
    skull sits below in the same 0..100 frame it was traced in.
@@ -17,7 +16,7 @@ function svgImage(defs, body) {
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200">' +
     `<defs>${defs}</defs>${body}</svg>`;
 
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
 function skullParts(accent, light) {
@@ -136,26 +135,462 @@ function skullParts(accent, light) {
   };
 }
 
-let painted = "";
+/* -------------------------------------------------------------------------
+   Renderer
+   The skulls are drawn on one canvas. Every skull on screen is in the same
+   pose at any moment, so each frame composes that pose once, on a small
+   offscreen canvas, from the still layer images above, then stamps it
+   across the field in two brick-offset sets of rows. That is a handful of
+   image draws per frame rather than a browser compositing a stack of
+   full-screen layers, and it lets each skull grow and wiggle about its own
+   centre when the lightning hits, which moving whole layers could not.
 
-// Paints the skull field in the given accent. The images are set on the
-// field itself rather than the page root, so they survive page changes
-// (the field is kept across them) without being rebuilt.
-export function paintSkulls(accent, theme) {
-  const field = document.querySelector(".skull-field");
-  const key = `${accent}|${theme}`;
+   The timings below are the old CSS keyframes, ported one for one:
+   [percent of the cycle, value], with the CSS easing for each track.
+   ---------------------------------------------------------------------- */
 
-  if (!field || key === painted) {
+const TILE_W = 150; // one tile: 100 x 200 artwork units at 1.5 px each
+const TILE_H = 300; // two rows; the second set of rows fills the gap
+const SCALE = TILE_W / 100;
+const CYCLE_MS = 6500; // strike, laugh and settle
+const FLOW_MS = 90000; // one loop of the 45 degree drift
+const BITE_PX = 6; // how far the jaw drops
+const PAD = 30; // room around the pose for it to grow into
+const PIVOT = { x: 50 * SCALE, y: 80 * SCALE }; // the middle of the skull
+
+// Draw order, matching the old layer stack. "shake" parts jolt with the
+// head, "bite" parts also drop with the jaw; the bolt stays where it lands.
+const LAYERS = [
+  ["cranium", "shake"],
+  ["flash", "shake"],
+  ["veins1", "shake"],
+  ["veins2", "shake"],
+  ["jaw", "bite"],
+  ["veins3", "bite"],
+  ["eyes", "shake"],
+  ["flare", "shake"],
+  ["bolt", "still"],
+];
+
+const TRACKS = {
+  flash: { ease: "linear", keys: [[0, 0], [70, 0], [71.5, 0.55], [79, 0], [100, 0]] },
+  veins1: { ease: "linear", keys: [[0, 0], [70.3, 0], [70.8, 1], [71.6, 0.35], [72.4, 1], [74, 0.8], [79, 0], [100, 0]] },
+  veins2: { ease: "linear", keys: [[0, 0], [71.2, 0], [71.8, 1], [72.6, 0.4], [73.4, 1], [75.5, 0.75], [81, 0], [100, 0]] },
+  veins3: { ease: "linear", keys: [[0, 0], [72.2, 0], [72.8, 1], [73.6, 0.4], [74.4, 1], [77, 0.7], [83, 0], [100, 0]] },
+  eyes: {
+    ease: "ease-in-out",
+    keys: [
+      [0, 0.3], [18, 0.3], [20, 0.55], [22.5, 0.38], [25, 0.55], [27.5, 0.38], [30, 0.55],
+      [32.5, 0.38], [35, 0.55], [37.5, 0.38], [40, 0.55], [42.5, 0.38], [48, 0.34], [70, 0.32],
+      [72.5, 1], [86, 1], [97, 0.3], [100, 0.3],
+    ],
+  },
+  flare: { ease: "ease-out", keys: [[0, 0], [70, 0], [73, 1], [85, 0.65], [96, 0], [100, 0]] },
+  bolt: { ease: "linear", keys: [[0, 0], [69, 0], [70, 1], [71, 0.15], [72, 1], [75, 0.85], [81, 0], [100, 0]] },
+  // the head bobs with each laugh, then jolts when the bolt lands
+  shakeX: {
+    ease: "linear",
+    keys: [[0, 0], [70.4, 0], [71, -2], [71.6, 2], [72.2, -1.6], [72.8, 1.4], [73.4, -1], [74, 0.7], [74.6, -0.3], [75.2, 0], [100, 0]],
+  },
+  shakeY: {
+    ease: "linear",
+    keys: [
+      [0, 0], [18, 0], [20, -1.2], [22.5, 0], [25, -1.2], [27.5, 0], [30, -1], [32.5, 0], [35, -0.8],
+      [37.5, 0], [40, -0.6], [42.5, 0], [45, -0.4], [48, 0], [70.4, 0], [71, 1], [71.6, -1], [72.2, -1],
+      [72.8, 1], [73.4, 0.5], [74, -0.5], [74.6, 0], [75.2, 0], [100, 0],
+    ],
+  },
+  // a run of laughing bites that tails off, then the bolt wrenches it open
+  bite: {
+    ease: "ease-in-out",
+    keys: [
+      [0, 0], [18, 0], [20, 0.7], [22.5, 0.12], [25, 0.72], [27.5, 0.12], [30, 0.62], [32.5, 0.1],
+      [35, 0.52], [37.5, 0.08], [40, 0.4], [42.5, 0.06], [45, 0.26], [48, 0], [70, 0], [73.5, 1],
+      [86, 1], [95, 0], [100, 0],
+    ],
+  },
+};
+
+// The strike's grow and wiggle: the skull swells about 6% and rocks a few
+// degrees, three times, fading out, starting as the bolt lands.
+const WIGGLE_FROM = 70.5;
+const WIGGLE_TO = 80;
+
+function wiggle(percent) {
+  if (percent < WIGGLE_FROM || percent > WIGGLE_TO) {
+    return { scale: 1, turn: 0 };
+  }
+
+  const p = (percent - WIGGLE_FROM) / (WIGGLE_TO - WIGGLE_FROM);
+  const swell = Math.sin(Math.PI * Math.min(1, p * 1.6)) * (1 - p * 0.35);
+  const rock = Math.sin(p * Math.PI * 6) * (1 - p);
+
+  return { scale: 1 + 0.06 * Math.max(0, swell), turn: (3.2 * rock * Math.PI) / 180 };
+}
+
+function bezier(x1, y1, x2, y2) {
+  const at = (t, a, b) => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3;
+
+  return (x) => {
+    let low = 0;
+    let high = 1;
+
+    for (let step = 0; step < 20; step++) {
+      const mid = (low + high) / 2;
+
+      if (at(mid, x1, x2) < x) {
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+
+    return at((low + high) / 2, y1, y2);
+  };
+}
+
+const EASE = {
+  linear: (x) => x,
+  "ease-in-out": bezier(0.42, 0, 0.58, 1),
+  "ease-out": bezier(0, 0, 0.58, 1),
+};
+
+function sample({ ease, keys }, percent) {
+  for (let index = 1; index < keys.length; index++) {
+    const [to, value] = keys[index];
+
+    if (percent <= to) {
+      const [from, start] = keys[index - 1];
+      const local = to === from ? 1 : (percent - from) / (to - from);
+
+      return start + (value - start) * EASE[ease](local);
+    }
+  }
+
+  return keys[keys.length - 1][1];
+}
+
+const state = {
+  field: null,
+  canvas: null,
+  context: null,
+  pose: null,
+  poseContext: null,
+  images: null,
+  painted: "",
+  frame: 0,
+  started: 0,
+  // reasons the animation is stopped: "hidden", "covered"…
+  pauses: new Set(),
+  still: false,
+  fixedAt: null, // a fixed point in the cycle, for testing (?pose=72)
+  last: null, // the accent and appearance last painted
+  width: 0,
+  height: 0,
+  ratio: 1,
+  // frame pacing: 0 = every display frame, otherwise the minimum gap in ms
+  minGap: 0,
+  lastDraw: 0,
+};
+
+function rasterise(url, ratio) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+
+      canvas.width = Math.round(TILE_W * ratio);
+      canvas.height = Math.round(TILE_H * ratio);
+      canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(canvas);
+    };
+
+    image.onerror = reject;
+    image.src = url;
+  });
+}
+
+function resize() {
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  state.width = width;
+  state.height = height;
+  state.canvas.width = Math.round(width * ratio);
+  state.canvas.height = Math.round(height * ratio);
+  state.canvas.style.width = `${width}px`;
+  state.canvas.style.height = `${height}px`;
+
+  // The images are rasterised for the screen's density, so a change of
+  // density (moving the window between monitors) repaints them.
+  if (ratio !== state.ratio) {
+    state.ratio = ratio;
+    state.painted = "";
+  }
+}
+
+function composePose(percent) {
+  const { poseContext: ctx, images, ratio } = state;
+  const { scale, turn } = wiggle(percent);
+  const shakeX = sample(TRACKS.shakeX, percent);
+  const shakeY = sample(TRACKS.shakeY, percent);
+  const bite = sample(TRACKS.bite, percent) * BITE_PX;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, state.pose.width, state.pose.height);
+
+  for (const [name, group] of LAYERS) {
+    const alpha = TRACKS[name] ? sample(TRACKS[name], percent) : 1;
+
+    if (alpha <= 0.005) {
+      continue;
+    }
+
+    ctx.setTransform(ratio, 0, 0, ratio, PAD * ratio, PAD * ratio);
+
+    if (group !== "still") {
+      ctx.translate(PIVOT.x + shakeX, PIVOT.y + shakeY);
+      ctx.rotate(turn);
+      ctx.scale(scale, scale);
+      ctx.translate(-PIVOT.x, -PIVOT.y + (group === "bite" ? bite : 0));
+    }
+
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(images[name], 0, 0, TILE_W, TILE_H);
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// Stamps the pose over the screen for one set of rows. `x` and `y` are the
+// set's current offset; tiles repeat every TILE_W x TILE_H.
+function stampSet(x, y) {
+  const { context: ctx, pose, ratio } = state;
+  const startX = (((x % TILE_W) + TILE_W) % TILE_W) - TILE_W - PAD;
+  const startY = (((y % TILE_H) + TILE_H) % TILE_H) - TILE_H - PAD;
+  const width = pose.width / ratio;
+  const height = pose.height / ratio;
+
+  for (let top = startY; top < state.height + PAD; top += TILE_H) {
+    for (let left = startX; left < state.width + PAD; left += TILE_W) {
+      ctx.drawImage(pose, left, top, width, height);
+    }
+  }
+}
+
+function draw(now) {
+  const elapsed = state.still ? 0 : now - state.started;
+  const percent = state.fixedAt ?? ((elapsed % CYCLE_MS) / CYCLE_MS) * 100;
+  const flow = state.still ? 0 : (elapsed % FLOW_MS) / FLOW_MS;
+  const { context: ctx, ratio } = state;
+
+  composePose(percent);
+
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.clearRect(0, 0, state.width, state.height);
+
+  // Set A slides right and set B left while the field as a whole drifts
+  // down-right at 45 degrees: per loop A moves (5w, 2r) and B (-w, 2r).
+  stampSet(TILE_W * 5 * flow, TILE_H * flow);
+  stampSet(TILE_W / 2 - TILE_W * flow, TILE_H / 2 + TILE_H * flow);
+}
+
+function loop(now) {
+  state.frame = 0;
+
+  if (state.pauses.size || !state.images) {
     return;
   }
 
-  painted = key;
+  state.frame = requestAnimationFrame(loop);
 
-  for (const [name, image] of Object.entries(skullParts(accent, theme === "light"))) {
-    field.style.setProperty(`--skull-${name}`, image);
+  if (state.minGap && now - state.lastDraw < state.minGap) {
+    return;
   }
 
-  field.classList.add("is-painted");
+  const gap = now - state.lastDraw;
+
+  state.lastDraw = now;
+  draw(now);
+  watchPace(gap);
+}
+
+function run() {
+  // With reduced motion the field is drawn once, at rest, and left still.
+  if (state.still) {
+    if (state.images) {
+      draw(performance.now());
+    }
+
+    return;
+  }
+
+  if (!state.frame && !state.pauses.size && state.images) {
+    state.frame = requestAnimationFrame(loop);
+  }
+}
+
+/* -------- Keeping it light --------
+   The animation stops whenever nobody can see it: a hidden tab, or the
+   preview grown over the page. On a device that cannot keep up it steps
+   down instead of stuttering: first to 30 frames a second, then, if even
+   that struggles, the glass card drops its live blur for the flat frosted
+   fallback (data-glass="flat" on <html>), which is where most of the cost
+   is. `?quality=full|lite|flat` in the address forces a level for testing. */
+
+const pace = { samples: [], level: 0, fixed: false };
+const LEVELS = ["full", "lite", "flat"];
+
+const blurs = () =>
+  CSS.supports("backdrop-filter", "blur(1px)") || CSS.supports("-webkit-backdrop-filter", "blur(1px)");
+
+function setLevel(level) {
+  pace.level = level;
+  state.minGap = level >= 1 ? 1000 / 30 - 2 : 0;
+  document.documentElement.dataset.quality = LEVELS[level];
+
+  if (level >= 2 || !blurs()) {
+    document.documentElement.dataset.glass = "flat";
+  }
+}
+
+function watchPace(gap) {
+  if (pace.fixed || pace.level >= 2 || document.hidden || gap > 1000) {
+    return;
+  }
+
+  pace.samples.push(gap);
+
+  // Judge on a second and a half of frames, after the first few settle.
+  if (pace.samples.length < 100) {
+    return;
+  }
+
+  const sorted = pace.samples.slice(10).sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const slow = sorted.filter((value) => value > 34).length / sorted.length;
+
+  pace.samples = [];
+
+  const struggling = pace.level === 0 ? median > 22 || slow > 0.2 : median > 45 || slow > 0.3;
+
+  if (struggling) {
+    setLevel(pace.level + 1);
+  } else {
+    pace.fixed = true; // this device copes; stop measuring
+  }
+}
+
+// Stops or restarts the animation for one reason; it only runs again once
+// every reason has been lifted.
+export function setSkullsPaused(reason, paused) {
+  if (paused) {
+    state.pauses.add(reason);
+    return;
+  }
+
+  state.pauses.delete(reason);
+  state.lastDraw = performance.now();
+  run();
+}
+
+// Paints the field in the given accent: the layer images are rebuilt (they
+// are still images, so they cannot follow a CSS variable) and the next
+// frame uses them. The old ones stay on screen until the new ones are ready.
+export async function paintSkulls(accent, theme) {
+  initSkulls();
+  state.last = [accent, theme];
+
+  const key = `${accent}|${theme}|${state.ratio}`;
+
+  if (!state.canvas || key === state.painted) {
+    return;
+  }
+
+  state.painted = key;
+
+  const parts = skullParts(accent, theme === "light");
+  const names = Object.keys(parts);
+  const images = await Promise.all(names.map((name) => rasterise(parts[name], state.ratio)));
+
+  if (state.painted !== key) {
+    return; // a newer colour arrived while these were loading
+  }
+
+  state.images = Object.fromEntries(names.map((name, index) => [name, images[index]]));
+
+  if (state.still || state.pauses.size) {
+    draw(performance.now());
+  }
+
+  state.field.classList.add("is-painted");
+  run();
+}
+
+export function initSkulls() {
+  const field = document.querySelector(".skull-field");
+
+  if (!field || state.field === field) {
+    return;
+  }
+
+  state.field = field;
+  state.canvas = field.querySelector("canvas");
+  state.context = state.canvas.getContext("2d");
+  state.pose = document.createElement("canvas");
+  state.poseContext = state.pose.getContext("2d");
+  state.started = performance.now();
+
+  const sizePose = () => {
+    state.pose.width = Math.round((TILE_W + PAD * 2) * state.ratio);
+    state.pose.height = Math.round((TILE_H + PAD * 2) * state.ratio);
+  };
+
+  resize();
+  sizePose();
+
+  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  state.still = motion.matches;
+  motion.addEventListener("change", () => {
+    state.still = motion.matches || state.fixedAt !== null;
+    run();
+  });
+
+  const params = new URLSearchParams(location.search);
+  const forced = params.get("quality");
+
+  if (params.has("pose")) {
+    state.fixedAt = Math.min(100, Math.max(0, Number(params.get("pose")) || 0));
+    state.still = true;
+  }
+
+  if (LEVELS.includes(forced)) {
+    setLevel(LEVELS.indexOf(forced));
+    pace.fixed = true;
+  }
+
+  window.addEventListener("resize", () => {
+    const before = state.ratio;
+
+    resize();
+    sizePose();
+
+    if (state.ratio !== before && state.last) {
+      paintSkulls(...state.last);
+    } else if (state.images) {
+      draw(performance.now());
+    }
+  });
+
+  // A page change replaces the <html> attributes; put the level back.
+  document.addEventListener("astro:after-swap", () => setLevel(pace.level));
+
+  document.addEventListener("visibilitychange", () => {
+    setSkullsPaused("hidden", document.hidden);
+  });
 }
 
 // Generated from the concept art trace. A function declaration, so it is

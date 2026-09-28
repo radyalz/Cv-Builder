@@ -42,6 +42,10 @@ const { title, description } = Astro.props;
         }
 
         if (stored.fs) root.style.setProperty("--fs", String(stored.fs));
+
+        // No backdrop blur at all: use the flat frosted card from the start.
+        const blur = (value) => CSS.supports("backdrop-filter", value) || CSS.supports("-webkit-backdrop-filter", value);
+        if (!blur("blur(1px)")) root.dataset.glass = "flat";
         if (stored.enFont) root.dataset.enFont = stored.enFont;
         if (stored.faFont) root.dataset.faFont = stored.faFont;
       } catch {}
@@ -65,8 +69,10 @@ const { title, description } = Astro.props;
       import { initPrefs } from "../lib/prefs.js";
       import { initTooltip } from "../lib/tooltip.js";
       import { initRipple } from "../lib/ripple.js";
+      import { initSkulls } from "../lib/skulls.js";
 
       initPrefs();
+      initSkulls();
       initTooltip();
       initRipple();
     </script>

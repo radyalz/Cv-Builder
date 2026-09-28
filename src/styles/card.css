@@ -55,13 +55,7 @@
   -webkit-backdrop-filter: blur(4px) saturate(160%);
 }
 
-/* Without backdrop blur the panel would read as a flat grey wash, so it
-   falls back to something solid enough to stay legible over the skulls. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .builder-card {
-    background: var(--panel);
-  }
-}
+
 
 .card-main {
   display: flex;
