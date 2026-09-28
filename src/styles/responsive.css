@@ -144,8 +144,19 @@
   }
 
   /* accent spans the full row */
+  /* Accent spans the first row; edition, language and then Reset share the
+     second, the two choices taking equal room. */
+  .controls {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
   .controls .control:first-child {
     grid-column: 1 / -1;
+  }
+
+  .reset-control {
+    height: 46px;
+    padding: 0 12px;
   }
 
   .menu-trigger {

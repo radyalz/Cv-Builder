@@ -31,6 +31,27 @@ export function themeName(slug) {
   return theme ? theme.label : "Purple";
 }
 
+// Back to the defaults: English, the system's appearance, normal text and
+// the default fonts. The stored choice is forgotten, so the appearance
+// follows the system again from now on.
+export function resetPrefs() {
+  Object.assign(uiPrefs, {
+    lang: "en",
+    theme: window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark",
+    fs: 1,
+    enFont: "inter",
+    faFont: "yekan",
+  });
+
+  try {
+    localStorage.removeItem(UI_KEY);
+  } catch {
+    // Nothing stored, or storage blocked: the defaults apply either way.
+  }
+
+  applyPrefs({ save: false });
+}
+
 function loadUiPrefs() {
   uiPrefs.theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 
@@ -137,23 +158,95 @@ export function applyPrefs({ save = true } = {}) {
   document.dispatchEvent(new CustomEvent("prefs:change"));
 }
 
+/* -------- Opening and closing the menu --------
+   It rises out of the button: fading in while it slides up from below and
+   grows from the corner nearest the button, and closing plays the same
+   motion backwards, a little faster, before it is hidden. It is one Web
+   Animation played forwards or backwards, so a click mid-way simply turns
+   it around from wherever it is instead of jumping or getting stuck. */
+
+const MENU_OPEN_MS = 260;
+const MENU_CLOSE_RATE = 1.3; // closing runs at 260 / 1.3 = 200 ms
+
+let menuOpen = false;
+let menuMotion = null;
+
+function menuAnimation(menu) {
+  // Rebuilt if a page change has replaced the menu element.
+  if (!menuMotion || menuMotion.effect.target !== menu) {
+    menuMotion = menu.animate(
+      [
+        { opacity: 0, transform: "translateY(14px) scale(0.92)" },
+        { opacity: 1, transform: "none" },
+      ],
+      { duration: MENU_OPEN_MS, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" }
+    );
+    menuMotion.pause();
+  }
+
+  // Reduced motion: the menu simply appears and disappears.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  menuMotion.effect.updateTiming({ duration: still ? 0 : MENU_OPEN_MS });
+
+  return menuMotion;
+}
+
+// Grow from the point of the menu nearest the button's centre.
+function originTowards(menu, trigger) {
+  const box = menu.getBoundingClientRect();
+  const button = trigger.getBoundingClientRect();
+  const x = Math.min(box.width, Math.max(0, button.left + button.width / 2 - box.left));
+  const y = Math.min(box.height, Math.max(0, button.top + button.height / 2 - box.top));
+
+  menu.style.transformOrigin = `${Math.round(x)}px ${Math.round(y)}px`;
+}
+
 export function openA11y() {
   const menu = document.getElementById("a11yMenu");
   const trigger = document.getElementById("a11yTrigger");
 
   document.dispatchEvent(new CustomEvent("menus:close"));
+  menuOpen = true;
   menu.hidden = false;
+  menu.style.pointerEvents = "";
   trigger.setAttribute("aria-expanded", "true");
   positionPopover(trigger, menu);
+
+  const motion = menuAnimation(menu);
+
+  // From fully closed it starts at the beginning; if it was still closing,
+  // it turns back from where it is.
+  if (motion.playState !== "running") {
+    motion.currentTime = 0;
+    originTowards(menu, trigger);
+  }
+
+  motion.updatePlaybackRate(1);
+  motion.play();
 }
 
 export function closeA11y() {
   const menu = document.getElementById("a11yMenu");
 
-  if (menu) {
-    menu.hidden = true;
-    document.getElementById("a11yTrigger").setAttribute("aria-expanded", "false");
+  if (!menu || !menuOpen) {
+    return;
   }
+
+  menuOpen = false;
+  menu.style.pointerEvents = "none";
+  document.getElementById("a11yTrigger").setAttribute("aria-expanded", "false");
+
+  const motion = menuAnimation(menu);
+
+  motion.updatePlaybackRate(-MENU_CLOSE_RATE);
+  motion.play();
+  motion.finished.then(() => {
+    // Still closed once the motion ends (not reopened in the meantime).
+    if (!menuOpen) {
+      menu.hidden = true;
+    }
+  });
 }
 
 let started = false;
@@ -176,7 +269,7 @@ export function initPrefs() {
     const menu = document.getElementById("a11yMenu");
 
     if (trigger) {
-      if (menu.hidden) {
+      if (!menuOpen) {
         openA11y();
       } else {
         closeA11y();
@@ -185,12 +278,17 @@ export function initPrefs() {
       return;
     }
 
-    if (!menu || menu.hidden) {
+    if (!menu || !menuOpen) {
       return;
     }
 
     if (!menu.contains(event.target)) {
       closeA11y();
+      return;
+    }
+
+    if (event.target.closest("#resetPrefs")) {
+      resetPrefs();
       return;
     }
 
@@ -220,7 +318,7 @@ export function initPrefs() {
   document.addEventListener("keydown", (event) => {
     const menu = document.getElementById("a11yMenu");
 
-    if (event.key === "Escape" && menu && !menu.hidden) {
+    if (event.key === "Escape" && menu && menuOpen) {
       closeA11y();
       document.getElementById("a11yTrigger").focus();
     }

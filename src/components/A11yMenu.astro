@@ -24,7 +24,13 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
 ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><circle cx="12" cy="7.1" r="1.35" fill="currentColor" stroke="none"/><path d="M7.4 9.9c1.5.45 3 .66 4.6.66s3.1-.21 4.6-.66"/><path d="M12 10.6v3.3"/><path d="M9.7 17.6l2.3-3.7 2.3 3.7"/></svg></button>
 
 <div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
-  <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
+  <div class="a11y-head">
+    <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
+
+    <button id="resetPrefs" class="reset-icon" type="button" data-tip="resetPrefs" aria-label={en.resetPrefs} data-i18n-aria="resetPrefs">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
+    </button>
+  </div>
 
   <div class="a11y-group">
     <span class="control-label" data-i18n="pageLanguage">{en.pageLanguage}</span>
@@ -86,4 +92,5 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
       ))}
     </div>
   </div>
+
 </div>

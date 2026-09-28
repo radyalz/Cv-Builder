@@ -49,6 +49,41 @@ const previewPane = document.querySelector(".card-preview");
 const previewDoc = document.getElementById("previewDoc");
 const pdfZoom = document.getElementById("pdfZoom");
 
+const resetCv = document.getElementById("resetCv");
+
+const DEFAULT_SELECTION = {
+  mode: "theme",
+  theme: DEFAULT_THEME,
+  color: "#7030A0",
+  variant: DEFAULT_VARIANT,
+  language: DEFAULT_LANGUAGE,
+};
+
+function isDefaultSelection() {
+  return (
+    selection.mode === "theme" &&
+    selection.theme === DEFAULT_THEME &&
+    selection.variant === DEFAULT_VARIANT &&
+    selection.language === DEFAULT_LANGUAGE
+  );
+}
+
+// Back to purple, digital, English, and forget the stored choice.
+function resetSelection() {
+  selection = { ...DEFAULT_SELECTION };
+  customHex.value = DEFAULT_SELECTION.color;
+  customColor.value = DEFAULT_SELECTION.color.toLowerCase();
+  customHex.removeAttribute("aria-invalid");
+
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Nothing stored, or storage blocked: the defaults apply either way.
+  }
+
+  syncInterface();
+}
+
 // Created in initBuilder(); draws the published PDF into previewDoc.
 let pdfView = null;
 
@@ -814,6 +849,8 @@ function syncInterface() {
 
   colourTriggerLabel.textContent = colourLabel();
 
+  resetCv.disabled = isDefaultSelection() || button.disabled;
+
   // The loading skeleton stands in for the CV, so it is laid out in the
   // CV's direction (a Persian CV right to left), not the page's.
   previewSkeleton.dir = selection.language === "fa" ? "rtl" : "ltr";
@@ -867,6 +904,7 @@ function setControlsEnabled(enabled) {
   }
 
   colourTrigger.disabled = !enabled;
+  resetCv.disabled = !enabled || isDefaultSelection();
   customColor.disabled = !enabled;
   customHex.disabled = !enabled;
   customApply.disabled = !enabled;
@@ -1204,6 +1242,26 @@ function tipContent(element) {
       break;
     }
 
+    case "resetCv":
+      facts = [
+        [fact("colour"), themeName(DEFAULT_THEME), { dot: THEME_BY_SLUG.get(DEFAULT_THEME).hex }],
+        [fact("edition"), t(DEFAULT_VARIANT)],
+        [fact("language"), t(`lang_${DEFAULT_LANGUAGE}`)],
+      ];
+      break;
+
+    case "resetPrefs": {
+      const index = lang === "fa" ? 1 : 0;
+
+      facts = [
+        [fact("page"), t("lang_en")],
+        [fact("appearance"), t("system")],
+        [fact("text"), "100%"],
+        [fact("fonts"), lang === "fa" ? FA_FONTS.yekan.name[index] : EN_FONTS.inter.name],
+      ];
+      break;
+    }
+
     case "a11y": {
       const en = EN_FONTS[uiPrefs.enFont];
       const fa = FA_FONTS[uiPrefs.faFont];
@@ -1292,6 +1350,8 @@ export function initBuilder() {
   for (const hint of linksHints) {
     hint.addEventListener("click", () => pdfView.flashLinks());
   }
+
+  resetCv.addEventListener("click", resetSelection);
 
   // Opening the accessibility menu closes this one.
   document.addEventListener("menus:close", closeMenu);
