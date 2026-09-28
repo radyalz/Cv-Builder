@@ -328,6 +328,99 @@ export function initTooltip() {
     }
   });
   document.addEventListener("pointerdown", hideTip, true);
+
+  // Touch has no hover, so pressing and holding a control shows its
+  // tooltip, pinned above it; that press does not also trigger it.
+  let holdTimer = null;
+  let holdStart = null;
+  let heldTarget = null;
+
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch") {
+      return;
+    }
+
+    const target = event.target.closest("[data-tip]");
+
+    window.clearTimeout(holdTimer);
+    heldTarget = null;
+
+    if (!target) {
+      return;
+    }
+
+    holdStart = { x: event.clientX, y: event.clientY };
+    holdTimer = window.setTimeout(() => {
+      heldTarget = target;
+      tipTarget = target;
+      showTip(target, "arrow");
+    }, 480);
+  });
+
+  document.addEventListener("pointermove", (event) => {
+    if (holdStart && Math.hypot(event.clientX - holdStart.x, event.clientY - holdStart.y) > 10) {
+      window.clearTimeout(holdTimer);
+    }
+  });
+
+  for (const type of ["pointerup", "pointercancel"]) {
+    document.addEventListener(type, () => {
+      window.clearTimeout(holdTimer);
+      holdStart = null;
+    });
+  }
+
+  // The click that ends a hold only showed the tooltip.
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (heldTarget && heldTarget.contains(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+        heldTarget = null;
+      }
+    },
+    true
+  );
+
+  // A long press would otherwise open the browser's own menu.
+  document.addEventListener("contextmenu", (event) => {
+    if (event.target.closest?.("[data-tip]") && heldTarget) {
+      event.preventDefault();
+    }
+  });
   window.addEventListener("scroll", hideTip, true);
   window.addEventListener("blur", hideTip);
+}
+
+/* -------- First touch visit --------
+   A one-off note on touch screens that holding a control explains it. */
+
+const HINT_KEY = "cv-builder-touch-hint";
+
+export function showTouchHint(text) {
+  if (!window.matchMedia("(hover: none)").matches) {
+    return;
+  }
+
+  try {
+    if (localStorage.getItem(HINT_KEY)) {
+      return;
+    }
+
+    localStorage.setItem(HINT_KEY, "1");
+  } catch {
+    return; // without storage it would show on every visit
+  }
+
+  const note = document.createElement("div");
+
+  note.className = "touch-hint";
+  note.setAttribute("role", "status");
+  note.textContent = text;
+  document.body.append(note);
+
+  window.setTimeout(() => note.classList.add("is-visible"), 1200);
+  window.setTimeout(() => note.classList.remove("is-visible"), 6200);
+  window.setTimeout(() => note.remove(), 6800);
 }

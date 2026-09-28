@@ -149,8 +149,8 @@
 
   .controls {
     display: grid;
-    margin-top: 14px;
-    gap: 10px;
+    margin-top: 18px;
+    gap: 16px 10px;
     grid-template-columns: 1fr 1fr;
   }
 
@@ -158,8 +158,26 @@
     grid-column: 1 / -1;
   }
 
-  .control-label {
-    margin-bottom: 5px;
+  /* Each label sits on the top edge of its control, like an outlined
+     field, instead of taking a line of its own above it. */
+  .controls .control {
+    position: relative;
+  }
+
+  .controls .control-label {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    inset-inline-start: 10px;
+    margin: 0;
+    padding: 0 5px;
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--menu-bg);
+    font-size: calc(9.5px * var(--fs) * var(--fa-small));
+    line-height: 14px;
+    pointer-events: none;
+    transform: translateY(-50%);
   }
 
   .menu-trigger {

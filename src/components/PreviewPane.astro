@@ -64,30 +64,40 @@ const en = STRINGS.en;
       <span id="expandedMeta" class="preview-meta"></span>
     </div>
 
-    <button class="links-hint" type="button" data-tip="linksHint" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>
-      <span class="links-hint-text"></span>
-    </button>
+    <!-- The tools: one pill with the info pill beneath it on tablets, icons
+         only on phones, a plain row on desktop. -->
+    <div class="expanded-actions">
+      <button class="links-hint" type="button" data-tip="linksHint" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>
+        <span class="links-hint-text"></span>
+      </button>
 
-    <div class="pdf-tools" role="toolbar" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
-      <button class="icon-button" type="button" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
-      </button>
-      <button class="icon-button" type="button" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
-      </button>
-      <span class="pdf-tools-rule" aria-hidden="true"></span>
-      <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
-      </button>
-      <span id="pdfZoom" class="pdf-zoom" aria-live="polite">100%</span>
-      <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>
+      <div class="pdf-tools" role="toolbar" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+        <button class="icon-button" type="button" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
+        </button>
+        <button class="icon-button" type="button" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
+        </button>
+        <span class="pdf-tools-rule" aria-hidden="true"></span>
+        <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
+        </button>
+        <span id="pdfZoom" class="pdf-zoom" aria-live="polite">100%</span>
+        <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>
+        </button>
+      </div>
+
+      <a id="expandedDownload" class="ghost-button bar-button" data-tip="download" aria-label={en.downloadShort} data-i18n-aria="downloadShort" download>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>
+        <span data-i18n="downloadShort">{en.downloadShort}</span>
+      </a>
+
+      <button id="previewCollapse" class="ghost-button bar-button" type="button" data-tip="close" aria-label={en.close} data-i18n-aria="close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        <span data-i18n="close">{en.close}</span>
       </button>
     </div>
-
-    <a id="expandedDownload" class="ghost-button" data-i18n="downloadShort" data-tip="download" download>{en.downloadShort}</a>
-
-    <button id="previewCollapse" class="ghost-button" type="button" data-i18n="close" data-tip="close">{en.close}</button>
   </div>
 </aside>

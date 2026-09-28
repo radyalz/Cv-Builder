@@ -525,6 +525,35 @@
   display: none;
 }
 
+/* Everything in the bar is one height: buttons, icon buttons and the
+   links pill. */
+.expanded-bar .ghost-button,
+.expanded-bar .icon-button,
+.expanded-bar .links-hint {
+  height: 36px;
+  min-height: 36px;
+}
+
+.expanded-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar-button {
+  gap: 8px;
+}
+
+.bar-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
 /* Fit and zoom, as small outlined icon buttons. */
 .pdf-tools {
   display: flex;
@@ -589,27 +618,132 @@
   text-align: center;
 }
 
-@media (max-width: 599px) {
+/* Tablets and phones: the bar floats over the top of the PDF as glass
+   pills. On tablets the tools pill keeps short text on Download and Close,
+   and a second, smaller pill under it gives the copy's label and publish
+   date; on phones the tools are icons only and the info pill is left out. */
+@media (max-width: 1023px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
     --expand-pad: 10px;
-    --expand-bar: 54px;
+    --expand-bar: 10px;
   }
 
-  /* Room is short: the title, zoom readout and second download go; the
-     main download button is one tap away on the card. */
-  .expanded-bar .expanded-info,
+  .expanded-bar {
+    top: 18px;
+    right: auto;
+    left: 50%;
+    z-index: 4;
+    width: max-content;
+    max-width: calc(100% - 36px);
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transform: translateX(-50%);
+  }
+
+  .expanded-actions,
+  .expanded-info {
+    border: 1px solid var(--glass-edge);
+    border-radius: 999px;
+    background: var(--menu-bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  }
+
+  .expanded-actions {
+    max-width: 100%;
+    padding: 5px;
+    gap: 4px;
+  }
+
+  /* The info pill sits under the tools pill, in frosted glass so the page
+     shows through it. */
+  .expanded-info {
+    display: flex;
+    max-width: 100%;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    order: 2;
+    padding: 4px 12px;
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
+      var(--glass-strong);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    backdrop-filter: blur(8px) saturate(140%);
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .expanded-info .preview-title,
+  .expanded-info .preview-meta {
+    overflow: hidden;
+    font-size: calc(12px * var(--fs) * var(--fa-small));
+    text-overflow: ellipsis;
+  }
+
   .expanded-bar .pdf-zoom,
-  .expanded-bar #expandedDownload {
+  .expanded-bar .links-hint-text {
     display: none;
   }
 
   .expanded-bar .pdf-tools {
-    margin-inline-end: auto;
+    gap: 4px;
   }
 
-  .expanded-bar .links-hint-text {
+  .expanded-bar .icon-button,
+  .expanded-bar .links-hint {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .expanded-bar .bar-button {
+    padding: 0 12px;
+    border-radius: 999px;
+  }
+
+  /* Short labels, cut with an ellipsis if room runs out. */
+  .bar-button span {
+    overflow: hidden;
+    max-width: 9ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pdf-tools-rule {
+    margin: 0 2px;
+  }
+
+  /* The first page starts below the pills. */
+  .builder-card.is-expanded .pdf-view {
+    padding-top: calc(var(--pdf-pad, 0px) + 94px);
+  }
+}
+
+@media (max-width: 599px) {
+  .expanded-bar .expanded-info {
     display: none;
+  }
+
+  .expanded-bar .bar-button {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .bar-button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+  }
+
+  .builder-card.is-expanded .pdf-view {
+    padding-top: calc(var(--pdf-pad, 0px) + 58px);
   }
 }
 

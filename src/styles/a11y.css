@@ -254,3 +254,114 @@ body.preview-open .a11y-trigger {
 .reset-top {
   display: none;
 }
+
+/* -------- Admiring the background -------- */
+
+.page-shell {
+  transition:
+    opacity 480ms ease,
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.is-admiring .page-shell {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.82);
+}
+
+body.is-admiring .skull-field.is-painted {
+  opacity: 1;
+}
+
+/* The eye button: the way back to the card. Hidden until the background
+   is being admired, then it grows and fades in, beside the accessibility
+   button (above it on phones), filled with the accent. */
+.admire-toggle {
+  position: fixed;
+  z-index: 45;
+  right: 84px;
+  bottom: 26px;
+  display: inline-grid;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--glass-edge);
+  border-radius: 50%;
+  color: var(--accent);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
+    var(--glass-strong);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(4px) saturate(140%);
+  backdrop-filter: blur(4px) saturate(140%);
+  cursor: pointer;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.4);
+  visibility: hidden;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease,
+    visibility 0s linear 360ms;
+}
+
+body.is-admiring .admire-toggle {
+  color: var(--accent-text);
+  background: var(--accent);
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.admire-toggle svg,
+.admire-menu-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+body.is-admiring .admire-toggle:hover {
+  transform: translateY(-2px);
+}
+
+.admire-toggle:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+body.preview-open .admire-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 599px) {
+  .admire-toggle {
+    right: 17px;
+    bottom: 70px;
+  }
+}
+
+.admire-menu-button {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  min-height: 36px;
+  gap: 8px;
+}
+
+.admire-menu-button svg {
+  width: 16px;
+  height: 16px;
+}

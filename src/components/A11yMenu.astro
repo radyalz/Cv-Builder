@@ -23,6 +23,18 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
   data-tip="a11y"
 ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><circle cx="12" cy="7.1" r="1.35" fill="currentColor" stroke="none"/><path d="M7.4 9.9c1.5.45 3 .66 4.6.66s3.1-.21 4.6-.66"/><path d="M12 10.6v3.3"/><path d="M9.7 17.6l2.3-3.7 2.3 3.7"/></svg></button>
 
+<!-- Hides the card to show just the background; on phones it sits above
+     the accessibility button, elsewhere beside it. -->
+<button
+  id="admireToggle"
+  class="admire-toggle"
+  type="button"
+  aria-pressed="false"
+  aria-label={en.admire}
+  data-i18n-aria="admire"
+  data-tip="admire"
+><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+
 <div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
   <div class="a11y-head">
     <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
@@ -93,4 +105,8 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
     </div>
   </div>
 
+  <button id="admireFromMenu" class="ghost-button admire-menu-button" type="button" aria-pressed="false" data-tip="admire">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    <span data-i18n="admire">{en.admire}</span>
+  </button>
 </div>

@@ -249,6 +249,38 @@ export function closeA11y() {
   });
 }
 
+/* -------- Admiring the background --------
+   Hides the page's content so the skulls have the screen: the card shrinks
+   toward the centre as it fades, and the skulls come up to full strength.
+   The eye button beside the accessibility button (or in its menu) toggles
+   it; Escape brings the card back. */
+
+export function setAdmiring(on) {
+  document.body.classList.toggle("is-admiring", on);
+
+  for (const toggle of document.querySelectorAll("#admireToggle, #admireFromMenu")) {
+    toggle.setAttribute("aria-pressed", String(on));
+  }
+
+  const eye = document.getElementById("admireToggle");
+
+  if (eye) {
+    eye.setAttribute("aria-label", t(on ? "showCard" : "admire"));
+  }
+
+  // The menu's button says what it will do next.
+  const label = document.querySelector("#admireFromMenu [data-i18n]");
+
+  if (label) {
+    label.dataset.i18n = on ? "showCard" : "admire";
+    label.textContent = t(label.dataset.i18n);
+  }
+
+  if (on) {
+    closeA11y();
+  }
+}
+
 let started = false;
 
 export function initPrefs() {
@@ -265,6 +297,11 @@ export function initPrefs() {
   document.addEventListener("astro:after-swap", () => applyPrefs({ save: false }));
 
   document.addEventListener("click", (event) => {
+    if (event.target.closest?.("#admireToggle, #admireFromMenu")) {
+      setAdmiring(!document.body.classList.contains("is-admiring"));
+      return;
+    }
+
     const trigger = event.target.closest?.("#a11yTrigger");
     const menu = document.getElementById("a11yMenu");
 
@@ -317,6 +354,11 @@ export function initPrefs() {
 
   document.addEventListener("keydown", (event) => {
     const menu = document.getElementById("a11yMenu");
+
+    if (event.key === "Escape" && document.body.classList.contains("is-admiring")) {
+      setAdmiring(false);
+      return;
+    }
 
     if (event.key === "Escape" && menu && menuOpen) {
       closeA11y();

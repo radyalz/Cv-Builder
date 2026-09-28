@@ -66,8 +66,8 @@ const { title, description } = Astro.props;
     <Tooltip />
 
     <script>
-      import { initPrefs } from "../lib/prefs.js";
-      import { initTooltip } from "../lib/tooltip.js";
+      import { initPrefs, t } from "../lib/prefs.js";
+      import { initTooltip, showTouchHint } from "../lib/tooltip.js";
       import { initRipple } from "../lib/ripple.js";
       import { initSkulls } from "../lib/skulls.js";
 
@@ -75,6 +75,7 @@ const { title, description } = Astro.props;
       initSkulls();
       initTooltip();
       initRipple();
+      showTouchHint(t("touchHint"));
     </script>
   </body>
 </html>

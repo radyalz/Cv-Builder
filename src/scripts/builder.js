@@ -1536,6 +1536,12 @@ function tipContent(element) {
       break;
     }
 
+    case "admire":
+      if (document.body.classList.contains("is-admiring")) {
+        title = t("showCard");
+      }
+      break;
+
     case "resetCv":
       facts = [
         [fact("colour"), themeName(DEFAULT_THEME), { dot: THEME_BY_SLUG.get(DEFAULT_THEME).hex }],

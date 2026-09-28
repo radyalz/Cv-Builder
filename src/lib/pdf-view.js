@@ -32,6 +32,25 @@ function release(doc) {
   doc?.loadingTask?.destroy();
 }
 
+// A readable name for a link target: "Email x", "Call x", or the address.
+function describeLink(url) {
+  if (url.startsWith("mailto:")) {
+    return `Email ${url.slice(7)}`;
+  }
+
+  if (url.startsWith("tel:")) {
+    return `Call ${url.slice(4)}`;
+  }
+
+  try {
+    const { hostname, pathname } = new URL(url);
+
+    return `Open ${hostname.replace(/^www\./, "")}${pathname === "/" ? "" : pathname}`;
+  } catch {
+    return `Open ${url}`;
+  }
+}
+
 const MIN_ZOOM = 0.3;
 const MAX_ZOOM = 4;
 
@@ -260,6 +279,9 @@ export class PdfView {
           link.rel = "noopener noreferrer";
           link.className = "pdf-link";
           link.title = item.url;
+          // The link covers drawn text, so it has none of its own; this
+          // names it for screen readers (and accessibility checks).
+          link.setAttribute("aria-label", describeLink(item.url));
           link.style.left = `${Math.min(x1, x2)}px`;
           link.style.top = `${Math.min(y1, y2)}px`;
           link.style.width = `${Math.abs(x2 - x1)}px`;

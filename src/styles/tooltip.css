@@ -160,3 +160,38 @@
   border-radius: 3px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+
+/* Holding a control on touch shows its tooltip; keep the browser's own
+   long-press callout and text selection out of the way. */
+@media (hover: none) {
+  [data-tip] {
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+}
+
+/* The one-off "press and hold" note on a first touch visit. */
+.touch-hint {
+  position: fixed;
+  z-index: 96;
+  bottom: 76px;
+  left: 50%;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  border: 1px solid var(--tip-edge, rgba(255, 255, 255, 0.1));
+  border-radius: 999px;
+  color: var(--text);
+  background: var(--menu-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  transform: translate(-50%, 10px);
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.touch-hint.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
