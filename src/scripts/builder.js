@@ -814,6 +814,10 @@ function syncInterface() {
 
   colourTriggerLabel.textContent = colourLabel();
 
+  // The loading skeleton stands in for the CV, so it is laid out in the
+  // CV's direction (a Persian CV right to left), not the page's.
+  previewSkeleton.dir = selection.language === "fa" ? "rtl" : "ltr";
+
   for (const swatch of themeGrid.children) {
     const active =
       selection.mode === "theme" && swatch.dataset.slug === selection.theme;
