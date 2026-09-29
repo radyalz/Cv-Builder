@@ -367,8 +367,7 @@
 
 /* -------- How it works --------
    An info button at the end of the name's row opens the explanation for
-   the controls on screen and the tour of them. Under 1024px it also
-   stands in for the line under the name. */
+   the controls on screen and the tour of them. */
 
 .lead-tablet,
 .lead-phone {
@@ -859,9 +858,10 @@
     height: 42px;
   }
 
-  /* The intro is behind the info button beside the name. */
+  /* The short intro stays under the name, across the card's full width;
+     the longer explanation is behind How it works. */
   .lead {
-    display: none;
+    max-width: none;
   }
 }
 
