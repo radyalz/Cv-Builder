@@ -619,9 +619,9 @@
 }
 
 /* Tablets and phones: the bar floats over the top of the PDF as glass
-   pills. On tablets the tools pill keeps short text on Download and Close,
-   and a second, smaller pill under it gives the copy's label and publish
-   date; on phones the tools are icons only and the info pill is left out. */
+   pills: the tools, and under them a smaller frosted pill with the copy's
+   label and publish date. On tablets Download and Close keep short text;
+   on phones every tool is an icon. */
 @media (max-width: 1023px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
@@ -724,10 +724,6 @@
 }
 
 @media (max-width: 599px) {
-  .expanded-bar .expanded-info {
-    display: none;
-  }
-
   .expanded-bar .bar-button {
     width: 36px;
     padding: 0;
@@ -742,8 +738,9 @@
     clip-path: inset(50%);
   }
 
-  .builder-card.is-expanded .pdf-view {
-    padding-top: calc(var(--pdf-pad, 0px) + 58px);
+  /* Narrow: the date gives way first if the title pill runs out of room. */
+  .expanded-info .preview-meta {
+    min-width: 0;
   }
 }
 

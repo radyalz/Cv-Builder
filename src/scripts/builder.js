@@ -872,6 +872,17 @@ async function expandPreview() {
   settle(animations);
   unpinParts();
   builderCard.style.removeProperty("--fade-delay");
+
+  // On tablets and phones the pills float over the PDF, with room kept
+  // above the first page so nothing is hidden for good. The view opens
+  // scrolled past that room, paper at the very top as the grow left it;
+  // scrolling up shows what the pills cover.
+  const room = parseFloat(getComputedStyle(previewDoc).paddingTop) - pdfView.pad();
+
+  if (room > 0) {
+    previewDoc.scrollTop = room;
+  }
+
   expandState = "open";
 
   // The grown card covers the skulls, so they rest while it is open.
