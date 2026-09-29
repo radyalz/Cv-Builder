@@ -35,9 +35,13 @@ const ACTIONS = [
   <!-- Desktop puts the link on its own line; tablets keep all three in
        one row. -->
   <span class="actions-break" aria-hidden="true"></span>
+  <!-- Named by aria-label too: on tablets and phones it is kept hidden for
+       the split button, and a hidden link has no text to be named by. -->
   <a
     class="secondary-link"
     data-tip="allCopies"
+    aria-label={en.allCopies}
+    data-i18n-aria="allCopies"
     href="https://github.com/radyalz/Cv-Builder/releases/latest"
     target="_blank"
     rel="noopener noreferrer"
