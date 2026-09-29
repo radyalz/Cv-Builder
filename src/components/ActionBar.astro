@@ -1,6 +1,6 @@
 ---
 // The actions under the controls: Generate, Download and All published
-// copies. Tablets and desktops show the three buttons as they are; phones
+// copies. Desktops show the three buttons as they are; tablets and phones
 // show one split button instead, whose main part performs the chosen
 // action and whose caret opens a menu to choose it (src/scripts/
 // action-menu.js). The split button only relays clicks to the three
@@ -44,7 +44,7 @@ const ACTIONS = [
   ><span data-i18n="allCopies">{en.allCopies}</span><span class="link-arrow" aria-hidden="true">↗</span></a>
 </div>
 
-<!-- Phones: one split button in place of the three above. -->
+<!-- Tablets and phones: one split button in place of the three above. -->
 <div class="action-split" data-action="generate">
   <button class="split-main" type="button" data-tip="generate">
     <svg class="split-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={ICONS.generate} />

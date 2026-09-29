@@ -1,7 +1,7 @@
 import { positionPopover } from "../lib/popover.js";
 
-/* -------- The phone split button --------
-   On phones the three actions (Generate, Download, All published copies)
+/* -------- The split button (tablets and phones) --------
+   On tablets and phones the three actions (Generate, Download, All published copies)
    take one row: a split button whose main part performs the chosen action
    and whose caret opens a menu to choose it. Nothing is done twice: the
    main part relays its click to the original control, and mirrors that

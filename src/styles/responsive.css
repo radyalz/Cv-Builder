@@ -302,12 +302,8 @@
   }
 }
 
-/* Short phones: the intro line goes and spacing tightens, leaving the
-   preview peek room. */
+/* Short phones: spacing tightens, leaving the preview peek room. */
 @media (max-width: 599px) and (max-height: 740px) {
-  .lead {
-    display: none;
-  }
 
   .builder-card {
     padding-top: 18px;
@@ -369,30 +365,90 @@
     var(--glass-flat);
 }
 
-/* -------- One intro per layout --------
-   The controls differ between desktop, tablet and phone, so the line under
-   the name explains the one on screen. */
+/* -------- The intro on tablets and phones --------
+   The line under the name gives way to an info button beside it, which
+   opens the explanation for the controls on that screen. */
+
+.intro-info {
+  display: none;
+}
 
 .lead-tablet,
 .lead-phone {
   display: none;
 }
 
-@media (min-width: 600px) and (max-width: 1023px) {
-  .lead-desktop {
-    display: none;
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.intro-pop {
+  width: min(340px, calc(100vw - 24px));
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+.intro-title {
+  margin: 0 0 8px;
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.intro-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(13.5px * var(--fs));
+  line-height: 1.6;
+}
+
+@media (max-width: 1023px) {
+  .intro-info {
+    position: relative;
+    display: inline-grid;
+    overflow: hidden;
+    width: 32px;
+    height: 32px;
+    flex: none;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--muted);
+    background: transparent;
+    cursor: pointer;
+    place-items: center;
+    transition: color 140ms ease, border-color 140ms ease;
   }
 
+  .intro-info:hover,
+  .intro-info[aria-expanded="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .intro-info:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .intro-info svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.8;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
   .lead-tablet {
     display: inline;
   }
 }
 
 @media (max-width: 599px) {
-  .lead-desktop {
-    display: none;
-  }
-
   .lead-phone {
     display: inline;
   }
@@ -498,9 +554,9 @@
     height: 42px;
   }
 
-  /* The intro runs the full width of the card. */
+  /* The intro is behind the info button beside the name. */
   .lead {
-    max-width: none;
+    display: none;
   }
 }
 

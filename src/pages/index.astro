@@ -19,14 +19,26 @@ const en = STRINGS.en;
         <div class="eyebrow" data-i18n="eyebrow">{en.eyebrow}</div>
       </div>
 
-      <h1 id="page-title" data-i18n="name">{en.name}</h1>
+      <div class="title-row">
+        <h1 id="page-title" data-i18n="name">{en.name}</h1>
 
-      <!-- One intro per layout, since the controls differ on each. -->
-      <p class="lead">
-        <span class="lead-desktop" data-i18n="lead">{en.lead}</span>
-        <span class="lead-tablet" data-i18n="leadTablet">{en.leadTablet}</span>
-        <span class="lead-phone" data-i18n="leadPhone">{en.leadPhone}</span>
-      </p>
+        <!-- Tablets and phones: the intro lives behind this, explaining the
+             controls on that screen (src/scripts/intro-info.js). -->
+        <button
+          id="introInfo"
+          class="intro-info"
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-controls="introPop"
+          aria-label={en.howItWorks}
+          data-i18n-aria="howItWorks"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r="0.6" fill="currentColor"/></svg>
+        </button>
+      </div>
+
+      <p class="lead" data-i18n="lead">{en.lead}</p>
 
       <!-- Tablets and phones: one field for all three choices, opening the controls
            below in a menu (src/scripts/forms-menu.js). -->
@@ -123,6 +135,14 @@ const en = STRINGS.en;
     <div class="forms-body"></div>
   </div>
 
+  <div id="introPop" class="menu intro-pop" slot="overlays" role="dialog" aria-labelledby="introTitle" hidden>
+    <p id="introTitle" class="intro-title" data-i18n="howItWorks">{en.howItWorks}</p>
+    <p class="intro-text">
+      <span class="lead-tablet" data-i18n="leadTablet">{en.leadTablet}</span>
+      <span class="lead-phone" data-i18n="leadPhone">{en.leadPhone}</span>
+    </p>
+  </div>
+
   <ColourMenu slot="overlays" />
 </Base>
 
@@ -130,8 +150,10 @@ const en = STRINGS.en;
   import { initBuilder } from "../scripts/builder.js";
   import { initFormsMenu } from "../scripts/forms-menu.js";
   import { initMorph } from "../scripts/morph.js";
+  import { initIntroInfo } from "../scripts/intro-info.js";
 
   initBuilder();
   initFormsMenu();
   initMorph();
+  initIntroInfo();
 </script>
