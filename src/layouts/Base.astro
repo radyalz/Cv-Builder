@@ -73,10 +73,12 @@ const { title, description } = Astro.props;
       import { initRipple } from "../lib/ripple.js";
       import { initSkulls } from "../lib/skulls.js";
       import { initHalftone } from "../lib/halftone.js";
+      import { initWallpaper } from "../scripts/wallpaper.js";
 
       initPrefs();
       initHalftone();
       initSkulls();
+      initWallpaper();
       initTooltip();
       initRipple();
       showTouchHint(t("touchHint"));

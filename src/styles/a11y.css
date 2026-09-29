@@ -370,3 +370,190 @@ body.preview-open .admire-toggle {
   width: 16px;
   height: 16px;
 }
+
+/* -------- Saving the background --------
+   The download button beside the eye (above it on phones) while admiring,
+   and its menu: an image, or a video of 15 to 30 seconds. While a video
+   records, a ring around the button fills with its progress. */
+
+.wallpaper-toggle {
+  right: calc(84px + 40px + 8px);
+}
+
+body.is-admiring .wallpaper-toggle {
+  color: var(--accent);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
+    var(--glass-strong);
+}
+
+.wallpaper-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.wallpaper-progress {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: conic-gradient(var(--accent) calc(var(--progress, 0) * 360deg), transparent 0);
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+  mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+  transition: opacity 200ms ease;
+}
+
+.wallpaper-toggle.is-recording .wallpaper-progress {
+  opacity: 1;
+}
+
+@media (max-width: 599px) {
+  .wallpaper-toggle {
+    right: calc(20px + (46px - 40px) / 2);
+    bottom: calc(70px + 40px + 8px);
+  }
+}
+
+.wallpaper-menu {
+  z-index: 46;
+  width: min(300px, calc(100vw - 24px));
+  will-change: transform, opacity;
+}
+
+.wallpaper-title {
+  margin: 0 0 6px;
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.wallpaper-note {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: calc(12.5px * var(--fs));
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.wallpaper-action {
+  display: flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-weight: 650;
+  gap: 10px;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+
+.wallpaper-action:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wallpaper-action.is-primary {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+.wallpaper-action.is-primary:hover:not(:disabled) {
+  color: var(--accent-text);
+  filter: brightness(1.08);
+}
+
+.wallpaper-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.wallpaper-action:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.wallpaper-action svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.wallpaper-action-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.wallpaper-size {
+  color: var(--muted);
+  font-size: calc(11.5px * var(--fs));
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.wallpaper-video {
+  display: grid;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  gap: 8px;
+}
+
+.wallpaper-video .segmented {
+  width: 100%;
+}
+
+.wallpaper-video .segment {
+  flex: 1;
+}
+
+.wallpaper-recording {
+  display: grid;
+  margin-top: 14px;
+  gap: 10px;
+}
+
+.wallpaper-bar {
+  overflow: hidden;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+.wallpaper-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+[dir="rtl"] .wallpaper-bar span {
+  transform-origin: 100% 50%;
+}
+
+.wallpaper-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(12.5px * var(--fs));
+  font-variant-numeric: tabular-nums;
+}

@@ -35,6 +35,60 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
   data-tip="admire"
 ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
 
+<!-- While admiring: save the background alone as an image or a video
+     wallpaper (src/scripts/wallpaper.js). Beside the eye, above it on
+     phones. -->
+<button
+  id="wallpaperToggle"
+  class="admire-toggle wallpaper-toggle"
+  type="button"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls="wallpaperMenu"
+  aria-label={en.saveBackground}
+  data-i18n-aria="saveBackground"
+  data-tip="saveBackground"
+><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg><span class="wallpaper-progress" aria-hidden="true"></span></button>
+
+<div id="wallpaperMenu" class="menu wallpaper-menu" role="dialog" aria-labelledby="wallpaperTitle" hidden>
+  <p id="wallpaperTitle" class="wallpaper-title" data-i18n="saveBackground">{en.saveBackground}</p>
+  <p class="wallpaper-note" data-i18n="saveBackgroundNote">{en.saveBackgroundNote}</p>
+
+  <button id="wallpaperImage" class="wallpaper-action" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 16l-5-5-8 8"/></svg>
+    <span class="wallpaper-action-text">
+      <span data-i18n="saveImage">{en.saveImage}</span>
+      <span class="wallpaper-size"></span>
+    </span>
+  </button>
+
+  <div class="wallpaper-video">
+    <span class="control-label" data-i18n="videoLength">{en.videoLength}</span>
+    <Segmented
+      id="wallpaperLength"
+      label={en.videoLength}
+      labelI18n="videoLength"
+      group="wallpaper-length"
+      options={[15, 20, 25, 30].map((seconds) => ({
+        label: `${seconds}s`,
+        checked: seconds === 15,
+        data: { seconds },
+      }))}
+    />
+    <button id="wallpaperVideo" class="wallpaper-action is-primary" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg>
+      <span data-i18n="recordVideo">{en.recordVideo}</span>
+    </button>
+  </div>
+
+  <!-- Shown while recording. -->
+  <div class="wallpaper-recording" hidden>
+    <div class="wallpaper-bar"><span></span></div>
+    <p class="wallpaper-status" aria-live="polite"></p>
+    <button id="wallpaperCancel" class="wallpaper-action" type="button" data-i18n="cancel">{en.cancel}</button>
+  </div>
+</div>
+
 <div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
   <div class="a11y-head">
     <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
