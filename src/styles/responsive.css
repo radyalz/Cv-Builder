@@ -382,6 +382,15 @@
   gap: 12px;
 }
 
+/* On desktop the controls column scrolls, so it clips at its edge: the
+   button keeps clear of it, leaving its ripples and swell room to show
+   and some space before the preview. */
+@media (min-width: 1024px) {
+  .title-row {
+    padding-inline-end: 26px;
+  }
+}
+
 .intro-pop {
   width: min(360px, calc(100vw - 24px));
   padding: 16px;
@@ -722,10 +731,10 @@
   36% { transform: scale(1); }
 }
 
-/* A ring that spreads 18px out and fades, whatever the button's size. */
+/* A ring that spreads 14px out and fades, whatever the button's size. */
 @keyframes info-ripple {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 75%, transparent); }
-  70%, 100% { box-shadow: 0 0 0 18px transparent; }
+  70%, 100% { box-shadow: 0 0 0 14px transparent; }
 }
 
 @media (prefers-reduced-motion: reduce) {
