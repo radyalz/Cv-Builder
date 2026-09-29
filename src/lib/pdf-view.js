@@ -189,9 +189,13 @@ export class PdfView {
       return 1;
     }
 
-    const pad = this.pad();
-    const width = this.host.clientWidth - pad * 2;
-    const height = this.host.clientHeight - pad * 2;
+    // The box's own padding, which can keep extra room at the top and
+    // bottom (for the pills over the expanded preview).
+    this.host.style.setProperty("--pdf-pad", `${this.pad()}px`);
+
+    const style = getComputedStyle(this.host);
+    const width = this.host.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    const height = this.host.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
     const byWidth = width / first.size.width;
 
     if (this.fit === "width") {

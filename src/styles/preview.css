@@ -466,7 +466,6 @@
 .builder-card.is-expanded {
   --expand-gap: 14px;
   --expand-pad: 14px;
-  --expand-bar: 58px;
   position: fixed;
   z-index: 60;
   inset: var(--expand-gap);
@@ -499,22 +498,23 @@
 .builder-card.is-expanded .preview-frame {
   min-height: 0;
   position: absolute;
-  top: var(--expand-bar);
-  right: var(--expand-pad);
-  bottom: var(--expand-pad);
-  left: var(--expand-pad);
+  inset: var(--expand-pad);
 }
 
+/* The expanded bar is two glass pills floating over the PDF, on every
+   size: the copy's title and publish date at the top, the tools at the
+   bottom. Desktop keeps the zoom level and full labels, tablets short
+   labels, and phones icons only. */
 .expanded-bar {
   position: absolute;
-  top: 0;
-  right: var(--expand-pad, 14px);
-  left: var(--expand-pad, 14px);
+  z-index: 4;
+  inset: calc(var(--expand-pad, 14px) + 12px);
   display: none;
-  height: var(--expand-bar, 58px);
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 440ms ease;
 }
 
@@ -526,18 +526,48 @@
   opacity: 1;
 }
 
+.expanded-actions,
+.expanded-info {
+  max-width: 100%;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: var(--menu-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  pointer-events: auto;
+}
+
+.expanded-actions {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  gap: 4px;
+}
+
+/* The title pill is frosted, so the page shows through it. */
 .expanded-info {
   display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-direction: column;
-  gap: 2px;
+  flex: none;
+  align-items: center;
+  padding: 4px 12px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
+    var(--glass-strong);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.expanded-info .preview-title,
+.expanded-info .preview-meta {
+  overflow: hidden;
+  font-size: calc(12px * var(--fs) * var(--fa-small));
+  text-overflow: ellipsis;
 }
 
 .expanded-bar .ghost-button {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
   text-decoration: none;
 }
 
@@ -545,8 +575,8 @@
   display: none;
 }
 
-/* Everything in the bar is one height: buttons, icon buttons and the
-   links pill. */
+/* Everything in the tools pill is one height: buttons, icon buttons and
+   the links pill. */
 .expanded-bar .ghost-button,
 .expanded-bar .icon-button,
 .expanded-bar .links-hint {
@@ -554,10 +584,14 @@
   min-height: 36px;
 }
 
-.expanded-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.expanded-bar .icon-button {
+  border-radius: 50%;
+}
+
+.expanded-bar .links-hint,
+.expanded-bar .bar-button {
+  padding: 0 14px;
+  border-radius: 999px;
 }
 
 .bar-button {
@@ -638,69 +672,19 @@
   text-align: center;
 }
 
-/* Tablets and phones: the bar floats over the top of the PDF as glass
-   pills: the tools, and under them a smaller frosted pill with the copy's
-   label and publish date. On tablets Download and Close keep short text;
-   on phones every tool is an icon. */
+/* Room above and below the pages for the two pills, so nothing is hidden
+   for good: the view opens scrolled to the paper's top (see builder.js). */
+.builder-card.is-expanded .pdf-view {
+  padding-top: calc(var(--pdf-pad, 0px) + 52px);
+  padding-bottom: calc(var(--pdf-pad, 0px) + 72px);
+}
+
+/* Tablets and phones: a tighter frame; the zoom level and link count go,
+   and Download and Close keep short labels. */
 @media (max-width: 1023px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
     --expand-pad: 10px;
-    --expand-bar: 10px;
-  }
-
-  .expanded-bar {
-    top: 18px;
-    right: auto;
-    left: 50%;
-    z-index: 4;
-    width: max-content;
-    max-width: calc(100% - 36px);
-    height: auto;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    transform: translateX(-50%);
-  }
-
-  .expanded-actions,
-  .expanded-info {
-    border: 1px solid var(--glass-edge);
-    border-radius: 999px;
-    background: var(--menu-bg);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
-  }
-
-  .expanded-actions {
-    max-width: 100%;
-    padding: 5px;
-    gap: 4px;
-  }
-
-  /* The info pill sits under the tools pill, in frosted glass so the page
-     shows through it. */
-  .expanded-info {
-    display: flex;
-    max-width: 100%;
-    flex: none;
-    flex-direction: row;
-    align-items: center;
-    order: 2;
-    padding: 4px 12px;
-    background:
-      linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
-      var(--glass-strong);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
-    backdrop-filter: blur(8px) saturate(140%);
-    gap: 8px;
-    white-space: nowrap;
-  }
-
-  .expanded-info .preview-title,
-  .expanded-info .preview-meta {
-    overflow: hidden;
-    font-size: calc(12px * var(--fs) * var(--fa-small));
-    text-overflow: ellipsis;
   }
 
   .expanded-bar .pdf-zoom,
@@ -708,11 +692,6 @@
     display: none;
   }
 
-  .expanded-bar .pdf-tools {
-    gap: 4px;
-  }
-
-  .expanded-bar .icon-button,
   .expanded-bar .links-hint {
     width: 36px;
     padding: 0;
@@ -722,7 +701,6 @@
 
   .expanded-bar .bar-button {
     padding: 0 12px;
-    border-radius: 999px;
   }
 
   /* Short labels, cut with an ellipsis if room runs out. */
@@ -736,14 +714,13 @@
   .pdf-tools-rule {
     margin: 0 2px;
   }
-
-  /* The first page starts below the pills. */
-  .builder-card.is-expanded .pdf-view {
-    padding-top: calc(var(--pdf-pad, 0px) + 94px);
-  }
 }
 
 @media (max-width: 599px) {
+  .expanded-bar {
+    inset: calc(var(--expand-pad, 10px) + 10px);
+  }
+
   .expanded-bar .bar-button {
     width: 36px;
     padding: 0;
