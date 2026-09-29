@@ -124,6 +124,8 @@ const expandedTop = document.querySelector(".expanded-top");
 const infoToggle = document.getElementById("infoToggle");
 const fitPicker = document.querySelector(".fit-select");
 const fitSelect = document.getElementById("fitSelect");
+const zoomPicker = document.querySelector(".zoom-select");
+const zoomSelect = document.getElementById("zoomSelect");
 const expandedDownload = document.getElementById("expandedDownload");
 const downloadLatest = document.getElementById("downloadLatest");
 const previewFoot = document.querySelector(".preview-foot");
@@ -604,8 +606,9 @@ function prefetchNow(theme, variant, language) {
 
 /* -------- The bar's dropdowns --------
    On the narrowest screens the expanded bar folds some of itself away: the
-   title pill's details (under 400px) and the choice of fit (under 350px)
-   each open from a small dropdown. One is open at a time. */
+   title pill's details (under 400px), zoom (under 600px) and the choice
+   of fit (under 350px) each open from a small dropdown. One is open at a
+   time. */
 
 function fillDetails() {
   document.getElementById("detailsMeta").textContent = expandedMeta.textContent;
@@ -616,7 +619,7 @@ function fillDetails() {
   links.textContent = linkCount ? builderCard.querySelector(".links-hint-text").textContent : "";
 }
 
-// which: "info", "fit" or null to close both.
+// which: "info", "fit", "zoom" or null to close them all.
 function setBarMenu(which) {
   if (which === "info") {
     fillDetails();
@@ -626,10 +629,12 @@ function setBarMenu(which) {
   infoToggle.setAttribute("aria-expanded", String(which === "info"));
   fitPicker.classList.toggle("is-open", which === "fit");
   fitSelect.setAttribute("aria-expanded", String(which === "fit"));
+  zoomPicker.classList.toggle("is-open", which === "zoom");
+  zoomSelect.setAttribute("aria-expanded", String(which === "zoom"));
 }
 
 function barMenuOpen() {
-  return expandedTop.classList.contains("is-open") || fitPicker.classList.contains("is-open");
+  return [expandedTop, fitPicker, zoomPicker].some((part) => part.classList.contains("is-open"));
 }
 
 // Keeps open details in step when the copy's date or links change.
@@ -2004,7 +2009,9 @@ export function initBuilder() {
     }
 
     if (barMenuOpen()) {
-      const opener = expandedTop.classList.contains("is-open") ? infoToggle : fitSelect;
+      const opener = expandedTop.classList.contains("is-open")
+        ? infoToggle
+        : fitPicker.classList.contains("is-open") ? fitSelect : zoomSelect;
 
       setBarMenu(null);
       opener.focus();
@@ -2109,13 +2116,18 @@ export function initBuilder() {
     setBarMenu(fitPicker.classList.contains("is-open") ? null : "fit");
   });
 
+  // Zoom stays open between taps, so it can be pressed several times.
+  zoomSelect.addEventListener("click", () => {
+    setBarMenu(zoomPicker.classList.contains("is-open") ? null : "zoom");
+  });
+
   infoToggle.addEventListener("click", () => {
     setBarMenu(expandedTop.classList.contains("is-open") ? null : "info");
   });
 
   // A click anywhere else closes an open dropdown.
   document.addEventListener("click", (event) => {
-    if (barMenuOpen() && !event.target.closest?.(".expanded-top, .fit-select")) {
+    if (barMenuOpen() && !event.target.closest?.(".expanded-top, .fit-select, .zoom-select")) {
       setBarMenu(null);
     }
   });

@@ -103,18 +103,31 @@ const en = STRINGS.en;
             <svg data-icon="page" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
             <svg class="fit-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5"/></svg>
           </button>
-          <div id="fitMenu" class="fit-menu" role="menu" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
-            <button type="button" role="menuitemradio" aria-checked="true" data-pdf="fit-width">
+          <div id="fitMenu" class="fit-menu bar-picker" role="menu" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+            <button class="icon-button" type="button" role="menuitemradio" aria-checked="true" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
-              <span data-i18n="fitWidth">{en.fitWidth}</span>
             </button>
-            <button type="button" role="menuitemradio" aria-checked="false" data-pdf="fit-page">
+            <button class="icon-button" type="button" role="menuitemradio" aria-checked="false" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
-              <span data-i18n="fitPage">{en.fitPage}</span>
             </button>
           </div>
         </div>
         <span class="pdf-tools-rule" aria-hidden="true"></span>
+        <!-- Phones: zoom out and in behind one monocle. -->
+        <div class="zoom-select">
+          <button id="zoomSelect" class="icon-button fit-select-button" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="zoomMenu" aria-label={en.zoom} data-i18n-aria="zoom" data-tip="zoom">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="9.5" r="5.8"/><path d="M7.2 8.4a3 3 0 0 1 2.6-2.1"/><path d="M14.2 13.6c1.1 1.5 1 3.4 2.3 4.8 1 1 2.3 1.3 3.5 1"/></svg>
+            <svg class="fit-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5"/></svg>
+          </button>
+          <div id="zoomMenu" class="zoom-menu bar-picker" role="group" aria-label={en.zoom} data-i18n-aria="zoom">
+            <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
+            </button>
+            <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>
+            </button>
+          </div>
+        </div>
         <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
         </button>

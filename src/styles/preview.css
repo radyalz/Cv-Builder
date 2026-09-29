@@ -575,15 +575,17 @@
 
 /* Only used on the narrowest screens (see the media queries below). */
 .info-toggle,
-.fit-select {
+.fit-select,
+.zoom-select {
   display: none;
 }
 
-/* The two small dropdowns of the bar: the copy's details under the title
-   pill, and the fit picker above the tools. Both open with a short rise
-   and fade, and are out of reach (and of the tab order) while closed. */
+/* The small dropdowns of the bar: the copy's details under the title
+   pill, and the fit and zoom pickers above the tools. They open with a
+   short rise and fade, and are out of reach (and of the tab order) while
+   closed. */
 .info-details,
-.fit-menu {
+.bar-picker {
   position: absolute;
   z-index: 1;
   display: flex;
@@ -603,7 +605,8 @@
 }
 
 .expanded-top.is-open .info-details,
-.fit-select.is-open .fit-menu {
+.fit-select.is-open .bar-picker,
+.zoom-select.is-open .bar-picker {
   opacity: 1;
   transform: none;
   visibility: visible;
@@ -628,45 +631,25 @@
   white-space: nowrap;
 }
 
-.fit-menu {
+/* The pickers are small copies of the tools pill: a row of round icon
+   buttons, rising out of the button that opens them. */
+.bar-picker {
   bottom: calc(100% + 14px);
   left: 50%;
+  flex-direction: row;
   padding: 5px;
-  gap: 2px;
-  transform: translateY(6px) scale(0.96);
+  border-radius: 999px;
+  gap: 4px;
+  transform: translateY(8px) scale(0.9);
   transform-origin: 50% 100%;
 }
 
-.fit-menu button {
-  display: flex;
-  min-height: 36px;
-  align-items: center;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 11px;
-  color: var(--text);
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-  font-size: calc(13px * var(--fs) * var(--fa-small));
-  gap: 10px;
-  white-space: nowrap;
+.bar-picker .icon-button[aria-checked="true"] {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
 }
 
-.fit-menu button:hover {
-  background: rgba(127, 127, 127, 0.16);
-}
-
-.fit-menu button[aria-checked="true"] {
-  color: var(--accent);
-}
-
-.fit-menu button:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: -2px;
-}
-
-.fit-menu svg,
 .fit-select-button svg,
 .info-toggle svg {
   flex: none;
@@ -674,12 +657,6 @@
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.fit-menu svg {
-  width: 18px;
-  height: 18px;
-  stroke-width: 1.7;
 }
 
 .expanded-bar .ghost-button {
@@ -911,14 +888,14 @@
   }
 }
 
-/* Under 350px the two fit buttons become one picker that shows the
-   current fit and opens both choices above the tools. */
-@media (max-width: 349px) {
-  .pdf-tools > [data-pdf^="fit"] {
+/* Phones: zoom out and in fold behind one monocle button, which opens
+   them as a small pill above the tools. */
+@media (max-width: 599px) {
+  .pdf-tools > [data-pdf^="zoom"] {
     display: none;
   }
 
-  .fit-select {
+  .zoom-select {
     position: relative;
     display: block;
   }
@@ -945,8 +922,22 @@
     transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .fit-select.is-open .fit-caret {
+  .fit-select.is-open .fit-caret,
+  .zoom-select.is-open .fit-caret {
     transform: rotate(180deg);
+  }
+}
+
+/* Under 350px the two fit buttons become one picker the same way, its
+   button showing the current fit. */
+@media (max-width: 349px) {
+  .pdf-tools > [data-pdf^="fit"] {
+    display: none;
+  }
+
+  .fit-select {
+    position: relative;
+    display: block;
   }
 
   .fit-select-button [data-icon="page"],

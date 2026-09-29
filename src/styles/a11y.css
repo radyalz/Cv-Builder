@@ -346,8 +346,9 @@ body.preview-open .admire-toggle {
 }
 
 @media (max-width: 599px) {
+  /* Centred over the 46px accessibility button, 20px from the edge. */
   .admire-toggle {
-    right: 17px;
+    right: calc(20px + (46px - 40px) / 2);
     bottom: 70px;
   }
 }
