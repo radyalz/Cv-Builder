@@ -16,7 +16,9 @@ const BREAKPOINTS = ["(max-width: 599px)", "(max-width: 1023px)", "(max-width: 3
 const MORPH_MS = 520;
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
-// `from`: where a part grows out of when it was not on screen before.
+// `from`: where a part grows out of when it was not on screen before (all
+// of the parts it names together). `bar`: a part of the expanded view's
+// bar, the only parts that move while the preview is expanded.
 const PARTS = [
   { selector: ".card-top" },
   { selector: "#page-title" },
@@ -26,12 +28,36 @@ const PARTS = [
   { selector: ".actions > :not(.actions-break)", from: ".action-split" },
   { selector: ".action-split", from: ".actions" },
   { selector: ".card-preview" },
-  { selector: ".expanded-info", pill: true },
-  { selector: ".expanded-actions", pill: true },
+  { selector: ".expanded-info", pill: true, fade: true, bar: true },
+  { selector: ".expanded-actions", pill: true, bar: true },
+  // Inside the tools pill each tool moves on its own; on phones the two
+  // zoom buttons (and under 350px the two fit buttons) fold into one
+  // picker button, and split out of it again on the way back.
+  { selector: ".expanded-actions > .links-hint, .expanded-actions > .bar-button, .pdf-tools-rule", bar: true },
+  { selector: ".pdf-tools > [data-pdf^='fit']", from: ".fit-select", bar: true },
+  { selector: ".fit-select", from: ".pdf-tools > [data-pdf^='fit']", bar: true },
+  { selector: ".pdf-tools > [data-pdf^='zoom'], #pdfZoom", from: ".zoom-select", bar: true },
+  { selector: ".zoom-select", from: ".pdf-tools > [data-pdf^='zoom'], #pdfZoom", bar: true },
 ];
 
 // Measured too, only to be grown out of.
 const ORIGINS = ["#cvControls", ".actions"];
+
+// The box around all of the given boxes that were on screen.
+function union(boxes) {
+  const present = boxes.filter(Boolean);
+
+  if (!present.length) {
+    return null;
+  }
+
+  const left = Math.min(...present.map((box) => box.left));
+  const top = Math.min(...present.map((box) => box.top));
+  const right = Math.max(...present.map((box) => box.left + box.width));
+  const bottom = Math.max(...present.map((box) => box.top + box.height));
+
+  return { left, top, width: right - left, height: bottom - top };
+}
 
 let started = false;
 
@@ -134,7 +160,7 @@ export function initMorph() {
         { duration: MORPH_MS, easing: EASE }
       );
 
-      for (const child of element.children) {
+      for (const child of part.fade ? element.children : []) {
         child.animate([{ opacity: 0 }, { opacity: 1 }], {
           duration: MORPH_MS * 0.6,
           delay: MORPH_MS * 0.25,
@@ -189,10 +215,10 @@ export function initMorph() {
 
     // Every new box is measured before anything starts moving: a part's
     // animation would otherwise skew the boxes of the parts inside it. With
-    // the preview expanded only its pills change; the rest is out of sight.
+    // the preview expanded only its bar changes; the rest is out of sight.
     const expanded = card.classList.contains("is-expanded");
     const parts = elements()
-      .filter(({ part }) => Boolean(part.pill) === expanded)
+      .filter(({ part }) => Boolean(part.bar) === expanded)
       .map(({ element, part }) => ({ element, part, before: previous.get(element), after: boxOf(element) }));
     let order = 0;
 
@@ -207,7 +233,7 @@ export function initMorph() {
       if (before) {
         morphPart(element, part, before, after, delay);
       } else if (part.from) {
-        const origin = previous.get(document.querySelector(part.from));
+        const origin = union([...document.querySelectorAll(part.from)].map((from) => previous.get(from)));
 
         if (origin) {
           growPart(element, origin, after, delay);

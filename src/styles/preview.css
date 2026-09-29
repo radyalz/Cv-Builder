@@ -536,9 +536,12 @@
   pointer-events: auto;
 }
 
+/* Centred contents: while the pill stretches or shrinks to a new width
+   (morph.js), its tools stay where they are. */
 .expanded-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 5px;
   gap: 4px;
 }
@@ -631,17 +634,35 @@
   white-space: nowrap;
 }
 
-/* The pickers are small copies of the tools pill: a row of round icon
-   buttons, rising out of the button that opens them. */
+/* The pickers are upright pills of round icon buttons, stacked above the
+   button that opens them and as wide as it. They grow up out of it:
+   revealed from the bottom while rising the last few pixels, and fold
+   back down into it when closed. */
 .bar-picker {
-  bottom: calc(100% + 14px);
+  bottom: calc(100% + 10px);
   left: 50%;
-  flex-direction: row;
-  padding: 5px;
-  border-radius: 999px;
-  gap: 4px;
-  transform: translateY(8px) scale(0.9);
-  transform-origin: 50% 100%;
+  width: 50px;
+  align-items: center;
+  padding: 6px 0;
+  border-radius: 25px;
+  gap: 6px;
+  clip-path: inset(calc(100% - 12px) 0 0 0 round 25px);
+  transform: translateY(16px);
+  transition:
+    clip-path 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease,
+    visibility 0s linear 300ms;
+}
+
+.fit-select.is-open .bar-picker,
+.zoom-select.is-open .bar-picker {
+  clip-path: inset(0 round 25px);
+}
+
+/* Zoom in on top, zoom out under it. */
+.zoom-menu {
+  flex-direction: column-reverse;
 }
 
 .bar-picker .icon-button[aria-checked="true"] {
