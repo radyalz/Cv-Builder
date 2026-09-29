@@ -62,6 +62,9 @@ export const STRINGS = {
     previewFrame: "Published CV preview",
     expand: "Expand",
     tapExpand: "Tap to expand",
+    leadTablet: "Generate the newest version of my CV: pick its colour, edition and language below, check the preview underneath, then build a fresh copy or download the published one.",
+    leadPhone: "Generate the newest version of my CV: set its colour, edition and language in CV options, then build a fresh copy or download the published one. Tap the preview to read it full screen.",
+    cvOptions: "CV options",
     moreActions: "More actions",
     actionGenerateNote: "Build a fresh copy now",
     actionDownloadNote: "Save the published copy",
@@ -151,6 +154,9 @@ export const STRINGS = {
     previewFrame: "پیش‌نمایش رزومه منتشرشده",
     expand: "بزرگ‌نمایی",
     tapExpand: "برای بزرگ‌نمایی بزنید",
+    leadTablet: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در پایین انتخاب کنید، پیش‌نمایش زیر آن را ببینید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید.",
+    leadPhone: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در «گزینه‌های رزومه» انتخاب کنید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید. برای دیدن تمام‌صفحه روی پیش‌نمایش بزنید.",
+    cvOptions: "گزینه‌های رزومه",
     moreActions: "کارهای دیگر",
     actionGenerateNote: "همین حالا نسخه‌ای تازه بساز",
     actionDownloadNote: "ذخیره نسخه منتشرشده",
@@ -228,6 +234,7 @@ export const STRINGS = {
 // data-tip key. tipContent() adds the live details (file, colour, date…).
 export const TIPS = {
   en: {
+    cvOptions: ["CV options", "Choose the colour, edition and language of the copy."],
     generate: ["Generate a fresh copy", "Compiles the CV from source with today's experience durations, then downloads it. If the published copy is already current, that one downloads at once."],
     download: ["Download the published copy", "Downloads the copy already built for this selection, with no waiting."],
     downloadMissing: ["Not published yet", "Nothing has been built for this combination. Use Generate Latest CV and it becomes available here."],
@@ -264,6 +271,7 @@ export const TIPS = {
     linksHint: ["Clickable links", "The contact details, websites and portfolio entries in this copy open when clicked, here and in the downloaded PDF. Click to highlight them."],
   },
   fa: {
+    cvOptions: ["گزینه‌های رزومه", "رنگ، نسخه و زبان نسخه را انتخاب کنید."],
     generate: ["ساخت نسخه تازه", "رزومه را با مدت سوابق تا امروز از نو می‌سازد و دانلود می‌کند. اگر نسخه منتشرشده به‌روز باشد، همان فوراً دانلود می‌شود."],
     download: ["دانلود نسخه منتشرشده", "نسخه‌ای را که برای همین انتخاب ساخته شده، بی‌درنگ دانلود می‌کند."],
     downloadMissing: ["هنوز منتشر نشده", "برای این ترکیب نسخه‌ای ساخته نشده است. با «ساخت جدیدترین رزومه» بسازید تا این‌جا در دسترس باشد."],

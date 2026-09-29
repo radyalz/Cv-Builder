@@ -199,11 +199,13 @@
 
   /* Each label sits on the top edge of its control, like an outlined
      field, instead of taking a line of its own above it. */
-  .controls .control {
+  .controls .control,
+  .forms-entry {
     position: relative;
   }
 
-  .controls .control-label {
+  .controls .control-label,
+  .forms-entry .control-label {
     position: absolute;
     z-index: 1;
     top: 0;
@@ -231,14 +233,16 @@
 
   /* Accent keeps its label at the start of the edge, over the colour
      name; edition and language have theirs centred. */
-  .controls .control:first-child .control-label {
+  .controls .control:first-child .control-label,
+  .forms-entry .control-label {
     left: auto;
     inset-inline-start: 10px;
     transform: translateY(-50%);
   }
 
   /* Persian letters need a size more to read at this scale. */
-  :root[lang="fa"] .controls .control-label {
+  :root[lang="fa"] .controls .control-label,
+  :root[lang="fa"] .forms-entry .control-label {
     font-size: calc(11px * var(--fs));
   }
 
@@ -375,4 +379,98 @@
     radial-gradient(120% 90% at 0% 0%, var(--accent-soft), transparent 62%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     var(--glass-flat);
+}
+
+/* -------- One intro per layout --------
+   The controls differ between desktop, tablet and phone, so the line under
+   the name explains the one on screen. */
+
+.lead-tablet,
+.lead-phone {
+  display: none;
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .lead-desktop {
+    display: none;
+  }
+
+  .lead-tablet {
+    display: inline;
+  }
+}
+
+@media (max-width: 599px) {
+  .lead-desktop {
+    display: none;
+  }
+
+  .lead-phone {
+    display: inline;
+  }
+}
+
+/* -------- Phones: the controls in a menu --------
+   One field shows the colour, edition and language chosen; it opens the
+   controls in a menu, the way the accessibility button opens its own
+   (src/scripts/forms-menu.js moves them in and out). */
+
+.forms-entry {
+  display: none;
+}
+
+.forms-title {
+  margin: 0 0 16px;
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.forms-menu {
+  transform-origin: 50% 0;
+  will-change: transform, opacity;
+}
+
+.forms-menu .controls {
+  margin-top: 0;
+}
+
+.forms-summary {
+  overflow: hidden;
+  min-width: 0;
+  flex: 1;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forms-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: color 140ms ease;
+}
+
+.forms-trigger:hover .forms-icon,
+.forms-trigger[aria-expanded="true"] .forms-icon {
+  color: var(--accent);
+}
+
+@media (max-width: 599px) {
+  .card-main > .controls {
+    display: none;
+  }
+
+  .forms-entry {
+    display: flex;
+    margin-top: 18px;
+  }
+
+  .forms-trigger {
+    height: 42px;
+  }
 }

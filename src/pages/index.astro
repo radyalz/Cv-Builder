@@ -26,9 +26,33 @@ const en = STRINGS.en;
 
       <h1 id="page-title" data-i18n="name">{en.name}</h1>
 
-      <p class="lead" data-i18n="lead">{en.lead}</p>
+      <!-- One intro per layout, since the controls differ on each. -->
+      <p class="lead">
+        <span class="lead-desktop" data-i18n="lead">{en.lead}</span>
+        <span class="lead-tablet" data-i18n="leadTablet">{en.leadTablet}</span>
+        <span class="lead-phone" data-i18n="leadPhone">{en.leadPhone}</span>
+      </p>
 
-      <div class="controls">
+      <!-- Phones: one field for all three choices, opening the controls
+           below in a menu (src/scripts/forms-menu.js). -->
+      <div class="control forms-entry">
+        <span class="control-label" data-i18n="cvOptions">{en.cvOptions}</span>
+        <button
+          id="formsTrigger"
+          class="menu-trigger forms-trigger"
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-controls="formsMenu"
+          data-tip="cvOptions"
+        >
+          <span class="trigger-dot" aria-hidden="true"></span>
+          <span id="formsSummary" class="forms-summary">Purple · Digital · English</span>
+          <svg class="forms-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+        </button>
+      </div>
+
+      <div id="cvControls" class="controls">
         <div class="control">
           <span class="control-label" data-i18n="accent">{en.accent}</span>
 
@@ -91,11 +115,20 @@ const en = STRINGS.en;
     <PreviewPane />
   </section>
 
+  <!-- Phones: the controls are moved in here while it is a phone. It comes
+       before the colour menu, which opens on top of it. -->
+  <div id="formsMenu" class="menu forms-menu" slot="overlays" role="dialog" aria-labelledby="formsTitle" hidden>
+    <p id="formsTitle" class="forms-title" data-i18n="cvOptions">{en.cvOptions}</p>
+    <div class="forms-body"></div>
+  </div>
+
   <ColourMenu slot="overlays" />
 </Base>
 
 <script>
   import { initBuilder } from "../scripts/builder.js";
+  import { initFormsMenu } from "../scripts/forms-menu.js";
 
   initBuilder();
+  initFormsMenu();
 </script>
