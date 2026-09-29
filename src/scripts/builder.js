@@ -606,9 +606,11 @@ function prefetchNow(theme, variant, language) {
    contents" below for how the steps overlap.
 
    While the card grows, the PDF is not resized every frame, which is what
-   made it judder. It keeps its starting size and is scaled in step with the
-   card, then takes its real size once at the end. The viewer fits the page
-   to the width either way, so that last swap does not show. */
+   made it judder. It is drawn once at the larger of its two sizes before
+   anything moves, and scaled in step with the card as a picture: shrunk to
+   fit the small preview and grown to full size when expanding, the reverse
+   when collapsing. So it is never blown up blurry, and there is no sharper
+   copy to swap in when it lands. */
 
 const GROW_MS = 820;
 // Closing is unhurried: a slower shrink and a slower return of the text.
@@ -687,52 +689,66 @@ function boxFrame(rect) {
 // Animates the card, the frame inside it and the PDF together. They hold
 // their last frame until the caller has switched the classes over and then
 // settle() cancels them, so no frame of the in-between layout is painted.
-function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration) {
+// `paper` is what holdPaper() returned: the PDF, drawn once at its larger
+// size, is scaled between the two as a picture. Without it (nothing on
+// screen to scale) the page colour grows and the PDF fades in at the end.
+function growBetween(cardFrom, cardTo, frameFrom, frameTo, duration, paper) {
   const timing = { duration, easing: GROW_EASE, fill: "forwards" };
   const animations = [
     builderCard.animate([boxFrame(cardFrom), boxFrame(cardTo)], timing),
     previewBox.animate([boxFrame(frameFrom), boxFrame(frameTo)], timing),
   ];
 
-  const showing =
-    !previewDoc.hidden &&
-    !previewDoc.classList.contains("is-loading") &&
-    frameFrom.width > 40 &&
-    frameTo.width > 40;
-
-  // No re-rendering mid-grow: the pages are scaled as a picture, then drawn
-  // sharp once, at the final size, when settle() releases the hold.
-  pdfView.hold(true);
-
-  if (showing) {
-    // The frame's width at any moment is exactly this scale of the PDF's
-    // width, because both run on the same timing.
-    const scale = frameTo.width / frameFrom.width;
-
-    Object.assign(previewDoc.style, {
-      position: "absolute",
-      top: "0",
-      left: "0",
-      width: `${frameFrom.width}px`,
-      height: `${Math.max(frameFrom.height, frameTo.height / scale)}px`,
-      transformOrigin: "0 0",
-    });
-
+  if (paper) {
     animations.push(
       previewDoc.animate(
-        [{ transform: "scale(1)" }, { transform: `scale(${scale})` }],
+        [{ transform: `scale(${paper.from})` }, { transform: `scale(${paper.to})` }],
         timing
       )
     );
   } else {
-    // Nothing on screen to scale (phones start from a button): the page
-    // colour grows, and the PDF fades in once the card is in place.
+    pdfView.hold(true);
     previewDoc.style.opacity = "0";
   }
 
   return Promise.all(animations.map((animation) => animation.finished)).then(
     () => animations
   );
+}
+
+// Holds the PDF at the larger of the two frames (`big`), so it is only ever
+// scaled down and stays sharp the whole way, and returns the scale that
+// makes it match the smaller one (`small`). Its pages keep the same place
+// against the box's side and top as they have now, scrollbar included, so
+// the first frame looks exactly like the view it starts from. Returns null
+// when there is no PDF on screen to scale.
+function holdPaper(small, big) {
+  const showing =
+    !previewDoc.hidden &&
+    !previewDoc.classList.contains("is-loading") &&
+    small.width > 40 &&
+    big.width > 40;
+
+  if (!showing) {
+    return null;
+  }
+
+  const gutter = previewDoc.offsetWidth - previewDoc.clientWidth;
+  const scale = (small.width - gutter) / (big.width - gutter);
+  const rtl = getComputedStyle(previewDoc).direction === "rtl";
+
+  pdfView.hold(true);
+  Object.assign(previewDoc.style, {
+    position: "absolute",
+    top: "0",
+    left: rtl ? "auto" : "0",
+    right: rtl ? "0" : "auto",
+    width: `${big.width}px`,
+    height: `${Math.max(big.height, small.height / scale)}px`,
+    transformOrigin: rtl ? "100% 0" : "0 0",
+  });
+
+  return scale;
 }
 
 function settle(animations) {
@@ -743,7 +759,7 @@ function settle(animations) {
   }
 
   // Keep the viewer's own spacing variables; drop only the grow styles.
-  for (const property of ["position", "top", "left", "width", "height", "transform-origin", "opacity"]) {
+  for (const property of ["position", "top", "left", "right", "width", "height", "transform", "transform-origin", "opacity"]) {
     previewDoc.style.removeProperty(property);
   }
 
@@ -852,6 +868,26 @@ async function expandPreview() {
   const frameFrom = within(previewOrigin(), cardFrom);
   const parts = measureParts();
 
+  // Where it lands, measured with the grown layout put on and taken off
+  // again before the browser paints. `room` is the space kept above the
+  // first page for the title pill.
+  builderCard.classList.add("is-expanded");
+  const cardTo = builderCard.getBoundingClientRect();
+  const frameTo = within(previewBox.getBoundingClientRect(), cardTo);
+  const room = parseFloat(getComputedStyle(previewDoc).paddingTop) - pdfView.pad();
+  builderCard.classList.remove("is-expanded");
+
+  // The PDF is drawn at its final size first, shown shrunk to where it is
+  // now, and grows from there as a picture: sharp all the way, and nothing
+  // to swap in at the end.
+  const scrolled = previewDoc.scrollTop;
+  const scale = holdPaper(frameFrom, frameTo);
+
+  if (scale) {
+    previewDoc.style.transform = `scale(${scale})`;
+    await pdfView.render();
+  }
+
   document.body.classList.add("preview-open");
   pinParts(parts, { leaving: true });
 
@@ -860,9 +896,14 @@ async function expandPreview() {
   builderCard.style.setProperty("--fade-delay", `${quick ? 0 : LEAVE_DELAY_MS}ms`);
   builderCard.classList.add("is-expanded", "is-fading");
 
-  const cardTo = builderCard.getBoundingClientRect();
-  const frameTo = within(previewBox.getBoundingClientRect(), cardTo);
-  const growing = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : GROW_MS);
+  // The pills float over the PDF, with room kept above the first page so
+  // nothing is hidden for good. The view opens past that room, at the same
+  // place on the paper it showed before (the very top, unless the small
+  // preview was scrolled); scrolling up shows what the title pill covers.
+  previewDoc.scrollTop = Math.max(0, room) + (scale ? scrolled / scale : 0);
+
+  const paper = scale && { from: scale, to: 1 };
+  const growing = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : GROW_MS, paper);
 
   // The bar with the title and Close starts fading in early in the grow.
   await wait(quick ? 0 : GROW_MS * 0.2);
@@ -873,16 +914,6 @@ async function expandPreview() {
   settle(animations);
   unpinParts();
   builderCard.style.removeProperty("--fade-delay");
-
-  // The pills float over the PDF, with room kept above the first page so
-  // nothing is hidden for good. The view opens
-  // scrolled past that room, paper at the very top as the grow left it;
-  // scrolling up shows what the pills cover.
-  const room = parseFloat(getComputedStyle(previewDoc).paddingTop) - pdfView.pad();
-
-  if (room > 0) {
-    previewDoc.scrollTop = room;
-  }
 
   expandState = "open";
 
@@ -927,9 +958,16 @@ async function collapsePreview() {
   builderCard.classList.add("is-expanded");
   pinParts(parts);
 
+  // Where the paper is, less the room above it for the title pill, so the
+  // small preview is left showing the same place.
+  const room = parseFloat(getComputedStyle(previewDoc).paddingTop) - pdfView.pad();
+  const scrolled = Math.max(0, previewDoc.scrollTop - room);
+  const scale = holdPaper(frameTo, frameFrom);
+  const paper = scale && { from: 1, to: scale };
+
   // The bar fades as the card starts to shrink…
   builderCard.classList.remove("is-open");
-  const shrinking = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : SHRINK_MS);
+  const shrinking = growBetween(within(cardFrom), within(cardTo), frameFrom, frameTo, quick ? 0 : SHRINK_MS, paper);
 
   // …and once it is past halfway, the text slides back in, more slowly
   // than it left.
@@ -941,6 +979,7 @@ async function collapsePreview() {
 
   builderCard.classList.remove("is-expanded");
   settle(animations);
+  previewDoc.scrollTop = scale ? scrolled * scale : 0;
   unpinParts();
   document.body.classList.remove("preview-open");
 
