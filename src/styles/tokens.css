@@ -127,8 +127,8 @@ body {
 
 :root[data-theme="light"] body {
   background:
-    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 10%, #ffffff), transparent 60%),
-    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 6%, #ffffff), transparent 70%),
+    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 13%, #ffffff), transparent 60%),
+    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 8%, #ffffff), transparent 70%),
     linear-gradient(color-mix(in srgb, var(--accent) 3%, #ffffff), color-mix(in srgb, var(--accent) 3%, #ffffff));
 }
 
@@ -214,8 +214,8 @@ body {
   font-family: var(--font-ui);
   color: var(--text);
   background:
-    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 13%, #050506), transparent 60%),
-    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 7%, #050506), transparent 70%),
+    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 17%, #050506), transparent 60%),
+    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 9%, #050506), transparent 70%),
     #050506;
 }
 

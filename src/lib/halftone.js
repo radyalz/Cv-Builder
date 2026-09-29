@@ -13,8 +13,8 @@
 const SPACING = 10; // between dot centres, in CSS pixels
 // Kept faint, and the dots small, so the skulls on top keep their
 // contrast: the halftone is texture behind them, not a second picture.
-const ALPHA = { dark: 0.16, light: 0.09 };
-const MAX_RADIUS = (SPACING / 2) * 0.58;
+const ALPHA = { dark: 0.24, light: 0.14 };
+const MAX_RADIUS = (SPACING / 2) * 0.7;
 
 let started = false;
 
@@ -56,8 +56,8 @@ function draw(canvas) {
   for (let row = 0, y = 0; y <= height + SPACING; row++, y = row * rowHeight) {
     for (let x = row % 2 ? SPACING / 2 : 0; x <= width + SPACING; x += SPACING) {
       const t = Math.max(
-        strength(Math.hypot(x - strong.x, y - strong.y), diagonal * 0.5),
-        0.5 * strength(Math.hypot(x - weak.x, y - weak.y), diagonal * 0.3)
+        strength(Math.hypot(x - strong.x, y - strong.y), diagonal * 0.58),
+        0.6 * strength(Math.hypot(x - weak.x, y - weak.y), diagonal * 0.36)
       );
       const radius = MAX_RADIUS * t;
 
