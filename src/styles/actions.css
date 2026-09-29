@@ -180,13 +180,20 @@
 
 /* Desktop puts "All published copies" on its own line under the two main
    buttons; tablets keep all three in a row (responsive.css). */
+/* The break sits on a line of its own, which would put the row gap in
+   twice, so the rows have none: All published copies sets its own 10px
+   under the two main buttons. */
+.actions {
+  row-gap: 0;
+}
+
 .actions-break {
   flex-basis: 100%;
   height: 0;
 }
 
 .actions .secondary-link {
-  margin-top: -4px;
+  margin-top: 10px;
 }
 
 /* -------- Split button (tablets and phones) --------

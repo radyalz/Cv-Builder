@@ -24,6 +24,18 @@ export function initIntroInfo() {
 
   started = true;
 
+  // For the first 30 seconds the button calls for attention (ripples and a
+  // gentle swell, see responsive.css), until the visitor finds it.
+  const CALL_MS = 30000;
+  const quiet = () => button.classList.remove("is-calling");
+
+  button.classList.add("is-calling");
+  window.setTimeout(quiet, CALL_MS);
+
+  for (const type of ["pointerenter", "focus", "click"]) {
+    button.addEventListener(type, quiet, { once: true });
+  }
+
   let open = false;
   let motion = null;
 

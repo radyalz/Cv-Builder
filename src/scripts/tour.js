@@ -8,7 +8,8 @@ import { closeA11y, openA11y, setAdmiring, t, uiPrefs } from "../lib/prefs.js";
    button), so each has its own steps.
 
    It goes inside things too: a step can open a menu (CV options, the list
-   of actions, accessibility) so its parts can be ringed one by one, and
+   of actions, accessibility) or the expanded preview, so their parts can
+   be ringed one by one, and
    the last steps show the background being admired. Menus open and close,
    and the card comes back, as the tour moves; ending it puts everything
    back. Steps for parts that are not on screen (the link count before a
@@ -34,9 +35,10 @@ const ICONS = {
   admire: '<path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
 };
 
-// Step fields: `target` to ring; `title` and `text` keys (text may be a
-// function of the layout); `menu` to have open while it shows ("forms",
-// "actions" or "a11y"); `admire` to show the background alone; `round`
+// Step fields: `when`, a media query for the screens it is on; `target` to ring (everything it matches on screen, in one
+// ring); `title` and `text` keys (text may be a function of the layout);
+// `menu` to have open while it shows ("forms", "actions", "a11y", or
+// "expanded" for the preview grown to full screen); `admire` to show the background alone; `round`
 // for a circular ring; `optional` to pass over when not on screen;
 // `topic` to offer it in the popover (with `icon`).
 
@@ -50,6 +52,35 @@ const LINKS = {
 };
 
 const EXPAND = { target: "#previewExpand", icon: "expand", title: "tourExpandTitle", text: "tourExpandText", optional: true };
+
+const width = (query) => window.matchMedia(query).matches;
+
+// The expanded preview and its bar. Each tool's step is passed over on
+// screens that fold it into a picker, and the picker's where they do.
+const EXPANDED = [
+  {
+    target: ".expanded-info",
+    icon: "expand",
+    title: "tourReadTitle",
+    text: () => (width("(max-width: 399px)") ? "tourReadNarrow" : "tourReadText"),
+    menu: "expanded",
+    topic: true,
+  },
+  { target: ".expanded-actions > .links-hint", title: "tourLinksTitle", text: "tourBarLinksText", menu: "expanded" },
+  { target: ".pdf-tools > [data-pdf='fit-width']", title: "fitWidth", text: "tourFitWidthText", menu: "expanded", when: "(min-width: 350px)" },
+  { target: ".pdf-tools > [data-pdf='fit-page']", title: "fitPage", text: "tourFitPageText", menu: "expanded", when: "(min-width: 350px)" },
+  { target: ".fit-select", title: "pdfTools", text: "tourFitSelectText", menu: "expanded", when: "(max-width: 349px)" },
+  {
+    target: ".pdf-tools > [data-pdf^='zoom'], #pdfZoom",
+    title: "zoom",
+    text: () => (width("(min-width: 1024px)") ? "tourZoomText" : "tourZoomTabletText"),
+    menu: "expanded",
+    when: "(min-width: 600px)",
+  },
+  { target: ".zoom-select", title: "zoom", text: "tourZoomPhoneText", menu: "expanded", when: "(max-width: 599px)" },
+  { target: "#expandedDownload", title: "downloadShort", text: "tourBarDownloadText", menu: "expanded" },
+  { target: "#previewCollapse", title: "close", text: "tourCloseText", menu: "expanded" },
+];
 
 const ACCESSIBILITY = [
   { target: "#a11yTrigger", icon: "a11y", title: "tourA11yTitle", text: "tourAccessibilityText", round: true, topic: true },
@@ -78,6 +109,7 @@ const DESKTOP_STEPS = [
   { target: ".preview-frame", icon: "preview", title: "tourPreviewTitle", text: "tourPreviewDesktop", topic: true },
   LINKS,
   EXPAND,
+  ...EXPANDED,
   ...ACCESSIBILITY,
 ];
 
@@ -99,6 +131,7 @@ const COMPACT_STEPS = [
   },
   LINKS,
   EXPAND,
+  ...EXPANDED,
   ...ACCESSIBILITY,
 ];
 
@@ -114,7 +147,28 @@ function onScreen(element) {
 function currentSteps() {
   const steps = window.matchMedia("(max-width: 1023px)").matches ? COMPACT_STEPS : DESKTOP_STEPS;
 
-  return steps.filter((step) => !step.optional || onScreen(document.querySelector(step.target)));
+  return steps.filter(
+    (step) =>
+      (!step.when || width(step.when)) && (!step.optional || onScreen(document.querySelector(step.target)))
+  );
+}
+
+// A step's parts on screen, and the box around them all.
+function targetsOf(step) {
+  return [...document.querySelectorAll(step.target)].filter(onScreen);
+}
+
+function boxAround(elements) {
+  const boxes = elements.map((element) => element.getBoundingClientRect());
+  const left = Math.min(...boxes.map((box) => box.left));
+  const top = Math.min(...boxes.map((box) => box.top));
+
+  return {
+    left,
+    top,
+    width: Math.max(...boxes.map((box) => box.right)) - left,
+    height: Math.max(...boxes.map((box) => box.bottom)) - top,
+  };
 }
 
 // One button per main part, for the popover: each starts the tour there.
@@ -144,6 +198,7 @@ const GAP = 14; // between the ring and the card
 const EDGE = 16; // the card keeps this far from the window's edges
 const RING = 6; // the ring stands this far off the part it lights
 const MENU_MS = 320; // long enough for a menu to finish opening
+const GROW_MS = 1200; // and for the preview to grow or shrink
 
 let started = false;
 let api = null;
@@ -155,6 +210,10 @@ export function startTour(step = 0) {
 /* -------- The menus a step can open -------- */
 
 function isOpen(name) {
+  if (name === "expanded") {
+    return document.querySelector(".builder-card")?.classList.contains("is-expanded");
+  }
+
   const trigger = {
     forms: "#formsTrigger",
     actions: ".split-toggle",
@@ -172,6 +231,13 @@ function openMenu(name) {
   if (name === "forms") document.getElementById("formsTrigger").click();
   if (name === "actions") document.querySelector(".split-toggle").click();
   if (name === "a11y") openA11y();
+
+  // Expand, or on phones (where there is no Expand button) the preview.
+  if (name === "expanded") {
+    const expand = document.getElementById("previewExpand");
+
+    (onScreen(expand) ? expand : document.querySelector(".preview-frame")).click();
+  }
 }
 
 function closeMenu(name) {
@@ -182,6 +248,7 @@ function closeMenu(name) {
   if (name === "forms") document.getElementById("formsTrigger").click();
   if (name === "actions") document.querySelector(".split-toggle").click();
   if (name === "a11y") closeA11y();
+  if (name === "expanded") document.getElementById("previewCollapse").click();
 }
 
 export function initTour() {
@@ -212,13 +279,12 @@ export function initTour() {
 
   const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const number = (n) => (uiPrefs.lang === "fa" ? n.toLocaleString("fa-IR") : String(n));
-  const target = (step) => document.querySelector(step.target);
   const pause = (ms) => new Promise((resolve) => window.setTimeout(resolve, still() ? 0 : ms));
 
   // The ring: a rounded box around the part (a circle for round buttons),
   // with the dimming as its enormous shadow, so the part itself stays lit.
-  function placeSpot(step, box) {
-    const radius = parseFloat(getComputedStyle(target(step)).borderRadius) || 0;
+  function placeSpot(step, parts, box) {
+    const radius = parts.length === 1 ? parseFloat(getComputedStyle(parts[0]).borderRadius) || 0 : 12;
     let left = box.left - RING;
     let top = box.top - RING;
     let width = box.width + RING * 2;
@@ -281,45 +347,46 @@ export function initTour() {
 
   function place() {
     const step = steps[index];
-    const element = target(step);
+    const parts = targetsOf(step);
 
-    if (!onScreen(element)) {
+    if (!parts.length) {
       return;
     }
 
-    placeCard(placeSpot(step, element.getBoundingClientRect()));
+    placeCard(placeSpot(step, parts, boxAround(parts)));
   }
 
   // Opens the menu a step needs (closing any other the tour opened) and
   // shows or hides the background alone, waiting for either to settle.
   async function stage(step) {
     const wanted = step.menu ?? null;
-    let waited = false;
+    let waited = 0;
 
     if (menu !== wanted) {
       if (menu) {
         closeMenu(menu);
+        waited = menu === "expanded" ? GROW_MS : MENU_MS;
       }
 
       menu = wanted;
 
       if (wanted) {
         openMenu(wanted);
-        waited = true;
+        waited = wanted === "expanded" ? GROW_MS : Math.max(waited, MENU_MS);
       }
     }
 
     if (admiring !== Boolean(step.admire)) {
       admiring = Boolean(step.admire);
       setAdmiring(admiring);
-      waited = true;
+      waited = Math.max(waited, MENU_MS);
     }
 
     // The dim is lighter over the background alone, so it can be seen.
     tour.classList.toggle("is-light", admiring);
 
     if (waited) {
-      await pause(MENU_MS);
+      await pause(waited);
       // Opening a menu can move the focus into it; it belongs on the card.
       next.focus({ preventScroll: true });
     }
@@ -339,10 +406,10 @@ export function initTour() {
     }
 
     // A part not on screen is passed over, in the direction of travel.
-    if (!onScreen(target(step))) {
+    if (!targetsOf(step).length) {
       const onward = index + direction;
 
-      if (step.optional && onward >= 0 && onward < steps.length) {
+      if ((step.optional || step.menu) && onward >= 0 && onward < steps.length) {
         show(onward, direction);
       } else {
         end();
@@ -361,7 +428,7 @@ export function initTour() {
     back.hidden = index === 0;
     next.textContent = t(index === steps.length - 1 ? "tourDone" : "tourNext");
 
-    target(step).scrollIntoView({ block: "nearest", behavior: still() ? "auto" : "smooth" });
+    targetsOf(step)[0].scrollIntoView({ block: "nearest", behavior: still() ? "auto" : "smooth" });
     place();
 
     // The card's words change with a small fade, so a step change reads as
