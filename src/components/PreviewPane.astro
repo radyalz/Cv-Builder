@@ -65,13 +65,25 @@ const en = STRINGS.en;
 
   <!-- Shown once the card has grown to fill the window. -->
   <div class="expanded-bar">
-    <div class="expanded-info">
-      <span id="expandedLabel" class="preview-title"></span>
-      <span id="expandedMeta" class="preview-meta"></span>
+    <!-- The copy's title pill. Under 400px it keeps only the coloured
+         title, and the caret opens the rest (publish date, links) below. -->
+    <div class="expanded-top">
+      <div class="expanded-info">
+        <span id="expandedLabel" class="preview-title"></span>
+        <span id="expandedMeta" class="preview-meta"></span>
+        <button id="infoToggle" class="info-toggle" type="button" aria-expanded="false" aria-controls="infoDetails" aria-label={en.copyDetails} data-i18n-aria="copyDetails">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+        </button>
+      </div>
+
+      <div id="infoDetails" class="info-details">
+        <span id="detailsMeta"></span>
+        <span id="detailsLinks"></span>
+      </div>
     </div>
 
-    <!-- The tools: one pill with the info pill beneath it on tablets, icons
-         only on phones, a plain row on desktop. -->
+    <!-- The tools pill, at the bottom: icons only on phones, where under
+         350px the two fit buttons become one picker. -->
     <div class="expanded-actions">
       <button class="links-hint" type="button" data-tip="linksHint" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>
@@ -85,6 +97,23 @@ const en = STRINGS.en;
         <button class="icon-button" type="button" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
         </button>
+        <div class="fit-select">
+          <button id="fitSelect" class="icon-button fit-select-button" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="fitMenu" aria-label={en.pdfTools} data-i18n-aria="pdfTools" data-fit="width">
+            <svg data-icon="width" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
+            <svg data-icon="page" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
+            <svg class="fit-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5"/></svg>
+          </button>
+          <div id="fitMenu" class="fit-menu" role="menu" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+            <button type="button" role="menuitemradio" aria-checked="true" data-pdf="fit-width">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v10M20 7v10M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></svg>
+              <span data-i18n="fitWidth">{en.fitWidth}</span>
+            </button>
+            <button type="button" role="menuitemradio" aria-checked="false" data-pdf="fit-page">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 8h6M9 11.5h6M9 15h4"/></svg>
+              <span data-i18n="fitPage">{en.fitPage}</span>
+            </button>
+          </div>
+        </div>
         <span class="pdf-tools-rule" aria-hidden="true"></span>
         <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>

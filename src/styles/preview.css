@@ -565,6 +565,123 @@
   text-overflow: ellipsis;
 }
 
+.expanded-top {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Only used on the narrowest screens (see the media queries below). */
+.info-toggle,
+.fit-select {
+  display: none;
+}
+
+/* The two small dropdowns of the bar: the copy's details under the title
+   pill, and the fit picker above the tools. Both open with a short rise
+   and fade, and are out of reach (and of the tab order) while closed. */
+.info-details,
+.fit-menu {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--glass-edge);
+  border-radius: 16px;
+  background: var(--menu-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  pointer-events: auto;
+  translate: -50% 0;
+  visibility: hidden;
+  transition:
+    opacity 180ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 240ms;
+}
+
+.expanded-top.is-open .info-details,
+.fit-select.is-open .fit-menu {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.info-details {
+  top: calc(100% + 6px);
+  left: 50%;
+  padding: 8px 14px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 55%, rgba(255, 255, 255, 0.08)),
+    var(--glass-strong);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+  color: var(--muted);
+  font-size: calc(12px * var(--fs) * var(--fa-small));
+  gap: 4px;
+  text-align: center;
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: 50% 0;
+  white-space: nowrap;
+}
+
+.fit-menu {
+  bottom: calc(100% + 14px);
+  left: 50%;
+  padding: 5px;
+  gap: 2px;
+  transform: translateY(6px) scale(0.96);
+  transform-origin: 50% 100%;
+}
+
+.fit-menu button {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 11px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.fit-menu button:hover {
+  background: rgba(127, 127, 127, 0.16);
+}
+
+.fit-menu button[aria-checked="true"] {
+  color: var(--accent);
+}
+
+.fit-menu button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+.fit-menu svg,
+.fit-select-button svg,
+.info-toggle svg {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fit-menu svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.7;
+}
+
 .expanded-bar .ghost-button {
   display: inline-flex;
   align-items: center;
@@ -738,6 +855,107 @@
   /* Narrow: the date gives way first if the title pill runs out of room. */
   .expanded-info .preview-meta {
     min-width: 0;
+  }
+}
+
+/* Under 400px the title pill keeps only the coloured title and a caret;
+   the whole pill opens the details below it. */
+@media (max-width: 399px) {
+  .expanded-info {
+    position: relative;
+    gap: 4px;
+    padding-inline-end: 8px;
+  }
+
+  .expanded-info .preview-meta {
+    display: none;
+  }
+
+  .info-toggle {
+    display: inline-grid;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    color: var(--accent);
+    background: none;
+    cursor: pointer;
+    place-items: center;
+  }
+
+  .info-toggle::after {
+    position: absolute;
+    inset: -1px;
+    border-radius: 999px;
+    content: "";
+  }
+
+  .info-toggle:focus-visible {
+    outline: none;
+  }
+
+  .info-toggle:focus-visible::after {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .info-toggle svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .expanded-top.is-open .info-toggle svg {
+    transform: rotate(180deg);
+  }
+}
+
+/* Under 350px the two fit buttons become one picker that shows the
+   current fit and opens both choices above the tools. */
+@media (max-width: 349px) {
+  .pdf-tools > [data-pdf^="fit"] {
+    display: none;
+  }
+
+  .fit-select {
+    position: relative;
+    display: block;
+  }
+
+  .expanded-bar .fit-select-button {
+    display: inline-flex;
+    width: 50px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    gap: 1px;
+  }
+
+  .fit-select-button svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.7;
+  }
+
+  .fit-select-button .fit-caret {
+    width: 12px;
+    height: 12px;
+    stroke-width: 2.4;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .fit-select.is-open .fit-caret {
+    transform: rotate(180deg);
+  }
+
+  .fit-select-button [data-icon="page"],
+  .fit-select-button[data-fit="page"] [data-icon="width"] {
+    display: none;
+  }
+
+  .fit-select-button[data-fit="page"] [data-icon="page"] {
+    display: block;
   }
 }
 

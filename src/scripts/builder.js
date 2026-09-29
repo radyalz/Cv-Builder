@@ -120,6 +120,10 @@ const previewCollapse = document.getElementById("previewCollapse");
 const builderCard = document.querySelector(".builder-card");
 const expandedLabel = document.getElementById("expandedLabel");
 const expandedMeta = document.getElementById("expandedMeta");
+const expandedTop = document.querySelector(".expanded-top");
+const infoToggle = document.getElementById("infoToggle");
+const fitPicker = document.querySelector(".fit-select");
+const fitSelect = document.getElementById("fitSelect");
 const expandedDownload = document.getElementById("expandedDownload");
 const downloadLatest = document.getElementById("downloadLatest");
 const previewFoot = document.querySelector(".preview-foot");
@@ -598,6 +602,43 @@ function prefetchNow(theme, variant, language) {
   }
 }
 
+/* -------- The bar's dropdowns --------
+   On the narrowest screens the expanded bar folds some of itself away: the
+   title pill's details (under 400px) and the choice of fit (under 350px)
+   each open from a small dropdown. One is open at a time. */
+
+function fillDetails() {
+  document.getElementById("detailsMeta").textContent = expandedMeta.textContent;
+
+  const links = document.getElementById("detailsLinks");
+
+  links.hidden = linkCount === 0;
+  links.textContent = linkCount ? builderCard.querySelector(".links-hint-text").textContent : "";
+}
+
+// which: "info", "fit" or null to close both.
+function setBarMenu(which) {
+  if (which === "info") {
+    fillDetails();
+  }
+
+  expandedTop.classList.toggle("is-open", which === "info");
+  infoToggle.setAttribute("aria-expanded", String(which === "info"));
+  fitPicker.classList.toggle("is-open", which === "fit");
+  fitSelect.setAttribute("aria-expanded", String(which === "fit"));
+}
+
+function barMenuOpen() {
+  return expandedTop.classList.contains("is-open") || fitPicker.classList.contains("is-open");
+}
+
+// Keeps open details in step when the copy's date or links change.
+function refreshDetails() {
+  if (expandedTop.classList.contains("is-open")) {
+    fillDetails();
+  }
+}
+
 /* -------- Expanding the preview --------
    The card grows from where it sits to just inside the window (its own
    rectangle is animated, so the glass and the PDF grow with it) while the
@@ -936,6 +977,7 @@ async function collapsePreview() {
 
   expandState = "closing";
   hideTip();
+  setBarMenu(null);
   setSkullsPaused("covered", false);
 
   const quick = reducedMotion();
@@ -1156,6 +1198,7 @@ function refreshPreview() {
 
   previewMeta.textContent = date ? t("published", { date }) : "";
   expandedMeta.textContent = previewMeta.textContent;
+  refreshDetails();
   previewExpand.hidden = false;
 
 }
@@ -1536,6 +1579,7 @@ function showGenerated(generated) {
   previewDoc.hidden = false;
   previewMeta.textContent = t("justGenerated");
   expandedMeta.textContent = previewMeta.textContent;
+  refreshDetails();
   previewExpand.hidden = false;
   peekHint.hidden = false;
 
@@ -1959,6 +2003,14 @@ export function initBuilder() {
       return;
     }
 
+    if (barMenuOpen()) {
+      const opener = expandedTop.classList.contains("is-open") ? infoToggle : fitSelect;
+
+      setBarMenu(null);
+      opener.focus();
+      return;
+    }
+
     if (expandState !== "closed") {
       collapsePreview();
       return;
@@ -2046,6 +2098,26 @@ export function initBuilder() {
     if (action === "fit-page") pdfView.setFit("page");
     if (action === "zoom-in") pdfView.zoomBy(1.2);
     if (action === "zoom-out") pdfView.zoomBy(1 / 1.2);
+
+    if (action && fitPicker.contains(event.target)) {
+      setBarMenu(null);
+      fitSelect.focus();
+    }
+  });
+
+  fitSelect.addEventListener("click", () => {
+    setBarMenu(fitPicker.classList.contains("is-open") ? null : "fit");
+  });
+
+  infoToggle.addEventListener("click", () => {
+    setBarMenu(expandedTop.classList.contains("is-open") ? null : "info");
+  });
+
+  // A click anywhere else closes an open dropdown.
+  document.addEventListener("click", (event) => {
+    if (barMenuOpen() && !event.target.closest?.(".expanded-top, .fit-select")) {
+      setBarMenu(null);
+    }
   });
 
   // PDF.js scale 1 is one CSS pixel per point; 100% is the page's printed
@@ -2063,8 +2135,13 @@ export function initBuilder() {
     pdfZoom.textContent = `${Math.round((detail.scale / (96 / 72)) * 100)}%`;
 
     for (const button of builderCard.querySelectorAll("[data-pdf^=fit]")) {
-      button.setAttribute("aria-pressed", String(button.dataset.pdf === `fit-${pdfView.fit}`));
+      const current = String(button.dataset.pdf === `fit-${pdfView.fit}`);
+
+      button.setAttribute(button.role === "menuitemradio" ? "aria-checked" : "aria-pressed", current);
     }
+
+    fitSelect.dataset.fit = pdfView.fit;
+    refreshDetails();
   });
 
 
