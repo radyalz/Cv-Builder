@@ -56,8 +56,9 @@
   --skull-opacity: 0.58;
   /* text size chosen in the accessibility menu; every font-size scales by it */
   --fs: 1;
-  /* Persian letters sit smaller than Latin at the same size, so small text
-     (under 14px) is enlarged on the Persian page only. */
+  /* An extra factor for small text on the Persian page. The Persian fonts
+     are now matched to the English ones in fonts.css, so it is 1 in both
+     languages; kept as a single place to nudge it if ever needed. */
   --fa-small: 1;
   color-scheme: dark;
   --radius: 4px;
@@ -148,12 +149,12 @@ html {
    its heaviest cut, headings and labels bold, the intro line light. Latin
    text on the page keeps its own weights. */
 :root[lang="fa"] {
-  --fa-small: 1.15;
+  --fa-small: 1;
 }
 
 :root[lang="fa"] h1 {
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.02;
 }
 
 :root[lang="fa"] .eyebrow,

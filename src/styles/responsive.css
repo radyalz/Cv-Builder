@@ -207,16 +207,17 @@
     position: absolute;
     z-index: 1;
     top: 0;
-    inset-inline-start: 10px;
+    left: 50%;
     margin: 0;
-    padding: 0 5px;
+    padding: 0 6px;
     border-radius: 4px;
     color: var(--muted);
     background: var(--menu-bg);
-    font-size: calc(9.5px * var(--fs) * var(--fa-small));
+    font-size: calc(9px * var(--fs) * var(--fa-small));
     line-height: 14px;
     pointer-events: none;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
   }
 
   .menu-trigger {
@@ -224,8 +225,16 @@
     height: 38px;
   }
 
+  /* Colour dot and name centred under the centred label; the arrow stays
+     at the end. */
+  .menu-trigger {
+    position: relative;
+    justify-content: center;
+  }
+
   .trigger-caret {
-    margin-inline-start: auto;
+    position: absolute;
+    inset-inline-end: 12px;
   }
 
   .segmented {

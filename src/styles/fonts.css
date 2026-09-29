@@ -45,13 +45,25 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Persian weights: light for running text, up to each family's heaviest
-   for titles (Yekan Bakh's "Fat", Doran's ExtraBold). */
+/* Persian faces: light for running text, up to each family's heaviest for
+   titles (Yekan Bakh's "Fat", Doran's ExtraBold).
+   Each family draws its letters at a different size (the body of the
+   letters, as in ه م ن س, is 0.40 em tall in Yekan Bakh, 0.42 in
+   Vazirmatn, 0.43 in XB Niloofar and 0.48 in Doran) and reserves
+   different room above and below them, so size-adjust brings every one to
+   the same body height (0.48 em, which sits right beside Inter) and the
+   metric overrides give them all the same line box. Switching the Persian
+   font, or between Persian and English, then keeps text the same size
+   and spacing. */
 @font-face {
   font-family: "CV Yekan Bakh";
   src: url("../fonts/YekanBakh-Light.woff2") format("woff2");
   font-weight: 300;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -60,6 +72,10 @@
   src: url("../fonts/YekanBakh-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -68,6 +84,10 @@
   src: url("../fonts/YekanBakh-Medium.woff2") format("woff2");
   font-weight: 500 600;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -76,6 +96,10 @@
   src: url("../fonts/YekanBakh-Bold.woff2") format("woff2");
   font-weight: 650 750;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -84,6 +108,10 @@
   src: url("../fonts/YekanBakh-Heavy.woff2") format("woff2");
   font-weight: 800;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -92,6 +120,10 @@
   src: url("../fonts/YekanBakh-Fat.woff2") format("woff2");
   font-weight: 900;
   font-display: swap;
+  size-adjust: 120%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -100,6 +132,10 @@
   src: url("../fonts/Doran-Light.woff2") format("woff2");
   font-weight: 300;
   font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -108,6 +144,10 @@
   src: url("../fonts/Doran-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -116,6 +156,10 @@
   src: url("../fonts/Doran-Medium.woff2") format("woff2");
   font-weight: 500 600;
   font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -124,6 +168,10 @@
   src: url("../fonts/Doran-Bold.woff2") format("woff2");
   font-weight: 650 750;
   font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -132,6 +180,10 @@
   src: url("../fonts/Doran-ExtraBold.woff2") format("woff2");
   font-weight: 800 900;
   font-display: swap;
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -140,16 +192,22 @@
   src: url("../fonts/Vazirmatn-variable.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
+  size-adjust: 113%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
-/* Niloofar is a naskh face that runs small, hence the size adjustment. */
 @font-face {
   font-family: "CV Niloofar";
   src: url("../fonts/XBNiloofar-Regular.woff2") format("woff2");
   font-weight: 100 550;
   font-display: swap;
-  size-adjust: 118%;
+  size-adjust: 112%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
 
@@ -158,6 +216,9 @@
   src: url("../fonts/XBNiloofar-Bold.woff2") format("woff2");
   font-weight: 600 900;
   font-display: swap;
-  size-adjust: 118%;
+  size-adjust: 112%;
+  ascent-override: 92%;
+  descent-override: 38%;
+  line-gap-override: 0%;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
 }
