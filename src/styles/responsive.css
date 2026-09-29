@@ -34,6 +34,18 @@
   }
 }
 
+/* Tablets: Generate, Download and All published copies share one row. */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .actions-break {
+    display: none;
+  }
+
+  .actions .secondary-link {
+    min-height: 44px;
+    margin-top: 0;
+  }
+}
+
 /* Tablets and phones: stacked, in a card of fixed height so the preview
    row has a definite size to fill. */
 @media (max-width: 1023px) {
@@ -218,10 +230,13 @@
     min-height: 38px;
   }
 
-  .card-main > .secondary-link {
-    align-self: stretch;
+  .actions-break {
+    display: none;
+  }
+
+  .actions .secondary-link {
     min-height: 34px;
-    margin-top: 8px;
+    margin-top: 0;
   }
 
   .a11y-trigger {

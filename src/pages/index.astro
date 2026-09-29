@@ -2,7 +2,6 @@
 import Base from "../layouts/Base.astro";
 import Segmented from "../components/Segmented.astro";
 import PreviewPane from "../components/PreviewPane.astro";
-import BuildStatus from "../components/BuildStatus.astro";
 import ColourMenu from "../components/ColourMenu.astro";
 import { STRINGS } from "../lib/data.js";
 
@@ -91,17 +90,19 @@ const en = STRINGS.en;
         </button>
 
         <a id="downloadLatest" class="download-button" data-i18n="download" data-tip="download" aria-disabled="true" download>{en.download}</a>
+
+        <!-- Desktop puts the link on its own line; tablets keep all three in
+             one row. -->
+        <span class="actions-break" aria-hidden="true"></span>
+        <a
+          class="secondary-link"
+          data-tip="allCopies"
+          href="https://github.com/radyalz/Cv-Builder/releases/latest"
+          target="_blank"
+          rel="noopener noreferrer"
+        ><span data-i18n="allCopies">{en.allCopies}</span><span class="link-arrow" aria-hidden="true">↗</span></a>
       </div>
 
-      <a
-        class="secondary-link"
-        data-tip="allCopies"
-        href="https://github.com/radyalz/Cv-Builder/releases/latest"
-        target="_blank"
-        rel="noopener noreferrer"
-      ><span data-i18n="allCopies">{en.allCopies}</span><span class="link-arrow" aria-hidden="true">↗</span></a>
-
-      <BuildStatus />
     </div>
 
     <PreviewPane />

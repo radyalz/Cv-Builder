@@ -4,6 +4,7 @@
 // the window (see "Expanding the preview" in
 // src/scripts/builder.js).
 import PreviewSkeleton from "./PreviewSkeleton.astro";
+import BuildStatus from "./BuildStatus.astro";
 import { STRINGS } from "../lib/data.js";
 
 const en = STRINGS.en;
@@ -36,6 +37,11 @@ const en = STRINGS.en;
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
         <span data-i18n="retry">{en.retry}</span>
       </button>
+    </div>
+
+    <!-- A build's progress, shown on the preview itself. -->
+    <div class="build-status">
+      <BuildStatus />
     </div>
 
     <!-- Phones: the preview is a peek that opens when tapped. -->

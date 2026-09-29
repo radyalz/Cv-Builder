@@ -959,12 +959,14 @@ async function collapsePreview() {
 // Shows the page-shaped skeleton until the PDF has actually loaded. PDFs
 // that a browser refuses to render in a frame never fire "load", so the
 // skeleton gives way after a few seconds regardless.
-function setPreviewLoading(loading) {
+// `patient` (during a build) keeps the skeleton up without the ten-second
+// "taking too long" fallback.
+function setPreviewLoading(loading, { patient = false } = {}) {
   window.clearTimeout(previewLoadTimer);
   previewSkeleton.hidden = !loading;
   previewDoc.classList.toggle("is-loading", loading);
 
-  if (loading) {
+  if (loading && !patient) {
     previewError.hidden = true;
 
     // Taking too long: say so and offer a retry. If the copy still arrives
@@ -1249,10 +1251,70 @@ function stopElapsedTimer() {
   }
 }
 
+/* -------- Build status on the preview --------
+   One of three panels (building, ready, failed) shows at a time in a glass
+   strip on the preview. The one arriving grows up from the bottom edge as
+   it fades in; the one leaving shrinks and fades away before it is
+   hidden. */
+
+let successTimer = null;
+
+function revealStatus(panel) {
+  window.clearTimeout(successTimer);
+
+  for (const other of [buildPanel, successPanel, errorPanel]) {
+    if (other === panel || other.hidden) {
+      continue;
+    }
+
+    const token = String(Math.random());
+
+    other.dataset.leaving = token;
+    other
+      .animate(
+        [
+          { opacity: 1, transform: "none" },
+          { opacity: 0, transform: "translateY(10px) scaleY(0.85)" },
+        ],
+        { duration: reducedMotion() ? 0 : 220, easing: "ease-in" }
+      )
+      .finished.then(() => {
+        if (other.dataset.leaving === token) {
+          other.hidden = true;
+          delete other.dataset.leaving;
+        }
+      });
+  }
+
+  if (panel) {
+    delete panel.dataset.leaving;
+
+    for (const running of panel.getAnimations()) {
+      running.cancel();
+    }
+
+    if (panel.hidden) {
+      panel.hidden = false;
+      panel.animate(
+        [
+          { opacity: 0, transform: "translateY(16px) scaleY(0.4)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: reducedMotion() ? 0 : 380, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
+      );
+    }
+  }
+}
+
 function showBuilding() {
-  errorPanel.hidden = true;
-  successPanel.hidden = true;
-  buildPanel.hidden = false;
+  revealStatus(buildPanel);
+
+  // Nothing published to show for this choice (a custom colour, or one not
+  // built yet): the preview waits in its loading state while it builds.
+  if (previewDoc.hidden) {
+    previewState.hidden = true;
+    setPreviewLoading(true, { patient: true });
+  }
 
   button.disabled = true;
   button.querySelector(".button-label").textContent = t("building");
@@ -1269,10 +1331,10 @@ function showBuilding() {
 
 function showSuccess() {
   stopElapsedTimer();
+  revealStatus(successPanel);
 
-  buildPanel.hidden = true;
-  errorPanel.hidden = true;
-  successPanel.hidden = false;
+  // "Ready" makes its point, then gets out of the way.
+  successTimer = window.setTimeout(() => revealStatus(null), 5000);
 
   button.disabled = false;
   button.querySelector(".button-label").textContent = t("generateAgain");
@@ -1281,10 +1343,11 @@ function showSuccess() {
 
 function showError(message) {
   stopElapsedTimer();
+  revealStatus(errorPanel);
 
-  buildPanel.hidden = true;
-  successPanel.hidden = true;
-  errorPanel.hidden = false;
+  // Back to whatever the preview had before the build.
+  setPreviewLoading(false);
+  refreshPreview();
 
   errorText.textContent = message;
 

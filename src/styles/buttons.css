@@ -25,10 +25,7 @@
   cursor: not-allowed;
 }
 
-.card-main > .secondary-link {
-  align-self: flex-start;
-  margin-top: 14px;
-}
+
 
 /* -------- Ripple --------
    A material-style ink ripple from the point of the press. */

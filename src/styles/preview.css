@@ -831,3 +831,27 @@
   stroke-linejoin: round;
   stroke-width: 1.9;
 }
+
+/* -------- Build progress on the preview -------- */
+
+.build-status {
+  position: absolute;
+  z-index: 4;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  pointer-events: none;
+}
+
+.build-status > section {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+/* The status stands in for the tap hint while it shows. */
+.preview-frame:has(.build-status > section:not([hidden])) .peek-hint {
+  display: none;
+}
