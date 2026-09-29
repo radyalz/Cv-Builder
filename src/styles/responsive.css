@@ -378,53 +378,277 @@
   display: none;
 }
 
+/* The name at the start of the row, the info button at its end. */
 .title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .intro-pop {
-  width: min(340px, calc(100vw - 24px));
+  width: min(360px, calc(100vw - 24px));
+  padding: 16px;
   transform-origin: 0 0;
   will-change: transform, opacity;
 }
 
 .intro-title {
   margin: 0 0 8px;
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(14px * var(--fs) * var(--fa-small));
   font-weight: 750;
 }
 
+/* Easy to read: a comfortable size and line height, lines balanced so
+   none ends on a lone word. */
 .intro-text {
   margin: 0;
+  color: var(--text);
+  font-size: calc(14.5px * var(--fs));
+  line-height: 1.65;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.tour-start {
+  display: inline-flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--accent-text);
+  background: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-weight: 700;
+  gap: 8px;
+}
+
+.tour-start:focus-visible,
+.tour-topic:focus-visible,
+.tour-button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.tour-start svg,
+.tour-topic svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.tour-topics-label {
+  margin: 14px 0 8px;
   color: var(--muted);
-  font-size: calc(13.5px * var(--fs));
+  font-size: calc(12.5px * var(--fs));
+}
+
+.tour-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tour-topic {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(13px * var(--fs) * var(--fa-small));
+  gap: 6px;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+
+.tour-topic svg {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+}
+
+.tour-topic:hover {
+  border-color: var(--accent);
+}
+
+/* -------- The tour --------
+   A ring of light on one part at a time, the rest of the page dimmed by
+   the ring's own shadow, and a card beside it (src/scripts/tour.js). */
+
+.tour {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+}
+
+.tour-spot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 0 200vmax rgba(0, 0, 0, 0.66);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 420ms ease,
+    opacity 260ms ease;
+}
+
+/* A soft pulse around the ring, so the eye finds it. */
+.tour-spot::after {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--accent);
+  border-radius: inherit;
+  animation: tour-pulse 1.8s ease-out infinite;
+  content: "";
+}
+
+@keyframes tour-pulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+
+.tour-card {
+  position: fixed;
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--menu-bg);
+  box-shadow: var(--menu-shadow);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    left 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tour.is-open .tour-spot,
+.tour.is-open .tour-card {
+  opacity: 1;
+}
+
+.tour.is-open .tour-card {
+  transform: none;
+}
+
+.tour-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.tour-step {
+  color: var(--accent);
+  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tour-close {
+  width: 30px;
+  height: 30px;
+  margin: -6px;
+}
+
+.tour-title {
+  margin: 0 0 6px;
+  font-size: calc(15px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.tour-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(14px * var(--fs));
   line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.tour-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  gap: 8px;
+}
+
+.tour-button {
+  min-width: 76px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-weight: 650;
+}
+
+.tour-button.is-primary {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-spot,
+  .tour-card {
+    transition: opacity 120ms linear;
+  }
+
+  .tour-spot::after {
+    animation: none;
+  }
 }
 
 @media (max-width: 1023px) {
+  /* Easy to spot: the accent's colour on a tint of it. */
   .intro-info {
     position: relative;
     display: inline-grid;
     overflow: hidden;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     flex: none;
     padding: 0;
-    border: 1px solid var(--line);
+    border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
     border-radius: 50%;
-    color: var(--muted);
-    background: transparent;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
     cursor: pointer;
     place-items: center;
-    transition: color 140ms ease, border-color 140ms ease;
+    transition: color 140ms ease, background-color 140ms ease;
   }
 
   .intro-info:hover,
   .intro-info[aria-expanded="true"] {
-    border-color: var(--accent);
-    color: var(--accent);
+    color: var(--accent-text);
+    background: var(--accent);
   }
 
   .intro-info:focus-visible {
@@ -433,12 +657,12 @@
   }
 
   .intro-info svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     fill: none;
     stroke: currentColor;
     stroke-linecap: round;
-    stroke-width: 1.8;
+    stroke-width: 2;
   }
 }
 

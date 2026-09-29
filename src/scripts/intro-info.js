@@ -1,10 +1,12 @@
 import { closeA11y } from "../lib/prefs.js";
 import { positionPopover } from "../lib/popover.js";
+import { initTour, startTour } from "./tour.js";
 
 /* -------- The intro on tablets and phones --------
    Under 1024px the line under the name is replaced by an info button
    beside it, which opens the explanation for the controls on that screen
-   in a small popover, with the same rise and fade as the other menus. */
+   in a small popover, with the same rise and fade as the other menus. Its
+   buttons start the tour (tour.js): all of it, or straight at one part. */
 
 const OPEN_MS = 240;
 const CLOSE_RATE = 1.3;
@@ -71,6 +73,9 @@ export function initIntroInfo() {
 
     run.updatePlaybackRate(1);
     run.play();
+
+    // Keyboard and screen reader users land in the popover.
+    document.getElementById("tourStart")?.focus({ preventScroll: true });
   }
 
   function hide({ refocus = false, instant = false } = {}) {
@@ -115,6 +120,17 @@ export function initIntroInfo() {
   document.addEventListener("click", (event) => {
     if (open && !pop.contains(event.target)) {
       hide();
+    }
+  });
+
+  initTour();
+
+  pop.addEventListener("click", (event) => {
+    const start = event.target.closest("#tourStart, .tour-topic");
+
+    if (start) {
+      hide({ instant: true });
+      startTour(Number(start.dataset.step || 0));
     }
   });
 
