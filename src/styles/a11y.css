@@ -250,10 +250,13 @@ body.preview-open .a11y-trigger {
   margin: 0;
 }
 
-/* Reset's phone form: an icon at the top of the card (shown under 600px,
-   where the one in the controls row is hidden). */
+/* Reset's tablet and phone form: an icon in the CV options menu's header
+   (see responsive.css). */
 .reset-top {
-  display: none;
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  margin: -6px;
 }
 
 /* -------- Admiring the background -------- */

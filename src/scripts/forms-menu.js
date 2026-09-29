@@ -1,15 +1,15 @@
 import { closeA11y } from "../lib/prefs.js";
 import { positionPopover } from "../lib/popover.js";
 
-/* -------- Phones: the controls in a menu --------
-   Under 600px the accent, edition and CV language controls leave the card
+/* -------- Tablets and phones: the controls in a menu --------
+   Under 1024px the accent, edition and CV language controls leave the card
    for a menu opened from one "CV options" field, which shows what is
    chosen. The controls themselves are moved, not copied, so everything
    builder.js wires to them keeps working; they go back into the card when
    the screen is wide enough again. The menu rises out of the field and
    sinks back into it, the same motion as the accessibility menu. */
 
-const PHONE = "(max-width: 599px)";
+const COMPACT = "(max-width: 1023px)";
 const OPEN_MS = 260;
 const CLOSE_RATE = 1.3;
 
@@ -116,19 +116,19 @@ export function initFormsMenu() {
   // and closes itself, so this one stays open around it.
   const colourOpen = () => !document.getElementById("colourMenu")?.hidden;
 
-  function arrange(phone) {
-    if (phone && controls.parentElement !== body) {
+  function arrange(compact) {
+    if (compact && controls.parentElement !== body) {
       body.append(controls);
-    } else if (!phone && controls.parentElement === body) {
+    } else if (!compact && controls.parentElement === body) {
       closeMenu({ instant: true });
       home.after(controls);
     }
   }
 
-  const phone = window.matchMedia(PHONE);
+  const compact = window.matchMedia(COMPACT);
 
-  arrange(phone.matches);
-  phone.addEventListener("change", (event) => arrange(event.matches));
+  arrange(compact.matches);
+  compact.addEventListener("change", (event) => arrange(event.matches));
 
   // The field shows the same "Purple · Digital · English" as the preview.
   const mirror = () => {

@@ -17,11 +17,6 @@ const en = STRINGS.en;
     <div class="card-main">
       <div class="card-top">
         <div class="eyebrow" data-i18n="eyebrow">{en.eyebrow}</div>
-
-        <!-- Phones: Reset as an icon up here, freeing the controls row. -->
-        <button id="resetCvTop" class="reset-icon reset-top" type="button" data-tip="resetCv" aria-label={en.reset} data-i18n-aria="reset" disabled>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
-        </button>
       </div>
 
       <h1 id="page-title" data-i18n="name">{en.name}</h1>
@@ -33,7 +28,7 @@ const en = STRINGS.en;
         <span class="lead-phone" data-i18n="leadPhone">{en.leadPhone}</span>
       </p>
 
-      <!-- Phones: one field for all three choices, opening the controls
+      <!-- Tablets and phones: one field for all three choices, opening the controls
            below in a menu (src/scripts/forms-menu.js). -->
       <div class="control forms-entry">
         <span class="control-label" data-i18n="cvOptions">{en.cvOptions}</span>
@@ -115,10 +110,16 @@ const en = STRINGS.en;
     <PreviewPane />
   </section>
 
-  <!-- Phones: the controls are moved in here while it is a phone. It comes
-       before the colour menu, which opens on top of it. -->
+  <!-- Tablets and phones: the controls are moved in here. It comes before
+       the colour menu, which opens on top of it. Reset is the icon in its
+       header, like the accessibility menu's. -->
   <div id="formsMenu" class="menu forms-menu" slot="overlays" role="dialog" aria-labelledby="formsTitle" hidden>
-    <p id="formsTitle" class="forms-title" data-i18n="cvOptions">{en.cvOptions}</p>
+    <div class="forms-head">
+      <p id="formsTitle" class="forms-title" data-i18n="cvOptions">{en.cvOptions}</p>
+      <button id="resetCvTop" class="reset-icon reset-top" type="button" data-tip="resetCv" aria-label={en.reset} data-i18n-aria="reset" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>
+      </button>
+    </div>
     <div class="forms-body"></div>
   </div>
 

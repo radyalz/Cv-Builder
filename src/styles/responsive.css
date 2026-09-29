@@ -174,14 +174,6 @@
     line-height: 1.5;
   }
 
-  /* Reset moves to an icon at the top of the card. */
-  .reset-top {
-    display: inline-grid;
-    width: 30px;
-    height: 30px;
-    margin: -6px -6px -6px 0;
-  }
-
   .control-reset {
     display: none;
   }
@@ -199,13 +191,11 @@
 
   /* Each label sits on the top edge of its control, like an outlined
      field, instead of taking a line of its own above it. */
-  .controls .control,
-  .forms-entry {
+  .controls .control {
     position: relative;
   }
 
-  .controls .control-label,
-  .forms-entry .control-label {
+  .controls .control-label {
     position: absolute;
     z-index: 1;
     top: 0;
@@ -233,16 +223,14 @@
 
   /* Accent keeps its label at the start of the edge, over the colour
      name; edition and language have theirs centred. */
-  .controls .control:first-child .control-label,
-  .forms-entry .control-label {
+  .controls .control:first-child .control-label {
     left: auto;
     inset-inline-start: 10px;
     transform: translateY(-50%);
   }
 
   /* Persian letters need a size more to read at this scale. */
-  :root[lang="fa"] .controls .control-label,
-  :root[lang="fa"] .forms-entry .control-label {
+  :root[lang="fa"] .controls .control-label {
     font-size: calc(11px * var(--fs));
   }
 
@@ -410,17 +398,30 @@
   }
 }
 
-/* -------- Phones: the controls in a menu --------
+/* -------- Tablets and phones: the controls in a menu --------
    One field shows the colour, edition and language chosen; it opens the
    controls in a menu, the way the accessibility button opens its own
-   (src/scripts/forms-menu.js moves them in and out). */
+   (src/scripts/forms-menu.js moves them in and out). Reset is the icon in
+   the menu's header there. */
 
 .forms-entry {
   display: none;
 }
 
+.forms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.forms-menu .control-reset {
+  display: none;
+}
+
 .forms-title {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: calc(13px * var(--fs) * var(--fa-small));
   font-weight: 750;
 }
@@ -460,18 +461,69 @@
   color: var(--accent);
 }
 
-@media (max-width: 599px) {
+@media (max-width: 1023px) {
   .card-main > .controls {
     display: none;
   }
 
+  /* The field's label sits on its top edge, like an outlined field. */
   .forms-entry {
+    position: relative;
     display: flex;
     margin-top: 18px;
   }
 
+  .forms-entry .control-label {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    inset-inline-start: 10px;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: var(--menu-bg);
+    font-size: calc(9px * var(--fs) * var(--fa-small));
+    line-height: 14px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    white-space: nowrap;
+  }
+
+  :root[lang="fa"] .forms-entry .control-label {
+    font-size: calc(11px * var(--fs));
+  }
+
   .forms-trigger {
+    width: 100%;
     height: 42px;
+  }
+
+  /* The intro runs the full width of the card. */
+  .lead {
+    max-width: none;
+  }
+}
+
+/* Tablets: in the menu the three controls sit side by side, each filling
+   its share of the row. */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .forms-menu .controls {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .forms-menu .menu-trigger,
+  .forms-menu .segmented {
+    width: 100%;
+  }
+
+  .forms-menu .segment {
+    flex: 1;
+  }
+
+  .forms-menu .trigger-caret {
+    margin-inline-start: auto;
   }
 }
 
