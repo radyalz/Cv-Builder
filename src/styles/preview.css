@@ -992,12 +992,20 @@
     pointer-events: none;
   }
 
+  /* Centred by its margins, not left: 50%, which would leave it only half
+     the preview's width to fit in (and wrap it onto two lines on narrow
+     phones); it stays on one line. */
   .builder-card:not(.is-expanded) .peek-hint:not([hidden]) {
     position: absolute;
     z-index: 2;
+    right: 0;
     bottom: 12px;
-    left: 50%;
-    display: inline-flex;
+    left: 0;
+    display: flex;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    margin-inline: auto;
+    white-space: nowrap;
     align-items: center;
     padding: 6px 12px;
     border-radius: 999px;
@@ -1008,7 +1016,6 @@
     font-weight: 700;
     gap: 6px;
     pointer-events: none;
-    transform: translateX(-50%);
   }
 
   .peek-hint svg {
