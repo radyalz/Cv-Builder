@@ -188,3 +188,194 @@
 .actions .secondary-link {
   margin-top: -4px;
 }
+
+/* -------- Phone split button --------
+   Under 600px the three actions above are replaced by one row: the main
+   part performs the chosen action (see action-menu.js), the caret opens
+   the menu to choose it. The three originals stay in the page, hidden,
+   because the split button relays to them and mirrors their state. */
+
+.action-split {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  /* Hidden but kept: still clickable from script, out of sight, out of the
+     tab order and the layout. */
+  .card-main .actions {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .action-split {
+    display: flex;
+    height: 44px;
+    margin-top: 14px;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+}
+
+.split-main,
+.split-toggle {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  border: 0;
+  color: var(--accent-text);
+  background: var(--accent);
+  cursor: pointer;
+  transition: filter 140ms ease, opacity 160ms ease;
+}
+
+.split-main {
+  min-width: 0;
+  flex: 1;
+  padding: 0 14px;
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+  gap: 9px;
+}
+
+.split-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.split-icon,
+.split-toggle svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+/* The caret half: a hairline divider and a slightly deeper shade. */
+.split-toggle {
+  width: 46px;
+  flex: none;
+  border-inline-start: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent);
+  border-start-end-radius: var(--radius);
+  border-end-end-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 86%, #000000);
+}
+
+.split-toggle svg {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.split-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.split-main:hover:not(:disabled),
+.split-toggle:hover {
+  filter: brightness(1.08);
+}
+
+.split-main:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.split-main:focus-visible,
+.split-toggle:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* The menu of actions. */
+.action-menu {
+  display: grid;
+  padding: 6px;
+  gap: 2px;
+}
+
+.action-item {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.action-item:hover,
+.action-item:focus-visible {
+  background: var(--panel-2);
+  outline: none;
+}
+
+.action-item[aria-checked="true"] {
+  background: var(--accent-soft);
+}
+
+.action-item[aria-disabled="true"] {
+  color: var(--muted);
+}
+
+.action-item-icon,
+.action-item-check {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.action-item-icon {
+  color: var(--accent);
+}
+
+.action-item-text {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 1px;
+}
+
+.action-item-title {
+  font-size: calc(13.5px * var(--fs) * var(--fa-small));
+  font-weight: 700;
+}
+
+.action-item-note {
+  color: var(--muted);
+  font-size: calc(11.5px * var(--fs) * var(--fa-small));
+}
+
+.action-item-check {
+  color: var(--accent);
+  opacity: 0;
+}
+
+.action-item[aria-checked="true"] .action-item-check {
+  opacity: 1;
+}

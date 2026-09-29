@@ -1,0 +1,93 @@
+---
+// The actions under the controls: Generate, Download and All published
+// copies. Tablets and desktops show the three buttons as they are; phones
+// show one split button instead, whose main part performs the chosen
+// action and whose caret opens a menu to choose it (src/scripts/
+// action-menu.js). The split button only relays clicks to the three
+// originals, which stay in the page (hidden on phones) because builder.js
+// keeps their state: disabled while a build runs, the Generate label.
+import { STRINGS } from "../lib/data.js";
+
+const en = STRINGS.en;
+
+const ICONS = {
+  generate: '<path d="M13 2.5 4.5 13.5h6.5l-1 8 8.5-11h-6.5z"/>',
+  download: '<path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/>',
+  allCopies:
+    '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+};
+
+const ACTIONS = [
+  { key: "generate", title: "generate", note: "actionGenerateNote" },
+  { key: "download", title: "download", note: "actionDownloadNote" },
+  { key: "allCopies", title: "allCopies", note: "actionAllNote" },
+];
+---
+
+<div class="actions">
+  <button id="generateButton" class="primary-button" type="button" data-tip="generate">
+    <span class="button-label" data-i18n="generate">{en.generate}</span>
+    <span class="button-arrow" aria-hidden="true">→</span>
+  </button>
+
+  <button id="downloadLatest" class="download-button" type="button" data-i18n="download" data-tip="download" disabled>{en.download}</button>
+
+  <!-- Desktop puts the link on its own line; tablets keep all three in
+       one row. -->
+  <span class="actions-break" aria-hidden="true"></span>
+  <a
+    class="secondary-link"
+    data-tip="allCopies"
+    href="https://github.com/radyalz/Cv-Builder/releases/latest"
+    target="_blank"
+    rel="noopener noreferrer"
+  ><span data-i18n="allCopies">{en.allCopies}</span><span class="link-arrow" aria-hidden="true">↗</span></a>
+</div>
+
+<!-- Phones: one split button in place of the three above. -->
+<div class="action-split" data-action="generate">
+  <button class="split-main" type="button" data-tip="generate">
+    <svg class="split-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={ICONS.generate} />
+    <span class="split-label">{en.generate}</span>
+  </button>
+
+  <button
+    class="split-toggle"
+    type="button"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="actionMenu"
+    aria-label={en.moreActions}
+    data-i18n-aria="moreActions"
+    data-tip="moreActions"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
+  </button>
+</div>
+
+<!-- Moved to <body> by action-menu.js: the card clips fixed children. -->
+<div id="actionMenu" class="menu action-menu" role="menu" aria-label={en.moreActions} data-i18n-aria="moreActions" hidden>
+  {ACTIONS.map((action) => (
+    <button
+      class="action-item"
+      type="button"
+      role="menuitemradio"
+      aria-checked={action.key === "generate" ? "true" : "false"}
+      data-action={action.key}
+      tabindex="-1"
+    >
+      <svg class="action-item-icon" viewBox="0 0 24 24" aria-hidden="true" set:html={ICONS[action.key]} />
+      <span class="action-item-text">
+        <span class="action-item-title" data-i18n={action.title}>{en[action.title]}</span>
+        <span class="action-item-note" data-i18n={action.note}>{en[action.note]}</span>
+      </span>
+      <svg class="action-item-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+    </button>
+  ))}
+</div>
+
+<script>
+  import { initActionMenu } from "../scripts/action-menu.js";
+
+  initActionMenu();
+</script>
