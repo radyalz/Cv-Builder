@@ -225,16 +225,21 @@
     height: 38px;
   }
 
-  /* Colour dot and name centred under the centred label; the arrow stays
-     at the end. */
-  .menu-trigger {
-    position: relative;
-    justify-content: center;
+  .trigger-caret {
+    margin-inline-start: auto;
   }
 
-  .trigger-caret {
-    position: absolute;
-    inset-inline-end: 12px;
+  /* Accent keeps its label at the start of the edge, over the colour
+     name; edition and language have theirs centred. */
+  .controls .control:first-child .control-label {
+    left: auto;
+    inset-inline-start: 10px;
+    transform: translateY(-50%);
+  }
+
+  /* Persian letters need a size more to read at this scale. */
+  :root[lang="fa"] .controls .control-label {
+    font-size: calc(11px * var(--fs));
   }
 
   .segmented {

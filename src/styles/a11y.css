@@ -1,11 +1,12 @@
 /* -------- Accessibility menu -------- */
 
+/* The eyebrow sits close above the name, as one heading block. */
 .card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 .card-top .eyebrow {

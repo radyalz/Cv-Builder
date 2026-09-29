@@ -172,6 +172,12 @@ h1 {
   text-transform: uppercase;
 }
 
+/* Persian form labels a size up: at the English size they are hard to
+   read. */
+:root[lang="fa"] .control-label {
+  font-size: calc(12.5px * var(--fs));
+}
+
 .menu-trigger {
   display: inline-flex;
   align-items: center;
