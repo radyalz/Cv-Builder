@@ -507,7 +507,15 @@
     width 420ms cubic-bezier(0.22, 1, 0.36, 1),
     height 420ms cubic-bezier(0.22, 1, 0.36, 1),
     border-radius 420ms ease,
+    box-shadow 420ms ease,
     opacity 260ms ease;
+}
+
+/* Over the background alone the dim is light, so it can be seen. */
+.tour.is-light .tour-spot {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 0 200vmax rgba(0, 0, 0, 0.18);
 }
 
 /* A soft pulse around the ring, so the eye finds it: the same 12px glow
