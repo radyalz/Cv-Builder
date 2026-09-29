@@ -365,13 +365,10 @@
     var(--glass-flat);
 }
 
-/* -------- The intro on tablets and phones --------
-   The line under the name gives way to an info button beside it, which
-   opens the explanation for the controls on that screen. */
-
-.intro-info {
-  display: none;
-}
+/* -------- How it works --------
+   An info button at the end of the name's row opens the explanation for
+   the controls on screen and the tour of them. Under 1024px it also
+   stands in for the line under the name. */
 
 .lead-tablet,
 .lead-phone {
@@ -513,19 +510,19 @@
     opacity 260ms ease;
 }
 
-/* A soft pulse around the ring, so the eye finds it. */
+/* A soft pulse around the ring, so the eye finds it: the same 12px glow
+   whatever the size of the part. */
 .tour-spot::after {
   position: absolute;
   inset: -2px;
-  border: 2px solid var(--accent);
   border-radius: inherit;
   animation: tour-pulse 1.8s ease-out infinite;
   content: "";
 }
 
 @keyframes tour-pulse {
-  0% { opacity: 0.8; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.25); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); }
+  100% { box-shadow: 0 0 0 12px transparent; }
 }
 
 .tour-card {
@@ -626,43 +623,47 @@
   }
 }
 
+/* Easy to spot: the accent's colour on a tint of it. */
+.intro-info {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  cursor: pointer;
+  place-items: center;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.intro-info:hover,
+.intro-info[aria-expanded="true"] {
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+.intro-info:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.intro-info svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
 @media (max-width: 1023px) {
-  /* Easy to spot: the accent's colour on a tint of it. */
-  .intro-info {
-    position: relative;
-    display: inline-grid;
-    overflow: hidden;
-    width: 40px;
-    height: 40px;
-    flex: none;
-    padding: 0;
-    border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
-    border-radius: 50%;
-    color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    cursor: pointer;
-    place-items: center;
-    transition: color 140ms ease, background-color 140ms ease;
-  }
-
-  .intro-info:hover,
-  .intro-info[aria-expanded="true"] {
-    color: var(--accent-text);
-    background: var(--accent);
-  }
-
-  .intro-info:focus-visible {
-    outline: 2px solid var(--text);
-    outline-offset: 2px;
-  }
-
-  .intro-info svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-width: 2;
+  .lead-desktop-info {
+    display: none;
   }
 }
 

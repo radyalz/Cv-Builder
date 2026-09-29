@@ -1,12 +1,13 @@
 import { closeA11y } from "../lib/prefs.js";
 import { positionPopover } from "../lib/popover.js";
-import { initTour, startTour } from "./tour.js";
+import { initTour, renderTopics, startTour } from "./tour.js";
 
-/* -------- The intro on tablets and phones --------
-   Under 1024px the line under the name is replaced by an info button
-   beside it, which opens the explanation for the controls on that screen
-   in a small popover, with the same rise and fade as the other menus. Its
-   buttons start the tour (tour.js): all of it, or straight at one part. */
+/* -------- How it works --------
+   The info button at the end of the name's row opens the explanation for
+   the controls on screen in a small popover, with the same rise and fade
+   as the other menus (under 1024px it also stands in for the intro line).
+   Its buttons start the tour (tour.js): all of it, or straight at one
+   part of the layout on screen. */
 
 const OPEN_MS = 240;
 const CLOSE_RATE = 1.3;
@@ -60,6 +61,7 @@ export function initIntroInfo() {
     document.dispatchEvent(new CustomEvent("menus:close", { detail: "intro" }));
     closeA11y();
     open = true;
+    renderTopics(pop.querySelector(".tour-topics"));
     pop.hidden = false;
     pop.style.pointerEvents = "";
     button.setAttribute("aria-expanded", "true");
@@ -146,12 +148,8 @@ export function initIntroInfo() {
     }
   });
 
-  // Desktop shows the intro under the name again, so the popover goes.
-  window.matchMedia("(max-width: 1023px)").addEventListener("change", (event) => {
-    if (!event.matches) {
-      hide({ instant: true });
-    }
-  });
+  // Its parts change with the layout, so it closes when that changes.
+  window.matchMedia("(max-width: 1023px)").addEventListener("change", () => hide({ instant: true }));
 
   window.addEventListener("resize", () => {
     if (open) {
