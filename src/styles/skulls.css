@@ -2,6 +2,24 @@
    One canvas drawn by src/lib/skulls.js: the skulls, their strike, laugh
    and drift. This only places it and fades it in once painted. */
 
+/* The halftone under the skulls: fades in once drawn. */
+.tone-field {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+.tone-field.is-painted {
+  opacity: 1;
+}
+
+.tone-field canvas {
+  display: block;
+}
+
 .skull-field {
   position: fixed;
   z-index: 0;

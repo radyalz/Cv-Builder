@@ -111,12 +111,25 @@
   color-scheme: light;
 }
 
-/* A faint wash of the accent, so light mode is not flat grey. */
+/* The page's colour: a gradient of the accent, strongest in the bottom
+   corner where reading starts, with a weaker glow in the opposite top
+   corner (the halftone dots in halftone.js follow the same shape). Near
+   black in dark mode; in light mode, a light tint of the accent. */
+body {
+  --tone-start: 0% 100%;
+  --tone-end: 100% 0%;
+}
+
+:root[dir="rtl"] body {
+  --tone-start: 100% 100%;
+  --tone-end: 0% 0%;
+}
+
 :root[data-theme="light"] body {
   background:
-    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36rem),
-    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 32rem),
-    var(--bg);
+    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 10%, #ffffff), transparent 60%),
+    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 6%, #ffffff), transparent 70%),
+    linear-gradient(color-mix(in srgb, var(--accent) 3%, #ffffff), color-mix(in srgb, var(--accent) 3%, #ffffff));
 }
 
 /* Scrollbars in the chosen accent (inherited by every scrolling box). */
@@ -201,9 +214,9 @@ body {
   font-family: var(--font-ui);
   color: var(--text);
   background:
-    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
-    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.045), transparent 30rem),
-    var(--bg);
+    radial-gradient(120% 85% at var(--tone-start), color-mix(in srgb, var(--accent) 13%, #050506), transparent 60%),
+    radial-gradient(70% 55% at var(--tone-end), color-mix(in srgb, var(--accent) 7%, #050506), transparent 70%),
+    #050506;
 }
 
 button,
