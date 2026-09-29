@@ -34,15 +34,42 @@
   }
 }
 
-/* Tablets: Generate, Download and All published copies share one row. */
+/* Tablets: Generate, Download and All published copies in one row of
+   three equal cells, never wrapping; long labels are cut with an
+   ellipsis rather than pushing a button onto a new line. */
 @media (min-width: 600px) and (max-width: 1023px) {
+  .actions {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .actions-break {
     display: none;
   }
 
-  .actions .secondary-link {
-    min-height: 44px;
-    margin-top: 0;
+  .actions > * {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    min-height: 46px;
+    margin: 0;
+    padding: 0 12px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .actions .button-label,
+  .actions .secondary-link > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .actions .download-button {
+    display: block;
+    line-height: 44px;
+    text-align: center;
+    text-overflow: ellipsis;
   }
 }
 

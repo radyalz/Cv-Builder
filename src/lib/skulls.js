@@ -499,7 +499,25 @@ export function setSkullsPaused(reason, paused) {
 // Paints the field in the given accent: the layer images are rebuilt (they
 // are still images, so they cannot follow a CSS variable) and the next
 // frame uses them. The old ones stay on screen until the new ones are ready.
-export async function paintSkulls(accent, theme) {
+// Recently used accents keep their drawn layers, so switching back is
+// instant; clicking through colours quickly only draws the last one.
+const artCache = new Map();
+const ART_CACHE_SIZE = 8;
+const PAINT_SETTLE_MS = 90;
+let paintTimer = null;
+
+function useImages(key, images) {
+  state.images = images;
+
+  if (state.still || state.pauses.size) {
+    draw(performance.now());
+  }
+
+  state.field.classList.add("is-painted");
+  run();
+}
+
+export function paintSkulls(accent, theme) {
   initSkulls();
   state.last = [accent, theme];
 
@@ -510,23 +528,38 @@ export async function paintSkulls(accent, theme) {
   }
 
   state.painted = key;
+  window.clearTimeout(paintTimer);
 
-  const parts = skullParts(accent, theme === "light");
-  const names = Object.keys(parts);
-  const images = await Promise.all(names.map((name) => rasterise(parts[name], state.ratio)));
+  const kept = artCache.get(key);
 
-  if (state.painted !== key) {
-    return; // a newer colour arrived while these were loading
+  if (kept) {
+    // Most recent last, so the oldest is the one dropped.
+    artCache.delete(key);
+    artCache.set(key, kept);
+    useImages(key, kept);
+    return;
   }
 
-  state.images = Object.fromEntries(names.map((name, index) => [name, images[index]]));
+  // The first paint happens at once; later ones wait for the clicking to
+  // settle, and are dropped if another colour comes in meanwhile.
+  const delay = state.images ? PAINT_SETTLE_MS : 0;
 
-  if (state.still || state.pauses.size) {
-    draw(performance.now());
-  }
+  paintTimer = window.setTimeout(async () => {
+    const parts = skullParts(accent, theme === "light");
+    const names = Object.keys(parts);
+    const drawn = await Promise.all(names.map((name) => rasterise(parts[name], state.ratio)));
+    const images = Object.fromEntries(names.map((name, index) => [name, drawn[index]]));
 
-  state.field.classList.add("is-painted");
-  run();
+    artCache.set(key, images);
+
+    if (artCache.size > ART_CACHE_SIZE) {
+      artCache.delete(artCache.keys().next().value);
+    }
+
+    if (state.painted === key) {
+      useImages(key, images);
+    }
+  }, delay);
 }
 
 export function initSkulls() {

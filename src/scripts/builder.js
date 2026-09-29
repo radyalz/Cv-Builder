@@ -122,6 +122,7 @@ const expandedLabel = document.getElementById("expandedLabel");
 const expandedMeta = document.getElementById("expandedMeta");
 const expandedDownload = document.getElementById("expandedDownload");
 const downloadLatest = document.getElementById("downloadLatest");
+const previewFoot = document.querySelector(".preview-foot");
 const peekHint = document.querySelector(".peek-hint");
 
 
@@ -837,7 +838,7 @@ async function expandPreview() {
     return;
   }
 
-  if (expandState !== "closed" || !variants.has(selectedKey())) {
+  if (expandState !== "closed" || !(variants.has(selectedKey()) || generatedCopy())) {
     return;
   }
 
@@ -1033,42 +1034,42 @@ function refreshPreview() {
   // On phones the peek says it opens, when there is something to open.
   peekHint.hidden = !published;
 
-  // The download button hands over the published copy directly, no build.
-  if (published) {
-    for (const link of [downloadLatest, expandedDownload]) {
-      // The service sends each copy's download link; the release address
-      // only covers a service from before copies moved to storage.
-      link.href =
-        published.downloadUrl ||
-        `https://github.com/radyalz/Cv-Builder/releases/download/latest/${published.name}`;
-      link.setAttribute("aria-disabled", "false");
-    }
-  } else {
-    for (const link of [downloadLatest, expandedDownload]) {
-      link.removeAttribute("href");
-      link.setAttribute("aria-disabled", "true");
-    }
+  // The download buttons save the copy on show: the published one, or one
+  // generated during this visit.
+  for (const save of [downloadLatest, expandedDownload]) {
+    save.disabled = !published && !generatedCopy();
   }
 
   if (!published) {
-    setPreviewLoading(false);
+    const generated = generatedCopy();
+
+    // Generated during this visit (a custom colour, say): show that.
+    if (generated) {
+      showGenerated(generated);
+      return;
+    }
+
     previewDoc.hidden = true;
     pdfView.clear();
     linkCount = 0;
     showLinksHint();
     delete previewDoc.dataset.url;
 
+    // Nothing to show: the skeleton stands in, with a note on it, and the
+    // footer fades out (keeping its room, so nothing jumps).
+    setPreviewLoading(true, { patient: true });
     previewState.hidden = false;
-    previewState.textContent =
-      t("notGenerated");
-
+    previewState.textContent = t("notGenerated");
     previewMeta.textContent = "";
-    previewExpand.hidden = true;
+    previewFoot.classList.add("is-quiet");
+    peekHint.hidden = true;
 
     collapsePreview();
 
     return;
   }
+
+  previewFoot.classList.remove("is-quiet");
 
   const url = previewUrlFor(published);
 
@@ -1398,7 +1399,23 @@ async function startBuild() {
 async function deliver(downloadUrl, message) {
   setBuildStatus(t("completeTitle"), message);
 
-  await new Promise((resolve) => window.setTimeout(resolve, 650));
+  // Fetched and saved from memory rather than by navigating to it: a
+  // navigation can cancel the page's own requests (previews among them),
+  // and holding the copy lets the preview show it straight away.
+  const name = decodeURIComponent(new URL(downloadUrl).pathname.split("/").pop() || "RadmanAlizadeh-Cv.pdf");
+  let blob = null;
+
+  try {
+    blob = await saveCopy(downloadUrl, name);
+  } catch (error) {
+    console.error("Download failed:", error);
+  }
+
+  // A custom colour is never published, so the copy just made is kept, in
+  // this page's memory only, to preview and save again during this visit.
+  if (blob && selection.mode === "custom") {
+    generatedCopies.set(generatedKey(), { blob, name });
+  }
 
   showSuccess();
 
@@ -1407,7 +1424,91 @@ async function deliver(downloadUrl, message) {
   await loadVariants();
   refreshPreview();
 
-  window.location.assign(downloadUrl);
+  if (!blob) {
+    window.location.assign(downloadUrl);
+  }
+}
+
+/* -------- Saving copies --------
+   Downloads are fetched (or taken from memory) and saved through a
+   temporary link, so starting one never navigates the page. */
+
+const generatedCopies = new Map();
+
+function generatedKey() {
+  const accent = selection.mode === "custom" ? selection.color : selection.theme;
+
+  return `${accent}|${selection.variant}|${selection.language}`;
+}
+
+function generatedCopy() {
+  return selection.mode === "custom" ? generatedCopies.get(generatedKey()) : null;
+}
+
+async function saveCopy(source, name) {
+  let blob = source;
+
+  if (typeof source === "string") {
+    const response = await fetch(source);
+
+    if (!response.ok) {
+      throw new Error("Download failed.");
+    }
+
+    blob = await response.blob();
+  }
+
+  const href = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = href;
+  link.download = name;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(href), 20000);
+
+  return blob;
+}
+
+// The download buttons: the copy on show, from memory when it is there.
+async function saveShownCopy() {
+  const published = variants.get(selectedKey());
+  const generated = generatedCopy();
+
+  try {
+    if (published) {
+      const kept = previewCache.get(previewUrlFor(published));
+
+      await saveCopy((kept && (await kept.catch(() => null))) || published.downloadUrl, published.name);
+    } else if (generated) {
+      await saveCopy(generated.blob, generated.name);
+    }
+  } catch (error) {
+    console.error("Download failed:", error);
+  }
+}
+
+function showGenerated(generated) {
+  const key = `generated:${generatedKey()}`;
+
+  previewState.hidden = true;
+  previewFoot.classList.remove("is-quiet");
+  previewDoc.hidden = false;
+  previewMeta.textContent = t("justGenerated");
+  expandedMeta.textContent = previewMeta.textContent;
+  previewExpand.hidden = false;
+  peekHint.hidden = false;
+
+  if (previewDoc.dataset.url !== key) {
+    previewDoc.dataset.url = key;
+    setPreviewLoading(true);
+    pdfView.open(generated.blob).then((shown) => {
+      if (shown && previewDoc.dataset.url === key) {
+        setPreviewLoading(false);
+      }
+    });
+  }
 }
 
 async function getBuildStatus(buildId, theme, variant, language) {
@@ -1754,6 +1855,10 @@ export function initBuilder() {
   }
 
   previewRetry.addEventListener("click", retryPreview);
+
+  for (const save of [downloadLatest, expandedDownload]) {
+    save.addEventListener("click", saveShownCopy);
+  }
 
   // Hover intent: the copy a pointer is resting on is probably next.
   themeGrid.addEventListener("pointerover", (event) => {

@@ -20,7 +20,7 @@
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-.download-button[aria-disabled="true"] {
+.download-button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
