@@ -1,0 +1,48 @@
+# Installing the app — `src/scripts/install/` and `public/`
+
+## Pieces
+
+- `public/manifest.webmanifest`, `public/icons/` (skull on the accent
+  gradient; a maskable one for Android; the favicon is the portrait).
+  `related_applications` names the manifest itself so a normal Chrome tab can
+  ask whether the app is installed (`getInstalledRelatedApps`).
+- `public/sw.js`, filled in after each build by the `service-worker`
+  integration in `astro.config.mjs` (precache list + a version made from the
+  file names). The page's shell is cached on install; the page itself is
+  network-first (a deploy shows at once, the cache is only for offline);
+  other own files are cache-first once fetched (their names change per
+  version); other origins (the CV API, GitHub) are left alone, and so is the
+  page's own `cv-previews-v1` cache. Old `cv-app-*` caches are removed on
+  activate.
+- `Base.astro` has an inline script that catches Chrome's
+  `beforeinstallprompt` before the page's modules run: on a fast, cached load
+  it can arrive before them, and the offer would never hear about it.
+
+## Behaviour (`src/scripts/install/`)
+
+- The worker registers only in the built site (`initInstall(PROD)`), so
+  development never serves a stale cached copy.
+- **Offer** (`offer.ts`): rises in the bottom-left corner 7s after load (after
+  the touch hint has gone), for 30 seconds; hovering or focusing it holds the
+  time. Closing it (× or Escape) keeps it away for 14 days on this device
+  (`cv-builder-install-offer`); letting it run out only for the visit
+  (`sessionStorage`). `?install` in the address shows it regardless. Any menu
+  opening hides it. Hidden while the preview is expanded or the background
+  admired (CSS).
+- **Installing**: Chrome, Edge and Samsung Internet announce installability;
+  Install then opens their own prompt (usable once; if declined the browser
+  announces again later). iPhones and iPads have no such prompt, so the offer
+  and the menu button show the Add to Home Screen steps instead. Elsewhere,
+  and once installed, neither shows.
+- **Uninstalling** (`uninstall.ts`): a page cannot remove an installed app,
+  so "Uninstall the app" shows how on this device (desktop, Android or
+  iPhone), and can delete the offline copy — the worker and every `cv-`
+  cache — which then stays off (`cv-builder-offline-off`) until the app is
+  installed again. Shown inside the installed app, or in a tab when Chrome
+  says the app is installed.
+- Opening steps or status in the accessibility menu makes it taller, so it is
+  re-placed above its button and the new part scrolled into view (`refit`).
+
+Checked against the previous single file: identical behaviour for the offer
+(timing, position, hold, dismissal, `?install`), iPhone steps, the uninstall
+steps on desktop/Android/iPhone, and removing the offline copy.

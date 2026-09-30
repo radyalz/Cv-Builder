@@ -31,3 +31,25 @@ is wide enough again (closing the menu instantly first).
 Checked against the previous single file on phone and tablet: identical state
 at every step (open, choose, colour menu, two Escapes, outside click, widening
 to desktop).
+
+## Split button — `src/scripts/action-menu/`
+
+On tablets and phones the three actions (Generate, Download, All published
+copies) take one row: a split button whose main part performs the chosen
+action and whose arrow opens a menu to choose it.
+
+- **Nothing is done twice.** The three original controls stay in the page
+  (hidden on these sizes) because the builder keeps their state. The main
+  part relays its click to the original, and a `MutationObserver` mirrors the
+  original's label and disabled state as the builder changes them (during a
+  build, with no copy to download, "Generate Again"…).
+- The choice is remembered for the visit (`sessionStorage`,
+  `cv-builder-action`).
+- The menu is moved to `<body>`: the card clips its overflow and its glass
+  makes it the containing block for fixed children. It opens below the split
+  button (above when there is no room), as wide as it, with focus on the
+  current action. Up/Down/Home/End move between items; Tab, Escape or an
+  outside click closes it.
+
+Checked against the previous single file on a phone: identical state at every
+step (open, keys, choose, relay, disabled mirroring, Escape, Tab, outside).

@@ -13,3 +13,6 @@ reading it lives here instead, one file per area.
 - [data.md](data.md) — settings, themes, fonts and both languages' text
 - [menus.md](menus.md) — the shared open/close motion and the CV options menu
 - [tour.md](tour.md) — How it works and the guided tour
+- [morph.md](morph.md) — the layout morph between desktop, tablet and phone
+- [wallpaper.md](wallpaper.md) — saving the background as an image or video
+- [install.md](install.md) — the installable app: service worker, install offer, uninstall
