@@ -14,7 +14,8 @@
    installed; Install then opens their own prompt. iPhones and iPads have
    no such prompt, so there both show the Add to Home Screen steps instead.
    Anywhere else, and once the site runs as an installed app, neither
-   shows. */
+   shows. Opening the page with ?install shows the offer regardless of
+   when it was last closed or shown (for trying it out). */
 
 import { t } from "../lib/prefs.js";
 
@@ -56,6 +57,11 @@ function writeStore(store, key, value) {
   } catch {
     // Not remembered; nothing else depends on it.
   }
+}
+
+// ?install in the address: show the offer whatever it remembers.
+function forced() {
+  return new URLSearchParams(window.location.search).has("install");
 }
 
 function recentlyDismissed() {
@@ -128,7 +134,7 @@ export function initInstall(production) {
   }
 
   function showOffer() {
-    if (offered || isInstalled() || recentlyDismissed() || readStore(sessionStorage, SHOWN_KEY)) {
+    if (offered || isInstalled() || (!forced() && (recentlyDismissed() || readStore(sessionStorage, SHOWN_KEY)))) {
       return;
     }
 
@@ -241,14 +247,22 @@ export function initInstall(production) {
     scheduleOffer();
   }
 
-  window.addEventListener("beforeinstallprompt", (event) => {
-    // Kept for our buttons, instead of the browser's own banner.
+  // Kept for our buttons, instead of the browser's own banner. It may
+  // already have come before this script ran (caught in Base.astro).
+  const installable = (event) => {
     event.preventDefault();
     prompt = event;
+    window.__installPrompt = null;
     button.hidden = false;
     offerButton.hidden = false;
     scheduleOffer();
-  });
+  };
+
+  if (window.__installPrompt) {
+    installable(window.__installPrompt);
+  }
+
+  window.addEventListener("beforeinstallprompt", installable);
 
   window.addEventListener("appinstalled", () => {
     prompt = null;

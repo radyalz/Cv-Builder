@@ -66,6 +66,16 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
       } catch {}
     </script>
 
+    <!-- Chrome can announce that the site is installable before the page's
+         own scripts have run; the announcement is kept here until
+         install.js picks it up, so the install offer never misses it. -->
+    <script is:inline>
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        window.__installPrompt = event;
+      });
+    </script>
+
     <ClientRouter />
   </head>
 
