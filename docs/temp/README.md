@@ -11,3 +11,5 @@ reading it lives here instead, one file per area.
 - [tooltip.md](tooltip.md) — tooltips: mouse spring, keyboard, touch long-press
 - [skulls.md](skulls.md) — the skull artwork, renderer, drift and performance steps
 - [data.md](data.md) — settings, themes, fonts and both languages' text
+- [menus.md](menus.md) — the shared open/close motion and the CV options menu
+- [tour.md](tour.md) — How it works and the guided tour
