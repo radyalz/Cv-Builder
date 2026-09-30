@@ -1,0 +1,25 @@
+---
+import LinksHint from "./LinksHint.astro";
+import PreviewFrame from "./PreviewFrame.astro";
+import ExpandedBar from "./ExpandedBar.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<aside class="card-preview" aria-labelledby="previewHeading">
+  <div class="preview-head">
+    <span id="previewHeading" class="control-label" data-i18n="preview">{en.preview}</span>
+    <span id="previewLabel" class="preview-title">Purple</span>
+  </div>
+
+  <PreviewFrame />
+
+  <div class="preview-foot">
+    <span id="previewMeta" class="preview-meta is-loading"></span>
+    <LinksHint />
+    <button id="previewExpand" class="ghost-button" type="button" hidden data-i18n="expand" data-tip="expand">{en.expand}</button>
+  </div>
+
+  <ExpandedBar />
+</aside>

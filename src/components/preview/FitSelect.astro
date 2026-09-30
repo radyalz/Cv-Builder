@@ -1,0 +1,22 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="fit-select">
+  <button id="fitSelect" class="icon-button fit-select-button" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="fitMenu" aria-label={en.pdfTools} data-i18n-aria="pdfTools" data-fit="width">
+    <Icon name="fitWidth" data-icon="width" />
+    <Icon name="fitPage" data-icon="page" />
+    <Icon name="caretUp" class="fit-caret" />
+  </button>
+  <div id="fitMenu" class="fit-menu bar-picker" role="menu" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+    <button class="icon-button" type="button" role="menuitemradio" aria-checked="true" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
+      <Icon name="fitWidth" />
+    </button>
+    <button class="icon-button" type="button" role="menuitemradio" aria-checked="false" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
+      <Icon name="fitPage" />
+    </button>
+  </div>
+</div>

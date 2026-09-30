@@ -1,11 +1,3 @@
-/* -------- Tooltips --------
-   Modelled on the ERD schema project's floating tooltip: a solid bubble in
-   the page's own appearance (dark on dark, white on light) that follows
-   the cursor on a spring and squashes a little in the direction it is
-   moving (src/lib/tooltip.js drives the motion). Keyboard focus pins it to
-   the control with an arrow instead. Each one carries a title, a line on
-   what the control does and, where useful, the live details it acts on. */
-
 .tooltip {
   --tip-bg: #16181d;
   --tip-text: #f5f7fa;
@@ -18,7 +10,6 @@
   pointer-events: none;
   visibility: hidden;
   will-change: transform;
-  /* stays visible for the fade out */
   transition: visibility 0s linear 150ms;
 }
 
@@ -161,8 +152,6 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Holding a control on touch shows its tooltip; keep the browser's own
-   long-press callout and text selection out of the way. */
 @media (hover: none) {
   [data-tip] {
     -webkit-touch-callout: none;
@@ -170,7 +159,6 @@
   }
 }
 
-/* The one-off "press and hold" note on a first touch visit. */
 .touch-hint {
   position: fixed;
   z-index: 96;

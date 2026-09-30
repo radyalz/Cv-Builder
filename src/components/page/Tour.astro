@@ -1,0 +1,26 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div id="tour" class="tour" hidden>
+  <div class="tour-spot" aria-hidden="true"></div>
+  <div class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourText">
+    <div class="tour-head">
+      <span id="tourStep" class="tour-step"></span>
+      <button id="tourClose" class="reset-icon tour-close" type="button" aria-label={en.tourClose} data-i18n-aria="tourClose">
+        <Icon name="close" />
+      </button>
+    </div>
+    <div aria-live="polite">
+      <p id="tourTitle" class="tour-title"></p>
+      <p id="tourText" class="tour-text"></p>
+    </div>
+    <div class="tour-nav">
+      <button id="tourBack" class="tour-button" type="button" data-i18n="tourBack">{en.tourBack}</button>
+      <button id="tourNext" class="tour-button is-primary" type="button" data-i18n="tourNext">{en.tourNext}</button>
+    </div>
+  </div>
+</div>

@@ -1,12 +1,10 @@
 ---
-// The shell every page shares: fonts and styles, the skull background (kept
-// alive across page changes), the accessibility button and menu, and the
-// tooltip. Pages supply their content through the slot.
 import { ClientRouter } from "astro:transitions";
+import PrefsBoot from "./head/PrefsBoot.astro";
+import AppHead from "./head/AppHead.astro";
 import SkullField from "../components/SkullField.astro";
-import A11yMenu from "../components/A11yMenu.astro";
+import A11yMenu from "../components/a11y/A11yMenu.astro";
 import Tooltip from "../components/Tooltip.astro";
-import { UI_KEY } from "../lib/data";
 import "../styles/main.css";
 
 interface Props {
@@ -15,9 +13,6 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-
-// The site's base path with a trailing slash, for files in public/.
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 
 <!doctype html>
@@ -28,60 +23,12 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
     <meta name="color-scheme" content="dark light" />
     <title>{title}</title>
     <meta name="description" content={description} />
-
-    <!-- Installable as an app (manifest, icons and the service worker in
-         public/; registered below). -->
-    <link rel="manifest" href={`${base}manifest.webmanifest`} />
-    <link rel="icon" type="image/png" sizes="32x32" href={`${base}icons/favicon-32.png`} />
-    <link rel="icon" type="image/png" sizes="64x64" href={`${base}icons/favicon-64.png`} />
-    <link rel="apple-touch-icon" href={`${base}icons/apple-touch-icon.png`} />
-    <meta name="theme-color" content="#050506" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f3f2f7" media="(prefers-color-scheme: light)" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Radman's CV" />
-
-    <!-- Applies the stored preferences before the first paint, so a light
-         or Persian page never flashes dark or English first. -->
-    <script is:inline define:vars={{ key: UI_KEY }}>
-      try {
-        const stored = JSON.parse(localStorage.getItem(key) || "null") || {};
-        const root = document.documentElement;
-        const light = matchMedia("(prefers-color-scheme: light)").matches;
-
-        root.dataset.theme = stored.theme || (light ? "light" : "dark");
-
-        if (stored.lang === "fa") {
-          root.lang = "fa";
-          root.dir = "rtl";
-        }
-
-        if (stored.fs) root.style.setProperty("--fs", String(stored.fs));
-
-        // No backdrop blur at all: use the flat frosted card from the start.
-        const blur = (value) => CSS.supports("backdrop-filter", value) || CSS.supports("-webkit-backdrop-filter", value);
-        if (!blur("blur(1px)")) root.dataset.glass = "flat";
-        if (stored.enFont) root.dataset.enFont = stored.enFont;
-        if (stored.faFont) root.dataset.faFont = stored.faFont;
-      } catch {}
-    </script>
-
-    <!-- Chrome can announce that the site is installable before the page's
-         own scripts have run; the announcement is kept here until
-         install.js picks it up, so the install offer never misses it. -->
-    <script is:inline>
-      window.addEventListener("beforeinstallprompt", (event) => {
-        event.preventDefault();
-        window.__installPrompt = event;
-      });
-    </script>
-
+    <AppHead />
+    <PrefsBoot />
     <ClientRouter />
   </head>
 
   <body>
-    <!-- Under the skulls: halftone dots in the accent (src/lib/halftone.js). -->
     <div class="tone-field" aria-hidden="true" transition:persist="tone"><canvas></canvas></div>
     <SkullField transition:persist />
 

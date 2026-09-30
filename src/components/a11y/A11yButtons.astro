@@ -1,0 +1,39 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<button
+  id="a11yTrigger"
+  class="a11y-trigger"
+  type="button"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-label={en.a11y}
+  data-i18n-aria="a11y"
+  data-tip="a11y"
+><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><circle cx="12" cy="7.1" r="1.35" fill="currentColor" stroke="none"/><path d="M7.4 9.9c1.5.45 3 .66 4.6.66s3.1-.21 4.6-.66"/><path d="M12 10.6v3.3"/><path d="M9.7 17.6l2.3-3.7 2.3 3.7"/></svg></button>
+
+<button
+  id="admireToggle"
+  class="admire-toggle"
+  type="button"
+  aria-pressed="false"
+  aria-label={en.admire}
+  data-i18n-aria="admire"
+  data-tip="admire"
+><Icon name="eye" /></button>
+
+<button
+  id="wallpaperToggle"
+  class="admire-toggle wallpaper-toggle"
+  type="button"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls="wallpaperMenu"
+  aria-label={en.saveBackground}
+  data-i18n-aria="saveBackground"
+  data-tip="saveBackground"
+><Icon name="download" /><span class="wallpaper-progress" aria-hidden="true"></span></button>

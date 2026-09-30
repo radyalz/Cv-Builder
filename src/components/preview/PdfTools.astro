@@ -1,0 +1,27 @@
+---
+import Icon from "../Icon.astro";
+import FitSelect from "./FitSelect.astro";
+import ZoomSelect from "./ZoomSelect.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="pdf-tools" role="toolbar" aria-label={en.pdfTools} data-i18n-aria="pdfTools">
+  <button class="icon-button" type="button" data-pdf="fit-width" data-tip="fitWidth" aria-label={en.fitWidth} data-i18n-aria="fitWidth">
+    <Icon name="fitWidth" />
+  </button>
+  <button class="icon-button" type="button" data-pdf="fit-page" data-tip="fitPage" aria-label={en.fitPage} data-i18n-aria="fitPage">
+    <Icon name="fitPage" />
+  </button>
+  <FitSelect />
+  <span class="pdf-tools-rule" aria-hidden="true"></span>
+  <ZoomSelect />
+  <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
+    <Icon name="zoomOut" />
+  </button>
+  <span id="pdfZoom" class="pdf-zoom" aria-live="polite">100%</span>
+  <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
+    <Icon name="zoomIn" />
+  </button>
+</div>

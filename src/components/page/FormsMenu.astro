@@ -1,0 +1,16 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div id="formsMenu" class="menu forms-menu" role="dialog" aria-labelledby="formsTitle" hidden>
+  <div class="forms-head">
+    <p id="formsTitle" class="forms-title" data-i18n="cvOptions">{en.cvOptions}</p>
+    <button id="resetCvTop" class="reset-icon reset-top" type="button" data-tip="resetCv" aria-label={en.reset} data-i18n-aria="reset" disabled>
+      <Icon name="reset" />
+    </button>
+  </div>
+  <div class="forms-body"></div>
+</div>

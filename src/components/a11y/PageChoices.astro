@@ -1,0 +1,46 @@
+---
+import Segmented from "../Segmented.astro";
+import { STRINGS, TEXT_SIZES, type StringKey } from "../../lib/data";
+
+const en = STRINGS.en;
+const THEMES = ["dark", "light"] as const;
+const SIZE_KEYS: StringKey[] = ["sizeSmall", "sizeDefault", "sizeLarge", "sizeLarger"];
+---
+
+<div class="a11y-group">
+  <span class="control-label" data-i18n="pageLanguage">{en.pageLanguage}</span>
+  <Segmented
+    group="ui-lang"
+    options={[
+      { label: "English", tip: "uiEn", data: { "ui-lang": "en" } },
+      { label: "فارسی", tip: "uiFa", lang: "fa", data: { "ui-lang": "fa" } },
+    ]}
+  />
+</div>
+
+<div class="a11y-group">
+  <span class="control-label" data-i18n="appearance">{en.appearance}</span>
+  <Segmented
+    group="theme"
+    options={THEMES.map((theme) => ({
+      label: en[theme],
+      i18n: theme,
+      tip: theme,
+      data: { theme },
+    }))}
+  />
+</div>
+
+<div class="a11y-group">
+  <span class="control-label" data-i18n="textSize">{en.textSize}</span>
+  <Segmented
+    group="fs"
+    options={TEXT_SIZES.map((fs, index) => ({
+      label: "A",
+      ariaLabel: en[SIZE_KEYS[index]],
+      ariaI18n: SIZE_KEYS[index],
+      tip: `${SIZE_KEYS[index]}`,
+      data: { fs },
+    }))}
+  />
+</div>

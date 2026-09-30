@@ -1,19 +1,3 @@
-/* -------- The service worker --------
-   Makes the site an installable app that opens at once, even offline.
-
-   - The page's shell (its HTML, styles and scripts) is cached when the
-     worker installs. The build fills in the list below and a version made
-     from it (see astro.config.mjs), so each deploy installs a fresh copy
-     and clears the old one.
-   - The page itself is fetched from the network first, so a new deploy
-     shows straight away; the cached copy is only used offline.
-   - Everything else of the site's own (the PDF viewer, fonts, icons) has
-     a unique name per version, so it is served from the cache once it has
-     been fetched the first time.
-   - Requests to other sites (the CV API, GitHub) are left alone: the page
-     keeps its own cache of previews (cv-previews-v1), which this worker
-     never touches. */
-
 const VERSION = "dev";
 const PRECACHE = [];
 const CACHE = `cv-app-${VERSION}`;
@@ -45,7 +29,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // The page: the network first, the cached shell when offline.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
@@ -63,7 +46,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else of ours: the cache first, filled on first use.
   event.respondWith(
     caches.match(request).then(
       (cached) =>

@@ -1,0 +1,25 @@
+---
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="actions">
+  <button id="generateButton" class="primary-button" type="button" data-tip="generate">
+    <span class="button-label" data-i18n="generate">{en.generate}</span>
+    <span class="button-arrow" aria-hidden="true">→</span>
+  </button>
+
+  <button id="downloadLatest" class="download-button" type="button" data-i18n="download" data-tip="download" disabled>{en.download}</button>
+
+  <span class="actions-break" aria-hidden="true"></span>
+  <a
+    class="secondary-link"
+    data-tip="allCopies"
+    aria-label={en.allCopies}
+    data-i18n-aria="allCopies"
+    href="https://github.com/radyalz/Cv-Builder/releases/latest"
+    target="_blank"
+    rel="noopener noreferrer"
+  ><span data-i18n="allCopies">{en.allCopies}</span><span class="link-arrow" aria-hidden="true">↗</span></a>
+</div>

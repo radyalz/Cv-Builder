@@ -1,8 +1,3 @@
-/* -------- Skull field --------
-   One canvas drawn by src/lib/skulls.js: the skulls, their strike, laugh
-   and drift. This only places it and fades it in once painted. */
-
-/* The halftone under the skulls: fades in once drawn. */
 .tone-field {
   position: fixed;
   z-index: 0;
@@ -34,8 +29,6 @@
   display: block;
 }
 
-/* Set once the artwork has been drawn, so the field fades in rather than
-   popping in after the page has already drawn. */
 .skull-field.is-painted {
   opacity: var(--skull-opacity);
 }

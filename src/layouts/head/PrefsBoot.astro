@@ -1,0 +1,25 @@
+---
+import { UI_KEY } from "../../lib/data";
+---
+
+<script is:inline define:vars={{ key: UI_KEY }}>
+  try {
+    const stored = JSON.parse(localStorage.getItem(key) || "null") || {};
+    const root = document.documentElement;
+    const light = matchMedia("(prefers-color-scheme: light)").matches;
+
+    root.dataset.theme = stored.theme || (light ? "light" : "dark");
+
+    if (stored.lang === "fa") {
+      root.lang = "fa";
+      root.dir = "rtl";
+    }
+
+    if (stored.fs) root.style.setProperty("--fs", String(stored.fs));
+
+    const blur = (value) => CSS.supports("backdrop-filter", value) || CSS.supports("-webkit-backdrop-filter", value);
+    if (!blur("blur(1px)")) root.dataset.glass = "flat";
+    if (stored.enFont) root.dataset.enFont = stored.enFont;
+    if (stored.faFont) root.dataset.faFont = stored.faFont;
+  } catch {}
+</script>

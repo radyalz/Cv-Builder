@@ -1,0 +1,22 @@
+---
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="control forms-entry">
+  <span class="control-label" data-i18n="cvOptions">{en.cvOptions}</span>
+  <button
+    id="formsTrigger"
+    class="menu-trigger forms-trigger"
+    type="button"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="formsMenu"
+    data-tip="cvOptions"
+  >
+    <span class="trigger-dot" aria-hidden="true"></span>
+    <span id="formsSummary" class="forms-summary">Purple · Digital · English</span>
+    <svg class="forms-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+  </button>
+</div>

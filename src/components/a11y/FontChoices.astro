@@ -1,0 +1,29 @@
+---
+import { EN_FONTS, FA_FONTS, STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+const FA_LABELS: Record<string, string> = { yekan: "یکان بخ", vazir: "وزیر", doran: "دوران", niloofar: "نیلوفر" };
+const EN_LABELS: Record<string, string> = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
+---
+
+<div class="a11y-group" data-font-lang="en">
+  <span class="control-label" data-i18n="font">{en.font}</span>
+  <div class="font-grid" role="radiogroup" data-a11y="en-font">
+    {Object.entries(EN_FONTS).map(([slug, font]) => (
+      <button class="font-option" type="button" role="radio" data-en-font={slug} data-tip="font" aria-checked="false">
+        {EN_LABELS[slug] ?? font.name}
+      </button>
+    ))}
+  </div>
+</div>
+
+<div class="a11y-group" data-font-lang="fa" hidden>
+  <span class="control-label" data-i18n="font">{en.font}</span>
+  <div class="font-grid" role="radiogroup" data-a11y="fa-font">
+    {Object.keys(FA_FONTS).map((slug) => (
+      <button class="font-option" type="button" role="radio" data-fa-font={slug} data-tip="font" lang="fa" aria-checked="false">
+        {FA_LABELS[slug]}
+      </button>
+    ))}
+  </div>
+</div>

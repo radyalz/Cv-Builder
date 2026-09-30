@@ -16,3 +16,7 @@ reading it lives here instead, one file per area.
 - [morph.md](morph.md) — the layout morph between desktop, tablet and phone
 - [wallpaper.md](wallpaper.md) — saving the background as an image or video
 - [install.md](install.md) — the installable app: service worker, install offer, uninstall
+- [builder.md](builder.md) — the builder: selection, preview, expanding, building, tooltips
+- [components.md](components.md) — the Astro components, layout and page, piece by piece
+- [styles.md](styles.md) — the notes that used to be comments in the stylesheets
+- [build-config.md](build-config.md) — astro.config.mjs and the service worker

@@ -1,5 +1,3 @@
-/* -------- Actions and status -------- */
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -41,8 +39,6 @@
   font-size: calc(19px * var(--fs));
 }
 
-/* A quiet, tonal button: it leaves the page, so it carries an outbound
-   arrow and stays a step below the two main actions. */
 .secondary-link {
   display: inline-flex;
   align-items: center;
@@ -79,9 +75,6 @@
   transform: scaleX(-1);
 }
 
-/* A build's progress sits on the preview itself: a glass strip along the
-   bottom of the preview frame (see .build-status in preview.css), which
-   grows in and shrinks away (builder.js animates it). */
 .build-panel,
 .success-panel,
 .error-panel {
@@ -178,11 +171,6 @@
   color: var(--muted);
 }
 
-/* Desktop puts "All published copies" on its own line under the two main
-   buttons; tablets keep all three in a row (responsive.css). */
-/* The break sits on a line of its own, which would put the row gap in
-   twice, so the rows have none: All published copies sets its own 10px
-   under the two main buttons. */
 .actions {
   row-gap: 0;
 }
@@ -196,19 +184,11 @@
   margin-top: 10px;
 }
 
-/* -------- Split button (tablets and phones) --------
-   Under 1024px the three actions above are replaced by one row: the main
-   part performs the chosen action (see action-menu.js), the caret opens
-   the menu to choose it. The three originals stay in the page, hidden,
-   because the split button relays to them and mirrors their state. */
-
 .action-split {
   display: none;
 }
 
 @media (max-width: 1023px) {
-  /* Hidden but kept: still clickable from script, out of sight, out of the
-     tab order and the layout. */
   .card-main .actions {
     position: absolute;
     width: 1px;
@@ -272,7 +252,6 @@
   stroke-width: 1.9;
 }
 
-/* The caret half: a hairline divider and a slightly deeper shade. */
 .split-toggle {
   width: 46px;
   flex: none;
@@ -307,7 +286,6 @@
   outline-offset: 2px;
 }
 
-/* The menu of actions. */
 .action-menu {
   display: grid;
   padding: 6px;

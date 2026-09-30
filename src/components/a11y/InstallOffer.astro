@@ -1,0 +1,23 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+const icon = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}icons/icon-192.png`;
+---
+
+<div id="installOffer" class="install-offer" role="dialog" aria-labelledby="installOfferTitle" aria-describedby="installOfferText" hidden>
+  <img class="install-offer-icon" src={icon} alt="" width="48" height="48" />
+  <div class="install-offer-body">
+    <p id="installOfferTitle" class="install-offer-title" data-i18n="installTitle">{en.installTitle}</p>
+    <p id="installOfferText" class="install-offer-text" data-i18n="installPitch">{en.installPitch}</p>
+    <button id="installOfferButton" class="install-offer-button" type="button">
+      <Icon name="install" />
+      <span data-i18n="installNow">{en.installNow}</span>
+    </button>
+  </div>
+  <button id="installOfferClose" class="reset-icon install-offer-close" type="button" aria-label={en.close} data-i18n-aria="close">
+    <Icon name="close" />
+  </button>
+  <span class="install-offer-time" aria-hidden="true"></span>
+</div>

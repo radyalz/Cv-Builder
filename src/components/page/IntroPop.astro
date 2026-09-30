@@ -1,0 +1,21 @@
+---
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div id="introPop" class="menu intro-pop" role="dialog" aria-labelledby="introTitle" hidden>
+  <p id="introTitle" class="intro-title" data-i18n="howItWorks">{en.howItWorks}</p>
+  <p class="intro-text">
+    <span class="lead-desktop-info" data-i18n="leadDesktopInfo">{en.leadDesktopInfo}</span>
+    <span class="lead-tablet" data-i18n="leadTablet">{en.leadTablet}</span>
+    <span class="lead-phone" data-i18n="leadPhone">{en.leadPhone}</span>
+  </p>
+
+  <button id="tourStart" class="tour-start" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/></svg>
+    <span data-i18n="tourStart">{en.tourStart}</span>
+  </button>
+  <p class="tour-topics-label" data-i18n="tourTopics">{en.tourTopics}</p>
+  <div class="tour-topics"></div>
+</div>

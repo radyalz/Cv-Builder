@@ -1,0 +1,23 @@
+---
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="title-row">
+  <h1 id="page-title" data-i18n="name">{en.name}</h1>
+
+  <button
+    id="introInfo"
+    class="intro-info"
+    type="button"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="introPop"
+    aria-label={en.howItWorks}
+    data-i18n-aria="howItWorks"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r="0.6" fill="currentColor"/></svg>
+    <span class="intro-info-label" data-i18n="howItWorks">{en.howItWorks}</span>
+  </button>
+</div>

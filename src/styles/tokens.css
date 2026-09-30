@@ -1,8 +1,3 @@
-/* Registered, so the browser can animate them: every font size is
-   calc(<size> * var(--fs)), and --fa-small enlarges small Persian text, so
-   easing these two eases all the text on the page at once when the text
-   size or page language changes. Browsers that cannot register custom
-   properties simply switch without the animation. */
 @property --fs {
   syntax: "<number>";
   inherits: true;
@@ -54,11 +49,7 @@
   --meta-shine: rgba(255, 255, 255, 0.14);
   --backdrop: rgba(6, 7, 10, 0.3);
   --skull-opacity: 0.58;
-  /* text size chosen in the accessibility menu; every font-size scales by it */
   --fs: 1;
-  /* An extra factor for small text on the Persian page. The Persian fonts
-     are now matched to the English ones in fonts.css, so it is 1 in both
-     languages; kept as a single place to nudge it if ever needed. */
   --fa-small: 1;
   color-scheme: dark;
   --radius: 4px;
@@ -76,8 +67,6 @@
 :root[data-fa-font="niloofar"] { --font-fa: "CV Niloofar"; }
 :root[data-fa-font="doran"] { --font-fa: "CV Doran"; }
 
-/* -------- Light appearance --------
-   Chosen in the accessibility menu, or taken from the system setting. */
 :root[data-theme="light"] {
   --bg: #f3f2f7;
   --panel: rgba(255, 255, 255, 0.94);
@@ -111,10 +100,6 @@
   color-scheme: light;
 }
 
-/* The page's colour: a gradient of the accent, strongest in the bottom
-   corner where reading starts, with a weaker glow in the opposite top
-   corner (the halftone dots in halftone.js follow the same shape). Near
-   black in dark mode; in light mode, a light tint of the accent. */
 body {
   --tone-start: 0% 100%;
   --tone-end: 100% 0%;
@@ -132,12 +117,10 @@ body {
     linear-gradient(color-mix(in srgb, var(--accent) 3%, #ffffff), color-mix(in srgb, var(--accent) 3%, #ffffff));
 }
 
-/* Scrollbars in the chosen accent (inherited by every scrolling box). */
 html {
   scrollbar-color: color-mix(in srgb, var(--accent) 75%, transparent) transparent;
 }
 
-/* Browsers without scrollbar-color (older Safari) style them this way. */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -152,15 +135,10 @@ html {
   background: color-mix(in srgb, var(--accent) 75%, transparent);
 }
 
-/* -------- Persian page --------
-   Letter-spacing breaks the joins in Persian script, so it is dropped. */
 :root[lang="fa"] * {
   letter-spacing: 0 !important;
 }
 
-/* Persian type uses the full range of weights each font has: the name in
-   its heaviest cut, headings and labels bold, the intro line light. Latin
-   text on the page keeps its own weights. */
 :root[lang="fa"] {
   --fa-small: 1;
 }

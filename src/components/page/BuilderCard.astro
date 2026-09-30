@@ -1,0 +1,30 @@
+---
+import TitleRow from "./TitleRow.astro";
+import FormsEntry from "./FormsEntry.astro";
+import CvControls from "./CvControls.astro";
+import ActionButtons from "../actions/ActionButtons.astro";
+import ActionSplit from "../actions/ActionSplit.astro";
+import PreviewPane from "../preview/PreviewPane.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<section class="builder-card" aria-labelledby="page-title" transition:name="card">
+  <div class="card-main">
+    <div class="card-top">
+      <div class="eyebrow" data-i18n="eyebrow">{en.eyebrow}</div>
+    </div>
+
+    <TitleRow />
+
+    <p class="lead" data-i18n="lead">{en.lead}</p>
+
+    <FormsEntry />
+    <CvControls />
+    <ActionButtons />
+    <ActionSplit />
+  </div>
+
+  <PreviewPane />
+</section>

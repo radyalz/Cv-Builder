@@ -1,0 +1,40 @@
+---
+import Icon from "../Icon.astro";
+import PreviewSkeleton from "./PreviewSkeleton.astro";
+import BuildStatus from "./BuildStatus.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="preview-frame" tabindex="-1">
+  <div
+    id="previewDoc"
+    class="pdf-view is-loading"
+    role="document"
+    aria-label={en.previewFrame}
+    data-i18n-aria="previewFrame"
+    hidden
+  ></div>
+
+  <PreviewSkeleton />
+
+  <div id="previewState" class="preview-state" hidden></div>
+
+  <div id="previewError" class="preview-error" role="alert" hidden>
+    <p class="preview-error-text"></p>
+    <button id="previewRetry" class="ghost-button retry-button" type="button" data-tip="retry">
+      <Icon name="reset" />
+      <span data-i18n="retry">{en.retry}</span>
+    </button>
+  </div>
+
+  <div class="build-status">
+    <BuildStatus />
+  </div>
+
+  <span class="peek-hint" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h5v5M9 20H4v-5M20 4l-6.5 6.5M4 20l6.5-6.5"/></svg>
+    <span data-i18n="tapExpand">{en.tapExpand}</span>
+  </span>
+</div>

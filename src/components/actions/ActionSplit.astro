@@ -1,0 +1,58 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS, type StringKey } from "../../lib/data";
+
+const en = STRINGS.en;
+
+const ACTIONS: { key: "generate" | "download" | "allCopies"; note: StringKey }[] = [
+  { key: "generate", note: "actionGenerateNote" },
+  { key: "download", note: "actionDownloadNote" },
+  { key: "allCopies", note: "actionAllNote" },
+];
+---
+
+<div class="action-split" data-action="generate">
+  <button class="split-main" type="button" data-tip="generate">
+    <Icon name="generate" class="split-icon" />
+    <span class="split-label">{en.generate}</span>
+  </button>
+
+  <button
+    class="split-toggle"
+    type="button"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="actionMenu"
+    aria-label={en.moreActions}
+    data-i18n-aria="moreActions"
+    data-tip="moreActions"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
+  </button>
+</div>
+
+<div id="actionMenu" class="menu action-menu" role="menu" aria-label={en.moreActions} data-i18n-aria="moreActions" hidden>
+  {ACTIONS.map((action) => (
+    <button
+      class="action-item"
+      type="button"
+      role="menuitemradio"
+      aria-checked={action.key === "generate" ? "true" : "false"}
+      data-action={action.key}
+      tabindex="-1"
+    >
+      <Icon name={action.key} class="action-item-icon" />
+      <span class="action-item-text">
+        <span class="action-item-title" data-i18n={action.key}>{en[action.key]}</span>
+        <span class="action-item-note" data-i18n={action.note}>{en[action.note]}</span>
+      </span>
+      <svg class="action-item-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+    </button>
+  ))}
+</div>
+
+<script>
+  import { initActionMenu } from "../../scripts/action-menu";
+
+  initActionMenu();
+</script>

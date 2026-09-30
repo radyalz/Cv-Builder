@@ -1,0 +1,63 @@
+---
+import Icon from "../Icon.astro";
+import Segmented from "../Segmented.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+const VARIANTS = ["digital", "print"] as const;
+---
+
+<div id="cvControls" class="controls">
+  <div class="control">
+    <span class="control-label" data-i18n="accent">{en.accent}</span>
+
+    <button
+      id="colourTrigger"
+      data-tip="accent"
+      class="menu-trigger"
+      type="button"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+    >
+      <span class="trigger-dot" aria-hidden="true"></span>
+      <span id="colourTriggerLabel">Purple</span>
+      <span class="trigger-caret" aria-hidden="true">▾</span>
+    </button>
+  </div>
+
+  <div class="control">
+    <span class="control-label" data-i18n="edition">{en.edition}</span>
+    <Segmented
+      id="variantToggle"
+      label={en.edition}
+      labelI18n="edition"
+      options={VARIANTS.map((variant, index) => ({
+        label: en[variant],
+        i18n: variant,
+        tip: variant,
+        checked: index === 0,
+        data: { variant },
+      }))}
+    />
+  </div>
+
+  <div class="control">
+    <span class="control-label" data-i18n="cvLanguage">{en.cvLanguage}</span>
+    <Segmented
+      id="languageToggle"
+      label={en.cvLanguage}
+      labelI18n="cvLanguage"
+      options={[
+        { label: "EN", tip: "cvEn", checked: true, data: { language: "en" } },
+        { label: "فا", tip: "cvFa", lang: "fa", data: { language: "fa" } },
+      ]}
+    />
+  </div>
+
+  <div class="control control-reset">
+    <button id="resetCv" class="reset-control" type="button" data-tip="resetCv" disabled>
+      <Icon name="reset" />
+      <span data-i18n="reset">{en.reset}</span>
+    </button>
+  </div>
+</div>

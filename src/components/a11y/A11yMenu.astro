@@ -1,0 +1,36 @@
+---
+import Icon from "../Icon.astro";
+import A11yButtons from "./A11yButtons.astro";
+import WallpaperMenu from "./WallpaperMenu.astro";
+import InstallOffer from "./InstallOffer.astro";
+import PageChoices from "./PageChoices.astro";
+import FontChoices from "./FontChoices.astro";
+import InstallChoices from "./InstallChoices.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<A11yButtons />
+<WallpaperMenu />
+<InstallOffer />
+
+<div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
+  <div class="a11y-head">
+    <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
+
+    <button id="resetPrefs" class="reset-icon" type="button" data-tip="resetPrefs" aria-label={en.resetPrefs} data-i18n-aria="resetPrefs">
+      <Icon name="reset" />
+    </button>
+  </div>
+
+  <PageChoices />
+  <FontChoices />
+
+  <button id="admireFromMenu" class="ghost-button admire-menu-button" type="button" aria-pressed="false" data-tip="admire">
+    <Icon name="eye" />
+    <span data-i18n="admire">{en.admire}</span>
+  </button>
+
+  <InstallChoices />
+</div>

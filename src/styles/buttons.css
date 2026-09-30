@@ -1,5 +1,3 @@
-/* -------- Download button -------- */
-
 .download-button {
   display: inline-flex;
   align-items: center;
@@ -24,11 +22,6 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
-
-
-
-/* -------- Ripple --------
-   A material-style ink ripple from the point of the press. */
 
 .primary-button,
 .ghost-button,

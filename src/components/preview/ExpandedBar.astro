@@ -1,0 +1,40 @@
+---
+import Icon from "../Icon.astro";
+import LinksHint from "./LinksHint.astro";
+import PdfTools from "./PdfTools.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="expanded-bar">
+  <div class="expanded-top">
+    <div class="expanded-info">
+      <span id="expandedLabel" class="preview-title"></span>
+      <span id="expandedMeta" class="preview-meta"></span>
+      <button id="infoToggle" class="info-toggle" type="button" aria-expanded="false" aria-controls="infoDetails" aria-label={en.copyDetails} data-i18n-aria="copyDetails">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+      </button>
+    </div>
+
+    <div id="infoDetails" class="info-details">
+      <span id="detailsMeta"></span>
+      <span id="detailsLinks"></span>
+    </div>
+  </div>
+
+  <div class="expanded-actions">
+    <LinksHint />
+    <PdfTools />
+
+    <button id="expandedDownload" class="ghost-button bar-button" type="button" data-tip="download" aria-label={en.downloadShort} data-i18n-aria="downloadShort" disabled>
+      <Icon name="download" />
+      <span data-i18n="downloadShort">{en.downloadShort}</span>
+    </button>
+
+    <button id="previewCollapse" class="ghost-button bar-button" type="button" data-tip="close" aria-label={en.close} data-i18n-aria="close">
+      <Icon name="close" />
+      <span data-i18n="close">{en.close}</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+
+<link rel="manifest" href={`${base}manifest.webmanifest`} />
+<link rel="icon" type="image/png" sizes="32x32" href={`${base}icons/favicon-32.png`} />
+<link rel="icon" type="image/png" sizes="64x64" href={`${base}icons/favicon-64.png`} />
+<link rel="apple-touch-icon" href={`${base}icons/apple-touch-icon.png`} />
+<meta name="theme-color" content="#050506" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f3f2f7" media="(prefers-color-scheme: light)" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Radman's CV" />
+
+<script is:inline>
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    window.__installPrompt = event;
+  });
+</script>

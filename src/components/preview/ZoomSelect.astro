@@ -1,0 +1,21 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+---
+
+<div class="zoom-select">
+  <button id="zoomSelect" class="icon-button fit-select-button" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="zoomMenu" aria-label={en.zoom} data-i18n-aria="zoom" data-tip="zoom">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="9.5" r="5.8"/><path d="M7.2 8.4a3 3 0 0 1 2.6-2.1"/><path d="M14.2 13.6c1.1 1.5 1 3.4 2.3 4.8 1 1 2.3 1.3 3.5 1"/></svg>
+    <Icon name="caretUp" class="fit-caret" />
+  </button>
+  <div id="zoomMenu" class="zoom-menu bar-picker" role="group" aria-label={en.zoom} data-i18n-aria="zoom">
+    <button class="icon-button" type="button" data-pdf="zoom-out" data-tip="zoomOut" aria-label={en.zoomOut} data-i18n-aria="zoomOut">
+      <Icon name="zoomOut" />
+    </button>
+    <button class="icon-button" type="button" data-pdf="zoom-in" data-tip="zoomIn" aria-label={en.zoomIn} data-i18n-aria="zoomIn">
+      <Icon name="zoomIn" />
+    </button>
+  </div>
+</div>

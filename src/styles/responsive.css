@@ -14,16 +14,6 @@
   100% { left: 110%; }
 }
 
-/* -------- Layout by screen size --------
-   Desktop, 1024px and up: controls and preview side by side.
-   Tablet, 600 to 1023px: stacked, the preview filling all the height left
-   under the controls, scrollable, with its footer and Expand.
-   Phone, under 600px: stacked, the preview a peek at the top of page one
-   that grows to full screen when tapped.
-   Phones held sideways are short, so they keep the side-by-side layout. */
-
-/* The narrow end of desktop: a slimmer preview column, so the controls
-   (Reset included) stay on one line. */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .builder-card {
     grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
@@ -34,9 +24,6 @@
   }
 }
 
-/* Tablets: Generate, Download and All published copies in one row of
-   three equal cells, never wrapping; long labels are cut with an
-   ellipsis rather than pushing a button onto a new line. */
 @media (min-width: 600px) and (max-width: 1023px) {
   .actions {
     display: grid;
@@ -73,8 +60,6 @@
   }
 }
 
-/* Tablets and phones: stacked, in a card of fixed height so the preview
-   row has a definite size to fill. */
 @media (max-width: 1023px) {
   .page-shell {
     padding: 12px;
@@ -96,8 +81,6 @@
     min-height: 150px;
   }
 
-  /* The floating accessibility button sits over the card's bottom-right
-     corner here; the preview's footer keeps clear of it. */
   .preview-foot {
     padding-right: 60px;
   }
@@ -111,8 +94,6 @@
   }
 }
 
-/* Phones held sideways: too short to stack, so side by side again, with
-   the controls scrolling if they must. */
 @media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
   .builder-card {
     gap: 18px;
@@ -128,12 +109,6 @@
     display: none;
   }
 }
-
-/* -------- Phones --------
-   A calmer, roomier card: less blur than desktop with a little more tint,
-   so the skulls show through without the text losing contrast. Controls
-   sit on a grid (accent on its own row; edition, language and Reset
-   below), every tap target full width. */
 
 @media (max-width: 599px) {
   .page-shell {
@@ -189,8 +164,6 @@
     grid-column: 1 / -1;
   }
 
-  /* Each label sits on the top edge of its control, like an outlined
-     field, instead of taking a line of its own above it. */
   .controls .control {
     position: relative;
   }
@@ -221,15 +194,12 @@
     margin-inline-start: auto;
   }
 
-  /* Accent keeps its label at the start of the edge, over the colour
-     name; edition and language have theirs centred. */
   .controls .control:first-child .control-label {
     left: auto;
     inset-inline-start: 10px;
     transform: translateY(-50%);
   }
 
-  /* Persian letters need a size more to read at this scale. */
   :root[lang="fa"] .controls .control-label {
     font-size: calc(11px * var(--fs));
   }
@@ -244,7 +214,6 @@
     padding: 0 6px;
   }
 
-  /* Buttons sized for a thumb but no bigger: 42, 38 and 34px. */
   .actions {
     align-items: stretch;
     flex-direction: column;
@@ -278,9 +247,6 @@
     height: 46px;
   }
 
-  /* The preview is a peek: the top of page one, fading out, that opens to
-     full screen when tapped (see "peek-hint" in PreviewPane). Its date and
-     buttons live in the grown view instead. */
   .preview-head {
     margin-bottom: 6px;
   }
@@ -302,7 +268,6 @@
   }
 }
 
-/* Short phones: spacing tightens, leaving the preview peek room. */
 @media (max-width: 599px) and (max-height: 740px) {
 
   .builder-card {
@@ -311,8 +276,6 @@
   }
 }
 
-/* Phones keep the lighter 4px blur in the light appearance too, with more
-   white to make up for it. */
 @media (max-width: 599px) {
   :root[data-theme="light"] .builder-card {
     background:
@@ -339,14 +302,6 @@
   }
 }
 
-/* -------- Flat frosted glass --------
-   For browsers without backdrop blur, and for devices the skull renderer
-   finds too slow for it (both set data-glass="flat" on <html>). Instead of
-   blurring what is behind, the card fakes frost: a denser tint, the same
-   sheen and bright edge, a faint grain and a glow of the accent. Written
-   without color-mix() so it also works in the older browsers it is for.
-   Last in the cascade so it wins over every other card background. */
-
 :root[data-glass="flat"] body .builder-card {
   background:
     linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025) 42%, rgba(255, 255, 255, 0.07)),
@@ -365,16 +320,11 @@
     var(--glass-flat);
 }
 
-/* -------- How it works --------
-   An info button at the end of the name's row opens the explanation for
-   the controls on screen and the tour of them. */
-
 .lead-tablet,
 .lead-phone {
   display: none;
 }
 
-/* The name at the start of the row, the info button at its end. */
 .title-row {
   display: flex;
   align-items: center;
@@ -382,9 +332,6 @@
   gap: 12px;
 }
 
-/* On desktop the controls column scrolls, so it clips at its edge: the
-   button keeps clear of it, leaving its ripples and swell room to show
-   and some space before the preview. */
 @media (min-width: 1024px) {
   .title-row {
     padding-inline-end: 26px;
@@ -404,8 +351,6 @@
   font-weight: 750;
 }
 
-/* Easy to read: a comfortable size and line height, lines balanced so
-   none ends on a lone word. */
 .intro-text {
   margin: 0;
   color: var(--text);
@@ -490,10 +435,6 @@
   border-color: var(--accent);
 }
 
-/* -------- The tour --------
-   A ring of light on one part at a time, the rest of the page dimmed by
-   the ring's own shadow, and a card beside it (src/scripts/tour.js). */
-
 .tour {
   position: fixed;
   z-index: 80;
@@ -519,15 +460,12 @@
     opacity 260ms ease;
 }
 
-/* Over the background alone the dim is light, so it can be seen. */
 .tour.is-light .tour-spot {
   box-shadow:
     0 0 0 2px var(--accent),
     0 0 0 200vmax rgba(0, 0, 0, 0.18);
 }
 
-/* A soft pulse around the ring, so the eye finds it: the same 12px glow
-   whatever the size of the part. */
 .tour-spot::after {
   position: absolute;
   inset: -2px;
@@ -639,9 +577,6 @@
   }
 }
 
-/* Easy to spot: the accent's colour on a tint of it. On desktop and
-   tablets it is a pill with its name; on phones, where the name needs the
-   room, just the icon. */
 .intro-info {
   position: relative;
   display: inline-flex;
@@ -704,9 +639,6 @@
   }
 }
 
-/* For the first 30 seconds (intro-info.js), the button calls for
-   attention: it swells gently and sends out rings like ripples on water,
-   two at a time. Hovering, focusing or opening it stops the call. */
 .intro-info.is-calling {
   animation: info-swell 2.4s ease-in-out infinite;
 }
@@ -731,7 +663,6 @@
   36% { transform: scale(1); }
 }
 
-/* A ring that spreads 14px out and fades, whatever the button's size. */
 @keyframes info-ripple {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 75%, transparent); }
   70%, 100% { box-shadow: 0 0 0 14px transparent; }
@@ -766,12 +697,6 @@
     display: inline;
   }
 }
-
-/* -------- Tablets and phones: the controls in a menu --------
-   One field shows the colour, edition and language chosen; it opens the
-   controls in a menu, the way the accessibility button opens its own
-   (src/scripts/forms-menu.js moves them in and out). Reset is the icon in
-   the menu's header there. */
 
 .forms-entry {
   display: none;
@@ -835,7 +760,6 @@
     display: none;
   }
 
-  /* The field's label sits on its top edge, like an outlined field. */
   .forms-entry {
     position: relative;
     display: flex;
@@ -867,15 +791,11 @@
     height: 42px;
   }
 
-  /* The short intro stays under the name, across the card's full width;
-     the longer explanation is behind How it works. */
   .lead {
     max-width: none;
   }
 }
 
-/* Tablets: in the menu the three controls sit side by side, each filling
-   its share of the row. */
 @media (min-width: 600px) and (max-width: 1023px) {
   .forms-menu .controls {
     display: grid;
@@ -897,8 +817,6 @@
   }
 }
 
-/* Inside the menu there is room, so each control's label sits above it,
-   as on larger screens, instead of on its edge. */
 @media (max-width: 599px) {
   .forms-menu .controls .control .control-label {
     position: static;
