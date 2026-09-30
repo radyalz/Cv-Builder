@@ -64,6 +64,13 @@ export const STRINGS = {
     tapExpand: "Tap to expand",
     leadTablet: "Generate the newest version of my CV: set its colour, edition and language in CV options, then build a fresh copy or download the published one. The preview underneath shows the chosen copy; expand it to read it full screen.",
     leadPhone: "Generate the newest version of my CV: set its colour, edition and language in CV options, then build a fresh copy or download the published one. Tap the preview to read it full screen.",
+    uninstallApp: "Uninstall the app",
+    uninstallDesktop: "Open the ⋮ menu at the top of the app's window and choose Uninstall. In the browser, chrome://apps (or edge://apps) lists it too.",
+    uninstallAndroid: "Touch and hold the app's icon, then choose Uninstall (or App info, then Uninstall).",
+    uninstallIos: "Touch and hold the app's icon on the home screen, then choose Remove App (or Delete Bookmark).",
+    uninstallNote: "A page can't remove an installed app by itself, so it takes one step in your device's own menu.",
+    clearOffline: "Remove the offline copy",
+    offlineCleared: "Offline copy removed. The site still works online.",
     installTitle: "Install Radman's CV",
     installPitch: "Add it to your home screen: its own icon, full screen, and it opens at once, even offline.",
     installNow: "Install",
@@ -238,6 +245,13 @@ export const STRINGS = {
     tapExpand: "برای بزرگ‌نمایی بزنید",
     leadTablet: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در «گزینه‌های رزومه» انتخاب کنید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید. پیش‌نمایش پایین همان نسخه را نشان می‌دهد؛ برای دیدن تمام‌صفحه آن را بزرگ کنید.",
     leadPhone: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در «گزینه‌های رزومه» انتخاب کنید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید. برای دیدن تمام‌صفحه روی پیش‌نمایش بزنید.",
+    uninstallApp: "حذف برنامه",
+    uninstallDesktop: "منوی ⋮ بالای پنجره برنامه را باز کنید و «حذف نصب» را بزنید. در مرورگر، ‎chrome://apps‎ (یا ‎edge://apps‎) هم آن را فهرست می‌کند.",
+    uninstallAndroid: "نماد برنامه را لمس کنید و نگه دارید، سپس «حذف نصب» (یا اطلاعات برنامه و سپس حذف نصب) را بزنید.",
+    uninstallIos: "نماد برنامه را در صفحه اصلی لمس کنید و نگه دارید، سپس «حذف برنامه» (یا «حذف نشانک») را بزنید.",
+    uninstallNote: "یک صفحه نمی‌تواند خودش برنامه نصب‌شده را حذف کند؛ این کار با یک مرحله در منوی خود دستگاه انجام می‌شود.",
+    clearOffline: "حذف نسخه آفلاین",
+    offlineCleared: "نسخه آفلاین حذف شد. سایت همچنان آنلاین کار می‌کند.",
     installTitle: "نصب رزومه رادمان",
     installPitch: "به صفحه اصلی اضافه‌اش کنید: نماد خودش، تمام‌صفحه، و فوری باز می‌شود، حتی بدون اینترنت.",
     installNow: "نصب",
@@ -398,6 +412,7 @@ export const STRINGS = {
 // data-tip key. tipContent() adds the live details (file, colour, date…).
 export const TIPS = {
   en: {
+    uninstallApp: ["Uninstall the app", "Shows how to remove the installed app from this device, and can delete its offline copy."],
     installApp: ["Install the app", "Adds it to your home screen or desktop with its own icon. It opens full screen and at once, even offline."],
     saveBackground: ["Save the background", "Download the background alone as an image, or record 15 to 30 seconds of it as a video wallpaper, at this window's size."],
     cvOptions: ["CV options", "Choose the colour, edition and language of the copy."],
@@ -438,6 +453,7 @@ export const TIPS = {
     linksHint: ["Clickable links", "The contact details, websites and portfolio entries in this copy open when clicked, here and in the downloaded PDF. Click to highlight them."],
   },
   fa: {
+    uninstallApp: ["حذف برنامه", "نشان می‌دهد برنامه نصب‌شده را چطور از این دستگاه حذف کنید، و می‌تواند نسخه آفلاین آن را پاک کند."],
     installApp: ["نصب برنامه", "آن را با نماد خودش به صفحه اصلی یا دسکتاپ اضافه می‌کند. تمام‌صفحه و فوری باز می‌شود، حتی بدون اینترنت."],
     saveBackground: ["ذخیره پس‌زمینه", "فقط پس‌زمینه را به‌صورت عکس دانلود کنید، یا ۱۵ تا ۳۰ ثانیه از آن را برای والپیپر ویدیویی ضبط کنید، به اندازه همین پنجره."],
     cvOptions: ["گزینه‌های رزومه", "رنگ، نسخه و زبان نسخه را انتخاب کنید."],

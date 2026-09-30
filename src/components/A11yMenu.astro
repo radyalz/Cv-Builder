@@ -191,4 +191,21 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
     <span data-i18n="installApp">{en.installApp}</span>
   </button>
   <p id="installSteps" class="install-steps" data-i18n="installIos" hidden>{en.installIos}</p>
+
+  <!-- When the site is installed. A page cannot remove an installed app
+       itself, so this shows how on this device, and can delete the offline
+       copy (src/scripts/install.js). -->
+  <button id="uninstallApp" class="ghost-button admire-menu-button install-button" type="button" data-tip="uninstallApp" aria-expanded="false" aria-controls="uninstallPanel" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/></svg>
+    <span data-i18n="uninstallApp">{en.uninstallApp}</span>
+  </button>
+  <div id="uninstallPanel" class="uninstall-panel" hidden>
+    <p class="install-steps uninstall-how"></p>
+    <p class="install-steps" data-i18n="uninstallNote">{en.uninstallNote}</p>
+    <button id="clearOffline" class="ghost-button admire-menu-button install-button" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/></svg>
+      <span data-i18n="clearOffline">{en.clearOffline}</span>
+    </button>
+    <p class="install-steps offline-status" aria-live="polite"></p>
+  </div>
 </div>

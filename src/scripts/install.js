@@ -14,9 +14,18 @@
    installed; Install then opens their own prompt. iPhones and iPads have
    no such prompt, so there both show the Add to Home Screen steps instead.
    Anywhere else, and once the site runs as an installed app, neither
-   shows. Opening the page with ?install shows the offer regardless of
+   shows.
+
+   Once it is installed, "Uninstall the app" takes their place. A page
+   cannot remove an installed app, so it shows how on this device (desktop,
+   Android or iPhone), and it can delete the offline copy: the service
+   worker and its caches, which then stay off until the app is installed
+   again. In a normal tab Chrome can say whether the app is installed
+   (related_applications in the manifest); elsewhere the button shows only
+   inside the installed app. Opening the page with ?install shows the offer regardless of
    when it was last closed or shown (for trying it out). */
 
+import { positionPopover } from "../lib/popover.js";
 import { t } from "../lib/prefs.js";
 
 const OFFER_DELAY_MS = 7000; // after the touch hint (tooltip.js) has gone
@@ -24,6 +33,7 @@ const OFFER_MS = 30000;
 const DISMISS_DAYS = 14;
 const DISMISS_KEY = "cv-builder-install-offer";
 const SHOWN_KEY = "cv-builder-install-offer-shown";
+const OFFLINE_OFF_KEY = "cv-builder-offline-off";
 
 let started = false;
 
@@ -59,6 +69,65 @@ function writeStore(store, key, value) {
   }
 }
 
+function platform() {
+  if (isAppleMobile()) return "ios";
+  if (/Android/.test(navigator.userAgent)) return "android";
+  return "desktop";
+}
+
+// In a normal tab: whether this site is installed as an app (Chrome only).
+async function installedElsewhere() {
+  if (!navigator.getInstalledRelatedApps) {
+    return false;
+  }
+
+  try {
+    return (await navigator.getInstalledRelatedApps()).some((app) => app.platform === "webapp");
+  } catch {
+    return false;
+  }
+}
+
+function scope() {
+  return new URL(import.meta.env.BASE_URL.replace(/\/?$/, "/"), window.location.origin);
+}
+
+function registerWorker() {
+  navigator.serviceWorker?.register(new URL("sw.js", scope()), { scope: scope().pathname }).catch(() => {
+    // Without it the site still works, just not offline.
+  });
+}
+
+// The offline copy: the service worker and every cache it or the page made.
+async function removeOfflineCopy() {
+  const registrations = (await navigator.serviceWorker?.getRegistrations?.()) ?? [];
+
+  await Promise.all(registrations.map((registration) => registration.unregister()));
+
+  if (window.caches) {
+    const keys = await caches.keys();
+
+    await Promise.all(keys.filter((key) => key.startsWith("cv-")).map((key) => caches.delete(key)));
+  }
+}
+
+// The accessibility menu grows when steps open in it; it is placed above
+// its button again, and the new part scrolled into view if it scrolls.
+function refit(shown) {
+  const menu = document.getElementById("a11yMenu");
+  const trigger = document.getElementById("a11yTrigger");
+
+  if (!menu || menu.hidden || !trigger) {
+    return;
+  }
+
+  positionPopover(trigger, menu);
+
+  if (shown && !shown.hidden) {
+    shown.scrollIntoView({ block: "nearest" });
+  }
+}
+
 // ?install in the address: show the offer whatever it remembers.
 function forced() {
   return new URLSearchParams(window.location.search).has("install");
@@ -77,21 +146,61 @@ export function initInstall(production) {
 
   started = true;
 
-  if (production && "serviceWorker" in navigator) {
-    const scope = new URL(import.meta.env.BASE_URL.replace(/\/?$/, "/"), window.location.origin);
-
-    navigator.serviceWorker.register(new URL("sw.js", scope), { scope: scope.pathname }).catch(() => {
-      // Without it the site still works, just not offline or installable.
-    });
+  // Not after the visitor removed the offline copy (until they install
+  // again).
+  if (production && "serviceWorker" in navigator && !readStore(localStorage, OFFLINE_OFF_KEY)) {
+    registerWorker();
   }
 
   const button = document.getElementById("installApp");
   const steps = document.getElementById("installSteps");
   const offer = document.getElementById("installOffer");
 
-  if (!button || !steps || !offer || isInstalled()) {
+  if (!button || !steps || !offer) {
     return;
   }
+
+  /* -------- Uninstalling -------- */
+
+  const uninstall = document.getElementById("uninstallApp");
+  const panel = document.getElementById("uninstallPanel");
+  const how = panel.querySelector(".uninstall-how");
+  const clearButton = document.getElementById("clearOffline");
+  const status = panel.querySelector(".offline-status");
+  const howKey = { desktop: "uninstallDesktop", android: "uninstallAndroid", ios: "uninstallIos" }[platform()];
+
+  function showUninstall() {
+    uninstall.hidden = false;
+    button.hidden = true;
+    steps.hidden = true;
+    how.dataset.i18n = howKey;
+    how.textContent = t(howKey);
+  }
+
+  uninstall.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+    uninstall.setAttribute("aria-expanded", String(!panel.hidden));
+    refit(panel);
+  });
+
+  clearButton.addEventListener("click", async () => {
+    writeStore(localStorage, OFFLINE_OFF_KEY, "1");
+    await removeOfflineCopy();
+    status.dataset.i18n = "offlineCleared";
+    status.textContent = t("offlineCleared");
+    refit(status);
+  });
+
+  if (isInstalled()) {
+    showUninstall();
+    return;
+  }
+
+  installedElsewhere().then((installed) => {
+    if (installed) {
+      showUninstall();
+    }
+  });
 
   const offerText = document.getElementById("installOfferText");
   const offerButton = document.getElementById("installOfferButton");
@@ -227,8 +336,21 @@ export function initInstall(production) {
   /* -------- Installing -------- */
 
   async function install() {
+    if (readStore(localStorage, OFFLINE_OFF_KEY)) {
+      try {
+        localStorage.removeItem(OFFLINE_OFF_KEY);
+      } catch {
+        // Nothing to undo.
+      }
+
+      if (production) {
+        registerWorker();
+      }
+    }
+
     if (!prompt) {
       steps.hidden = !steps.hidden;
+      refit(steps);
       return;
     }
 
