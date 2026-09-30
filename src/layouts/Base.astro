@@ -15,6 +15,9 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+// The site's base path with a trailing slash, for files in public/.
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 
 <!doctype html>
@@ -25,6 +28,18 @@ const { title, description } = Astro.props;
     <meta name="color-scheme" content="dark light" />
     <title>{title}</title>
     <meta name="description" content={description} />
+
+    <!-- Installable as an app (manifest, icons and the service worker in
+         public/; registered below). -->
+    <link rel="manifest" href={`${base}manifest.webmanifest`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${base}icons/favicon-32.png`} />
+    <link rel="apple-touch-icon" href={`${base}icons/apple-touch-icon.png`} />
+    <meta name="theme-color" content="#050506" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f2f7" media="(prefers-color-scheme: light)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Radman's CV" />
 
     <!-- Applies the stored preferences before the first paint, so a light
          or Persian page never flashes dark or English first. -->
@@ -74,11 +89,13 @@ const { title, description } = Astro.props;
       import { initSkulls } from "../lib/skulls.js";
       import { initHalftone } from "../lib/halftone.js";
       import { initWallpaper } from "../scripts/wallpaper.js";
+      import { initInstall } from "../scripts/install.js";
 
       initPrefs();
       initHalftone();
       initSkulls();
       initWallpaper();
+      initInstall(import.meta.env.PROD);
       initTooltip();
       initRipple();
       showTouchHint(t("touchHint"));

@@ -19,7 +19,7 @@ function svgImage(defs, body) {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
-function skullParts(accent, light) {
+export function skullParts(accent, light) {
   const { cranium, jaw } = skullPaths();
 
   // Socket centres in tile units. Kept local: this runs during start-up,

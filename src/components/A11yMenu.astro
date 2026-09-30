@@ -163,4 +163,13 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
     <span data-i18n="admire">{en.admire}</span>
   </button>
+
+  <!-- Shown only where the site can be installed and is not already
+       (src/scripts/install.js). iPhones and iPads have no install prompt,
+       so there it shows the steps instead. -->
+  <button id="installApp" class="ghost-button admire-menu-button install-button" type="button" data-tip="installApp" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 7v7M9 11.5l3 3 3-3"/></svg>
+    <span data-i18n="installApp">{en.installApp}</span>
+  </button>
+  <p id="installSteps" class="install-steps" data-i18n="installIos" hidden>{en.installIos}</p>
 </div>

@@ -174,9 +174,12 @@ body.preview-open .a11y-trigger {
 .font-option[data-fa-font="niloofar"] { font-family: "CV Niloofar", serif; font-size: calc(15px * var(--fs)); }
 
 /* The menu grew with the font pickers; short screens scroll it. */
+/* Never taller than the room above the accessibility button (52px, 20px
+   from the bottom, 46px and 14px on phones), so it opens above it instead
+   of running down behind it; anything more scrolls. */
 .a11y-menu {
   overflow-y: auto;
-  max-height: calc(100dvh - 24px);
+  max-height: calc(100dvh - 20px - 52px - 16px - 8px);
   scrollbar-width: thin;
 }
 
@@ -556,4 +559,37 @@ body.is-admiring .wallpaper-toggle {
   color: var(--muted);
   font-size: calc(12.5px * var(--fs));
   font-variant-numeric: tabular-nums;
+}
+
+/* -------- Installing the app --------
+   Under Admire in the accessibility menu, only where the site can be
+   installed; on iPhones and iPads it shows the steps below it. */
+
+.install-button {
+  margin-top: 8px;
+}
+
+.install-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.install-steps {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: calc(12.5px * var(--fs));
+  line-height: 1.55;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+@media (max-width: 599px) {
+  .a11y-menu {
+    max-height: calc(100dvh - 14px - 46px - 16px - 8px);
+  }
 }

@@ -64,6 +64,8 @@ export const STRINGS = {
     tapExpand: "Tap to expand",
     leadTablet: "Generate the newest version of my CV: set its colour, edition and language in CV options, then build a fresh copy or download the published one. The preview underneath shows the chosen copy; expand it to read it full screen.",
     leadPhone: "Generate the newest version of my CV: set its colour, edition and language in CV options, then build a fresh copy or download the published one. Tap the preview to read it full screen.",
+    installApp: "Install the app",
+    installIos: "In Safari, tap the Share button, then Add to Home Screen.",
     saveBackground: "Save the background",
     saveBackgroundNote: "Just the background, at this window's size, as a still image or a video to use as a wallpaper.",
     saveImage: "Image",
@@ -233,6 +235,8 @@ export const STRINGS = {
     tapExpand: "برای بزرگ‌نمایی بزنید",
     leadTablet: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در «گزینه‌های رزومه» انتخاب کنید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید. پیش‌نمایش پایین همان نسخه را نشان می‌دهد؛ برای دیدن تمام‌صفحه آن را بزرگ کنید.",
     leadPhone: "جدیدترین نسخه رزومه‌ام را بسازید: رنگ، نسخه و زبانش را در «گزینه‌های رزومه» انتخاب کنید و سپس نسخه‌ای تازه بسازید یا نسخه منتشرشده را دانلود کنید. برای دیدن تمام‌صفحه روی پیش‌نمایش بزنید.",
+    installApp: "نصب برنامه",
+    installIos: "در سافاری، دکمه اشتراک‌گذاری و سپس «افزودن به صفحه اصلی» را بزنید.",
     saveBackground: "ذخیره پس‌زمینه",
     saveBackgroundNote: "فقط پس‌زمینه، به اندازه همین پنجره، به‌صورت عکس یا ویدیو برای والپیپر.",
     saveImage: "عکس",
@@ -388,6 +392,7 @@ export const STRINGS = {
 // data-tip key. tipContent() adds the live details (file, colour, date…).
 export const TIPS = {
   en: {
+    installApp: ["Install the app", "Adds it to your home screen or desktop with its own icon. It opens full screen and at once, even offline."],
     saveBackground: ["Save the background", "Download the background alone as an image, or record 15 to 30 seconds of it as a video wallpaper, at this window's size."],
     cvOptions: ["CV options", "Choose the colour, edition and language of the copy."],
     generate: ["Generate a fresh copy", "Compiles the CV from source with today's experience durations, then downloads it. If the published copy is already current, that one downloads at once."],
@@ -427,6 +432,7 @@ export const TIPS = {
     linksHint: ["Clickable links", "The contact details, websites and portfolio entries in this copy open when clicked, here and in the downloaded PDF. Click to highlight them."],
   },
   fa: {
+    installApp: ["نصب برنامه", "آن را با نماد خودش به صفحه اصلی یا دسکتاپ اضافه می‌کند. تمام‌صفحه و فوری باز می‌شود، حتی بدون اینترنت."],
     saveBackground: ["ذخیره پس‌زمینه", "فقط پس‌زمینه را به‌صورت عکس دانلود کنید، یا ۱۵ تا ۳۰ ثانیه از آن را برای والپیپر ویدیویی ضبط کنید، به اندازه همین پنجره."],
     cvOptions: ["گزینه‌های رزومه", "رنگ، نسخه و زبان نسخه را انتخاب کنید."],
     generate: ["ساخت نسخه تازه", "رزومه را با مدت سوابق تا امروز از نو می‌سازد و دانلود می‌کند. اگر نسخه منتشرشده به‌روز باشد، همان فوراً دانلود می‌شود."],
