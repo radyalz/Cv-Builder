@@ -6,7 +6,7 @@
 // action-menu.js). The split button only relays clicks to the three
 // originals, which stay in the page (hidden on phones) because builder.js
 // keeps their state: disabled while a build runs, the Generate label.
-import { STRINGS } from "../lib/data.js";
+import { STRINGS } from "../lib/data";
 
 const en = STRINGS.en;
 
@@ -91,7 +91,7 @@ const ACTIONS = [
 </div>
 
 <script>
-  import { initActionMenu } from "../scripts/action-menu.js";
+  import { initActionMenu } from "../scripts/action-menu";
 
   initActionMenu();
 </script>

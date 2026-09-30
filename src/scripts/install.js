@@ -25,8 +25,8 @@
    inside the installed app. Opening the page with ?install shows the offer regardless of
    when it was last closed or shown (for trying it out). */
 
-import { positionPopover } from "../lib/popover.js";
-import { t } from "../lib/prefs.js";
+import { positionPopover } from "../lib/popover";
+import { t } from "../lib/prefs";
 
 const OFFER_DELAY_MS = 7000; // after the touch hint (tooltip.js) has gone
 const OFFER_MS = 30000;

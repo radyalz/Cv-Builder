@@ -9,7 +9,7 @@
    ---------------------------------------------------------------------- */
 
 
-import { electricHue, mixHex } from "./colour.js";
+import { electricHue, mixHex } from "./colour";
 
 function svgImage(defs, body) {
   const svg =

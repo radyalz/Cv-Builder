@@ -4,7 +4,7 @@ import Segmented from "../components/Segmented.astro";
 import PreviewPane from "../components/PreviewPane.astro";
 import ColourMenu from "../components/ColourMenu.astro";
 import ActionBar from "../components/ActionBar.astro";
-import { STRINGS } from "../lib/data.js";
+import { STRINGS } from "../lib/data";
 
 const en = STRINGS.en;
 ---
@@ -179,10 +179,10 @@ const en = STRINGS.en;
 </Base>
 
 <script>
-  import { initBuilder } from "../scripts/builder.js";
-  import { initFormsMenu } from "../scripts/forms-menu.js";
-  import { initMorph } from "../scripts/morph.js";
-  import { initIntroInfo } from "../scripts/intro-info.js";
+  import { initBuilder } from "../scripts/builder";
+  import { initFormsMenu } from "../scripts/forms-menu";
+  import { initMorph } from "../scripts/morph";
+  import { initIntroInfo } from "../scripts/intro-info";
 
   initBuilder();
   initFormsMenu();

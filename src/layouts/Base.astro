@@ -6,7 +6,7 @@ import { ClientRouter } from "astro:transitions";
 import SkullField from "../components/SkullField.astro";
 import A11yMenu from "../components/A11yMenu.astro";
 import Tooltip from "../components/Tooltip.astro";
-import { UI_KEY } from "../lib/data.js";
+import { UI_KEY } from "../lib/data";
 import "../styles/main.css";
 
 interface Props {
@@ -94,13 +94,13 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
     <Tooltip />
 
     <script>
-      import { initPrefs, t } from "../lib/prefs.js";
-      import { initTooltip, showTouchHint } from "../lib/tooltip.js";
-      import { initRipple } from "../lib/ripple.js";
-      import { initSkulls } from "../lib/skulls.js";
-      import { initHalftone } from "../lib/halftone.js";
-      import { initWallpaper } from "../scripts/wallpaper.js";
-      import { initInstall } from "../scripts/install.js";
+      import { initPrefs, t } from "../lib/prefs";
+      import { initTooltip, showTouchHint } from "../lib/tooltip";
+      import { initRipple } from "../lib/ripple";
+      import { initSkulls } from "../lib/skulls";
+      import { initHalftone } from "../lib/halftone";
+      import { initWallpaper } from "../scripts/wallpaper";
+      import { initInstall } from "../scripts/install";
 
       initPrefs();
       initHalftone();

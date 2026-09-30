@@ -1,5 +1,5 @@
-import { EN_FONTS, FA_COLOURS, FA_FONTS, STRINGS, TEXT_SIZES, THEME_BY_SLUG, UI_KEY } from "./data.js";
-import { positionPopover } from "./popover.js";
+import { EN_FONTS, FA_COLOURS, FA_FONTS, STRINGS, TEXT_SIZES, THEME_BY_SLUG, UI_KEY } from "./data";
+import { positionPopover } from "./popover";
 
 /* -------- Page preferences --------
    Page language, appearance, text size and fonts, chosen in the

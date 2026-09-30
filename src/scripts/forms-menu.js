@@ -1,5 +1,5 @@
-import { closeA11y } from "../lib/prefs.js";
-import { positionPopover } from "../lib/popover.js";
+import { closeA11y } from "../lib/prefs";
+import { positionPopover } from "../lib/popover";
 
 /* -------- Tablets and phones: the controls in a menu --------
    Under 1024px the accent, edition and CV language controls leave the card

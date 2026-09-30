@@ -1,4 +1,4 @@
-import { positionPopover } from "../lib/popover.js";
+import { positionPopover } from "../lib/popover";
 
 /* -------- The split button (tablets and phones) --------
    On tablets and phones the three actions (Generate, Download, All published copies)

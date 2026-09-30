@@ -12,13 +12,13 @@ import {
   THEME_BY_SLUG,
   TIPS,
   VARIANTS,
-} from "../lib/data.js";
-import { normaliseHex, relativeLuminance, textOn, uiAccent } from "../lib/colour.js";
-import { closeA11y, initPrefs, themeName, t, uiPrefs } from "../lib/prefs.js";
-import { positionPopover } from "../lib/popover.js";
-import { hideTip, setTipContent } from "../lib/tooltip.js";
-import { paintSkulls, setSkullsPaused } from "../lib/skulls.js";
-import { PdfView } from "../lib/pdf-view.js";
+} from "../lib/data";
+import { normaliseHex, relativeLuminance, textOn, uiAccent } from "../lib/colour";
+import { closeA11y, initPrefs, themeName, t, uiPrefs } from "../lib/prefs";
+import { positionPopover } from "../lib/popover";
+import { hideTip, setTipContent } from "../lib/tooltip";
+import { paintSkulls, setSkullsPaused } from "../lib/skulls";
+import { PdfView } from "../lib/pdf-view";
 
 // The CV builder itself: the selection, the colour menu, the published
 // preview and how it expands, the build flow, and what each tooltip says.

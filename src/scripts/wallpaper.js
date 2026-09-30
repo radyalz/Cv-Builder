@@ -1,5 +1,5 @@
-import { positionPopover } from "../lib/popover.js";
-import { t, uiPrefs } from "../lib/prefs.js";
+import { positionPopover } from "../lib/popover";
+import { t, uiPrefs } from "../lib/prefs";
 
 /* -------- Saving the background --------
    While the background is being admired, a download button beside the eye

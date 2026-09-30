@@ -1,6 +1,6 @@
-import { closeA11y } from "../lib/prefs.js";
-import { positionPopover } from "../lib/popover.js";
-import { initTour, renderTopics, startTour } from "./tour.js";
+import { closeA11y } from "../lib/prefs";
+import { positionPopover } from "../lib/popover";
+import { initTour, renderTopics, startTour } from "./tour";
 
 /* -------- How it works --------
    The info button at the end of the name's row opens the explanation for

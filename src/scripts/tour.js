@@ -1,4 +1,4 @@
-import { closeA11y, openA11y, setAdmiring, t, uiPrefs } from "../lib/prefs.js";
+import { closeA11y, openA11y, setAdmiring, t, uiPrefs } from "../lib/prefs";
 
 /* -------- The tour --------
    Started from the "How it works" popover. The page dims, a ring of light
