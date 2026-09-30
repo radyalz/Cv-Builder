@@ -593,3 +593,131 @@ body.is-admiring .wallpaper-toggle {
     max-height: calc(100dvh - 14px - 46px - 16px - 8px);
   }
 }
+
+/* The install offer: bottom-left, clear of the accessibility button in the
+   other corner. It rises in like the How it works popover, stays 30
+   seconds (the bar along its bottom runs down; hovering or focusing it
+   holds the time) and sinks back out. Out of the way while the preview is
+   expanded or the background admired. */
+.install-offer {
+  position: fixed;
+  z-index: 44;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  overflow: hidden;
+  width: min(360px, calc(100vw - 40px - 52px - 20px));
+  align-items: flex-start;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--menu-bg);
+  box-shadow: var(--menu-shadow);
+  gap: 12px;
+}
+
+body.preview-open .install-offer,
+body.is-admiring .install-offer {
+  display: none;
+}
+
+.install-offer-icon {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 12px;
+}
+
+.install-offer-body {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 4px;
+}
+
+.install-offer-title {
+  margin: 0;
+  padding-inline-end: 22px;
+  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.install-offer-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(12.5px * var(--fs));
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.install-offer-button {
+  display: inline-flex;
+  width: max-content;
+  min-height: 36px;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--accent-text);
+  background: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(13.5px * var(--fs) * var(--fa-small));
+  font-weight: 700;
+  gap: 8px;
+}
+
+.install-offer-button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.install-offer-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.install-offer-close {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  width: 30px;
+  height: 30px;
+}
+
+/* The 30 seconds, running down along the bottom edge. */
+.install-offer-time {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+[dir="rtl"] .install-offer-time {
+  transform-origin: 100% 50%;
+}
+
+@media (max-width: 599px) {
+  .install-offer {
+    bottom: 14px;
+    left: 12px;
+    width: calc(100vw - 12px - 46px - 20px - 12px);
+    padding: 12px 12px 14px;
+    gap: 10px;
+  }
+
+  .install-offer-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+}

@@ -89,6 +89,25 @@ const EN_LABELS = { jakarta: "Jakarta", plex: "Plex Sans", grotesk: "Grotesk" };
   </div>
 </div>
 
+<!-- The install offer, rising in the bottom-left corner a few seconds
+     after the page opens where the site can be installed, for 30 seconds
+     (src/scripts/install.js). -->
+<div id="installOffer" class="install-offer" role="dialog" aria-labelledby="installOfferTitle" aria-describedby="installOfferText" hidden>
+  <img class="install-offer-icon" src={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}icons/icon-192.png`} alt="" width="48" height="48" />
+  <div class="install-offer-body">
+    <p id="installOfferTitle" class="install-offer-title" data-i18n="installTitle">{en.installTitle}</p>
+    <p id="installOfferText" class="install-offer-text" data-i18n="installPitch">{en.installPitch}</p>
+    <button id="installOfferButton" class="install-offer-button" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 7v7M9 11.5l3 3 3-3"/></svg>
+      <span data-i18n="installNow">{en.installNow}</span>
+    </button>
+  </div>
+  <button id="installOfferClose" class="reset-icon install-offer-close" type="button" aria-label={en.close} data-i18n-aria="close">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <span class="install-offer-time" aria-hidden="true"></span>
+</div>
+
 <div id="a11yMenu" class="menu a11y-menu" role="dialog" aria-labelledby="a11yTitle" hidden>
   <div class="a11y-head">
     <p id="a11yTitle" class="a11y-title" data-i18n="a11y">{en.a11y}</p>
