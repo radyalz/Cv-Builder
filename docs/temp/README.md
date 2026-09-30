@@ -9,3 +9,5 @@ reading it lives here instead, one file per area.
 - [pdf-view.md](pdf-view.md) — the PDF viewer: loading, pages, links, fit and zoom
 - [prefs.md](prefs.md) — page preferences and the accessibility menu
 - [tooltip.md](tooltip.md) — tooltips: mouse spring, keyboard, touch long-press
+- [skulls.md](skulls.md) — the skull artwork, renderer, drift and performance steps
+- [data.md](data.md) — settings, themes, fonts and both languages' text
