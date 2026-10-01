@@ -59,6 +59,7 @@ export const fa: Partial<Record<StringKey, string>> = {
     howItWorks: "روش کار",
     tourStart: "شروع راهنما",
     tourTopics: "یا تنها یک بخش را مشاهده کنید:",
+    tourExplore: "مشاهده یک بخش",
     tourNext: "بعدی",
     tourBack: "قبلی",
     tourDone: "پایان",

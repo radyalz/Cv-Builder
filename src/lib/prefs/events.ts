@@ -11,6 +11,22 @@ export function resetPrefs(): void {
   applyPrefs({ save: false });
 }
 
+export function closeFontLists(): void {
+  document.querySelectorAll<HTMLElement>("[data-font-lang].is-picking").forEach((group) => {
+    group.classList.remove("is-picking");
+    group.querySelector(".font-trigger")?.setAttribute("aria-expanded", "false");
+  });
+}
+
+function toggleFontList(trigger: HTMLElement): void {
+  const group = trigger.closest<HTMLElement>("[data-font-lang]")!;
+  const opening = !group.classList.contains("is-picking");
+
+  closeFontLists();
+  group.classList.toggle("is-picking", opening);
+  trigger.setAttribute("aria-expanded", String(opening));
+}
+
 function choose(option: HTMLElement): void {
   const { uiLang, theme, fs, enFont, faFont } = option.dataset;
 
@@ -34,9 +50,11 @@ export function onClick(event: MouseEvent): void {
   } else if (menu && isA11yOpen() && target) {
     if (!menu.contains(target)) closeA11y();
     else if (target.closest("#resetPrefs")) resetPrefs();
+    else if (target.closest(".font-trigger")) toggleFontList(target.closest<HTMLElement>(".font-trigger")!);
     else {
       const option = target.closest<HTMLElement>("[role=radio]");
 
+      closeFontLists();
       if (option) choose(option);
     }
   }

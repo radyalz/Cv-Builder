@@ -4,9 +4,9 @@ const installed = (): boolean => !document.getElementById("uninstallApp")?.hidde
 
 export const ACCESSIBILITY: Step[] = [
   { target: "#a11yTrigger", icon: "a11y", title: "tourA11yTitle", text: "tourAccessibilityText", round: true, topic: true },
-  { target: "#a11yMenu > .a11y-group:nth-child(2)", title: "tourPageLangTitle", text: "tourPageLangText", menu: "a11y" },
-  { target: "#a11yMenu > .a11y-group:nth-child(3)", title: "tourAppearanceTitle", text: "tourAppearanceText", menu: "a11y" },
-  { target: "#a11yMenu > .a11y-group:nth-child(4)", title: "tourTextSizeTitle", text: "tourTextSizeText", menu: "a11y" },
+  { target: '#a11yMenu .a11y-group:has([data-a11y="ui-lang"])', title: "tourPageLangTitle", text: "tourPageLangText", menu: "a11y" },
+  { target: '#a11yMenu .a11y-group:has([data-a11y="theme"])', title: "tourAppearanceTitle", text: "tourAppearanceText", menu: "a11y" },
+  { target: '#a11yMenu .a11y-group:has([data-a11y="fs"])', title: "tourTextSizeTitle", text: "tourTextSizeText", menu: "a11y" },
   { target: "#a11yMenu [data-font-lang]:not([hidden])", title: "tourFontTitle", text: "tourFontText", menu: "a11y" },
   {
     target: "#installApp:not([hidden]), #uninstallApp:not([hidden])",

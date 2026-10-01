@@ -76,3 +76,21 @@ language side by side below. Both sit above the accessibility button
 (z-index 47). The preview heading row is the same in both languages: the
 copy's colour, edition and language at its start, the label and arrow at
 its end, next to the preview.
+
+Sideways phones, panels, second pass (2026-10-02):
+
+- How it works and CV options open beside their button (`positionBeside()`
+  in `src/lib/popover.ts`: to the right in English, to the left in Persian,
+  top-aligned and kept on screen). How it works is one column: the
+  explanation, Take the tour, then "Explore one part", which opens the
+  topics as their own small list beside the panel
+  (`scripts/intro-info/explore.ts`: the list is moved to `<body>` while
+  open and back when the panel closes, so the topics render in place
+  elsewhere).
+- The accessibility menu is a two-column grid: page language | appearance,
+  text size | font, admire | install (uninstall's panel spans both). The
+  font is a dropdown field like the accent picker (`.font-trigger`, label
+  and face synced in `applyPrefs`, toggled in `prefs/events.ts`); its list
+  opens upward inside the menu so choices still count as menu clicks.
+  Tour steps for the menu's groups are found by their control
+  (`:has([data-a11y=…])`), not by position.

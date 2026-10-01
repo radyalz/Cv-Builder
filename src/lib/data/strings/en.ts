@@ -57,6 +57,7 @@ export const en = {
     howItWorks: "How it works",
     tourStart: "Take the tour",
     tourTopics: "Or explore a single part:",
+    tourExplore: "Explore one part",
     tourNext: "Next",
     tourBack: "Back",
     tourDone: "Done",

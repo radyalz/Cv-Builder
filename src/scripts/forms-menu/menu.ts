@@ -1,4 +1,5 @@
-import { positionPopover } from "../../lib/popover";
+import { LANDSCAPE_PHONE } from "../../lib/layout";
+import { positionBeside, positionPopover } from "../../lib/popover";
 import { closeA11y } from "../../lib/prefs";
 import { reversible } from "../../lib/reversible";
 
@@ -14,6 +15,12 @@ export function formsMenu(trigger: HTMLElement, menu: HTMLElement): FormsMenu {
   let open = false;
 
   const place = () => {
+    if (window.matchMedia(LANDSCAPE_PHONE).matches) {
+      menu.style.width = "";
+      positionBeside(trigger, menu);
+      return;
+    }
+
     menu.style.width = `${trigger.getBoundingClientRect().width}px`;
     positionPopover(trigger, menu);
     menu.style.transformOrigin =

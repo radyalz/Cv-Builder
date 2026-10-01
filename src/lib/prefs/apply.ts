@@ -52,6 +52,16 @@ function syncMenu(menu: HTMLElement): void {
     option.setAttribute("aria-checked", String(isCurrent(option)));
   });
 
+  menu.querySelectorAll<HTMLElement>("[data-font-lang]").forEach((group) => {
+    const chosen = group.querySelector<HTMLElement>('.font-option[aria-checked="true"]');
+    const label = group.querySelector<HTMLElement>(".font-trigger-label");
+
+    if (chosen && label) {
+      label.textContent = chosen.textContent!.trim();
+      label.style.fontFamily = getComputedStyle(chosen).fontFamily;
+    }
+  });
+
   if (!menu.hidden) {
     followMenu(menu);
   }

@@ -74,6 +74,8 @@ export function closeA11y(): void {
 
   menuOpen = false;
   menu.style.pointerEvents = "none";
+  menu.querySelectorAll("[data-font-lang].is-picking").forEach((group) => group.classList.remove("is-picking"));
+  menu.querySelectorAll(".font-trigger").forEach((trigger) => trigger.setAttribute("aria-expanded", "false"));
   triggerElement()?.setAttribute("aria-expanded", "false");
 
   const motion = menuAnimation(menu);

@@ -1,20 +1,27 @@
+import { LANDSCAPE_PHONE } from "../../lib/layout";
 import { initTour, startTour } from "../tour";
 import { callForAttention } from "./call";
+import { explore, type Explore } from "./explore";
 import { introPopover, type IntroPopover } from "./popover";
 
 let started = false;
 
-function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover): void {
+function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover, list: Explore): void {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     popover.isOpen() ? popover.hide() : popover.show();
   });
 
   document.addEventListener("click", (event) => {
-    if (popover.isOpen() && !pop.contains(event.target as Node)) popover.hide();
+    if (popover.isOpen() && !pop.contains(event.target as Node) && !list.contains(event.target as Node)) popover.hide();
   });
 
-  pop.addEventListener("click", (event) => {
+  const onStart = (event: Event) => {
+    if ((event.target as Element).closest("#tourExplore")) {
+      list.toggle();
+      return;
+    }
+
     const start = (event.target as Element).closest<HTMLElement>("#tourStart, .tour-topic");
 
     if (start) {
@@ -22,7 +29,10 @@ function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover): voi
       popover.hide({ instant: true });
       startTour(Number(start.dataset.step || 0));
     }
-  });
+  };
+
+  pop.addEventListener("click", onStart);
+  document.getElementById("tourTopicsBox")!.addEventListener("click", onStart);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && popover.isOpen()) popover.hide({ refocus: true });
@@ -32,7 +42,9 @@ function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover): voi
     if ((event as CustomEvent).detail !== "intro") popover.hide();
   });
 
-  window.matchMedia("(max-width: 1023px)").addEventListener("change", () => popover.hide({ instant: true }));
+  for (const query of ["(max-width: 1023px)", LANDSCAPE_PHONE]) {
+    window.matchMedia(query).addEventListener("change", () => popover.hide({ instant: true }));
+  }
   window.addEventListener("resize", () => popover.isOpen() && popover.place());
 }
 
@@ -47,5 +59,7 @@ export function initIntroInfo(): void {
   started = true;
   callForAttention(button);
   initTour();
-  wire(button, pop, introPopover(button, pop));
+  const list = explore(document.getElementById("tourExplore")!, document.getElementById("tourTopicsBox")!, pop);
+
+  wire(button, pop, introPopover(button, pop, list.close), list);
 }

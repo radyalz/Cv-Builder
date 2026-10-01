@@ -1,4 +1,5 @@
-import { positionPopover } from "../../lib/popover";
+import { LANDSCAPE_PHONE } from "../../lib/layout";
+import { positionBeside, positionPopover } from "../../lib/popover";
 import { closeA11y } from "../../lib/prefs";
 import { reversible } from "../../lib/reversible";
 import { renderTopics } from "../tour";
@@ -10,11 +11,16 @@ export interface IntroPopover {
   place(): void;
 }
 
-export function introPopover(button: HTMLElement, pop: HTMLElement): IntroPopover {
+export function introPopover(button: HTMLElement, pop: HTMLElement, onHide: () => void): IntroPopover {
   const motion = reversible(pop, { opacity: 0, transform: "translateY(-6px) scale(0.94)" }, 240);
   let open = false;
 
   const place = () => {
+    if (window.matchMedia(LANDSCAPE_PHONE).matches) {
+      positionBeside(button, pop);
+      return;
+    }
+
     positionPopover(button, pop);
 
     const box = pop.getBoundingClientRect();
@@ -45,6 +51,7 @@ export function introPopover(button: HTMLElement, pop: HTMLElement): IntroPopove
       }
 
       open = false;
+      onHide();
       pop.style.pointerEvents = "none";
       button.setAttribute("aria-expanded", "false");
 
