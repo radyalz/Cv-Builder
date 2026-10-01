@@ -909,7 +909,7 @@
   display: none;
 }
 
-@media (max-width: 599px) {
+@media (max-width: 599px), (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
   .builder-card:not(.is-expanded) .preview-frame::after {
     position: absolute;
     right: 0;

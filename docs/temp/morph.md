@@ -44,3 +44,10 @@ breakpoints and `.preview-foot` one of its parts, so the move slides. The
 expand animation pins only parts not inside another pinned part
 (`pinnedParts()` in `builder/expand/pin.ts`), so the foot then travels with
 the text column.
+
+Sideways phones otherwise follow phone mode (`PEEK` in `src/lib/layout.ts`,
+shared by the CSS media queries and `isPhone()`): How it works is the round
+icon button, the preview is a peek that opens when tapped (with the "tap to
+expand" pill, no Expand button), and the moved foot is one outlined row like
+the CV options field: the publish date (cut short with an ellipsis if
+needed) and the clickable-links pill at its end.

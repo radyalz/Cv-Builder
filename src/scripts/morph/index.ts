@@ -1,10 +1,11 @@
 import { growPart, morphPart } from "./animate";
 import { boxOf, union, type Boxes } from "./boxes";
-import { LANDSCAPE, placeFoot } from "./foot";
+import { LANDSCAPE_PHONE } from "../../lib/layout";
+import { placeFoot } from "./foot";
 import { watchLayout, type Memory } from "./memory";
 import { partElements } from "./parts";
 
-const BREAKPOINTS = ["(max-width: 599px)", "(max-width: 1023px)", "(max-width: 399px)", "(max-width: 349px)", LANDSCAPE];
+const BREAKPOINTS = ["(max-width: 599px)", "(max-width: 1023px)", "(max-width: 399px)", "(max-width: 349px)", LANDSCAPE_PHONE];
 
 let started = false;
 
@@ -70,7 +71,7 @@ export function initMorph(): void {
   const crossing = onCrossing(card, memory);
 
   placeFoot();
-  window.matchMedia(LANDSCAPE).addEventListener("change", placeFoot);
+  window.matchMedia(LANDSCAPE_PHONE).addEventListener("change", placeFoot);
 
   for (const query of BREAKPOINTS) {
     window.matchMedia(query).addEventListener("change", crossing);

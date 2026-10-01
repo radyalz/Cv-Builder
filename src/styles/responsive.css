@@ -618,7 +618,7 @@
   stroke-width: 2;
 }
 
-@media (max-width: 599px) {
+@media (max-width: 599px), (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
   .intro-info {
     width: 40px;
     justify-content: center;
@@ -839,13 +839,46 @@
 }
 
 @media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
-  .card-main > .preview-foot {
-    justify-content: flex-start;
-    margin-top: 14px;
-    padding-right: 0;
+  .builder-card:not(.is-expanded) .preview-frame {
+    cursor: zoom-in;
   }
 
-  .card-main > .preview-foot #previewExpand {
-    margin-inline-start: auto;
+  .builder-card:not(.is-expanded) .pdf-view {
+    overflow: hidden;
+  }
+
+  .builder-card:not(.is-expanded) .pdf-links {
+    pointer-events: none;
+  }
+
+  #previewExpand {
+    display: none;
+  }
+
+  .card-main > .preview-foot {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    min-height: 38px;
+    margin-top: 12px;
+    padding: 4px 4px 4px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    gap: 10px;
+  }
+
+  [dir="rtl"] .card-main > .preview-foot {
+    padding: 4px 12px 4px 4px;
+  }
+
+  .card-main > .preview-foot .preview-meta {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-main > .preview-foot .links-hint {
+    flex: none;
+    margin: 0;
   }
 }

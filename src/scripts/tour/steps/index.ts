@@ -1,3 +1,4 @@
+import { PEEK } from "../../../lib/layout";
 import { onScreen } from "../dom";
 import { matches, type Step } from "../types";
 import { ACCESSIBILITY } from "./a11y";
@@ -31,7 +32,7 @@ const COMPACT_STEPS: Step[] = [
     target: ".preview-frame",
     icon: "preview",
     title: "tourPreviewTitle",
-    text: () => (matches("(max-width: 599px)") ? "tourPreviewPhone" : "tourPreviewTablet"),
+    text: () => (matches(PEEK) ? "tourPreviewPhone" : "tourPreviewTablet"),
     topic: true,
   },
   LINKS,

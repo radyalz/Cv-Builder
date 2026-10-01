@@ -1,4 +1,4 @@
-export const LANDSCAPE = "(max-width: 1023px) and (orientation: landscape) and (max-height: 600px)";
+import { LANDSCAPE_PHONE } from "../../lib/layout";
 
 export function placeFoot(): void {
   const foot = document.querySelector<HTMLElement>(".preview-foot");
@@ -9,7 +9,7 @@ export function placeFoot(): void {
     return;
   }
 
-  if (window.matchMedia(LANDSCAPE).matches) {
+  if (window.matchMedia(LANDSCAPE_PHONE).matches) {
     if (foot.parentElement !== main) main.append(foot);
   } else if (foot.previousElementSibling !== frame) {
     frame.after(foot);
