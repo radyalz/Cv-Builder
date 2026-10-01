@@ -618,7 +618,7 @@
   stroke-width: 2;
 }
 
-@media (max-width: 599px), (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+@media (max-width: 599px) {
   .intro-info {
     width: 40px;
     justify-content: center;
@@ -858,8 +858,8 @@
   .card-main > .preview-foot {
     flex-wrap: nowrap;
     justify-content: space-between;
-    min-height: 38px;
-    margin-top: 12px;
+    min-height: 34px;
+    margin-top: 10px;
     padding: 4px 4px 4px 12px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -881,4 +881,93 @@
     flex: none;
     margin: 0;
   }
+}
+
+.preview-pointer {
+  display: none;
+}
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  .card-main > * {
+    flex-shrink: 0;
+  }
+
+  .title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .intro-info {
+    height: 32px;
+    padding: 0 12px 0 8px;
+  }
+
+  .intro-info svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .forms-entry {
+    margin-top: 14px;
+  }
+
+  .action-split {
+    height: 40px;
+    margin-top: 10px;
+  }
+
+  [dir="rtl"] .a11y-trigger {
+    right: auto;
+    left: 20px;
+  }
+
+  [dir="rtl"] .admire-toggle {
+    right: auto;
+    left: 84px;
+  }
+
+  [dir="rtl"] .wallpaper-toggle {
+    left: calc(84px + 40px + 8px);
+  }
+
+  [dir="rtl"] .install-offer {
+    right: 20px;
+    left: auto;
+  }
+
+  .card-main > .preview-head {
+    justify-content: flex-start;
+    align-items: center;
+    margin: 8px 0 0;
+    gap: 8px;
+  }
+
+  .card-main > .preview-head .preview-pointer {
+    display: block;
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: var(--accent);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    animation: preview-point 2.2s ease-in-out infinite;
+  }
+
+  [dir="rtl"] .card-main > .preview-head .preview-pointer {
+    transform: scaleX(-1);
+    animation-name: preview-point-rtl;
+  }
+}
+
+@keyframes preview-point {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+@keyframes preview-point-rtl {
+  0%, 100% { transform: scaleX(-1) translateX(0); }
+  50% { transform: scaleX(-1) translateX(4px); }
 }

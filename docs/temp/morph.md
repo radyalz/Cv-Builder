@@ -51,3 +51,14 @@ icon button, the preview is a peek that opens when tapped (with the "tap to
 expand" pill, no Expand button), and the moved foot is one outlined row like
 the CV options field: the publish date (cut short with an ellipsis if
 needed) and the clickable-links pill at its end.
+
+Later the same day: on sideways phones How it works is the labelled pill
+again, under the name (the title row stacks), and the preview's heading
+(label and the copy's colour, edition and language) moves under the date
+and links row too, led by an accent arrow (`.preview-pointer`, nudging
+toward the preview; mirrored in Persian). `placeFoot()` moves both and puts
+the heading back as the preview's first child otherwise. The column is
+compacted (no shrinking children, shorter pill and button) to fit 360px-tall
+screens, and in Persian the accessibility button (with admire, wallpaper and
+the install card mirrored) sits bottom-left over the preview's corner, as it
+does bottom-right in English, instead of covering the text column.
