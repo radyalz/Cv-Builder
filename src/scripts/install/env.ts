@@ -1,5 +1,3 @@
-import type { StringKey } from "../../lib/data";
-
 export interface InstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
@@ -46,14 +44,16 @@ function isChromium(): boolean {
 
 const isMacSafari = (): boolean => /Macintosh/.test(navigator.userAgent) && /Version\/1[7-9]|Version\/[2-9]\d/.test(navigator.userAgent);
 
-export function manualSteps(): StringKey | null {
+export type HowTo = "Ios" | "Android" | "Desktop" | "Mac";
+
+export function manualSteps(): HowTo | null {
   const where = platform();
 
-  if (where === "ios") return "installIos";
-  if (where === "android") return "installAndroid";
-  if (isChromium()) return "installDesktop";
+  if (where === "ios") return "Ios";
+  if (where === "android") return "Android";
+  if (isChromium()) return "Desktop";
 
-  return isMacSafari() ? "installMac" : null;
+  return isMacSafari() ? "Mac" : null;
 }
 
 export async function installedElsewhere(): Promise<boolean> {

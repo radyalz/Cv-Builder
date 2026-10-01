@@ -5,7 +5,7 @@ import { refit, removeOfflineCopy } from "./worker";
 
 const HOW_KEYS = { desktop: "uninstallDesktop", android: "uninstallAndroid", ios: "uninstallIos" };
 
-export function setUpUninstall(installButton: HTMLElement, installSteps: HTMLElement): () => void {
+export function setUpUninstall(installButton: HTMLElement): () => void {
   const uninstall = document.getElementById("uninstallApp")!;
   const panel = document.getElementById("uninstallPanel")!;
   const how = panel.querySelector<HTMLElement>(".uninstall-how")!;
@@ -29,7 +29,6 @@ export function setUpUninstall(installButton: HTMLElement, installSteps: HTMLEle
   return () => {
     uninstall.hidden = false;
     installButton.hidden = true;
-    installSteps.hidden = true;
     how.dataset.i18n = howKey;
     how.textContent = t(howKey);
   };

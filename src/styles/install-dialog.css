@@ -1,0 +1,136 @@
+.install-dialog {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  background: var(--menu-bg);
+  box-shadow: var(--menu-shadow);
+}
+
+.install-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.install-dialog[open] {
+  display: grid;
+  gap: 18px;
+}
+
+.install-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.install-dialog-icon {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.install-dialog-heading {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 4px;
+}
+
+.install-dialog-title {
+  margin: 0;
+  font-size: calc(16px * var(--fs) * var(--fa-small));
+  font-weight: 750;
+}
+
+.install-dialog-lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(13px * var(--fs));
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.install-dialog-close {
+  flex: none;
+  margin: -6px -6px 0 0;
+}
+
+.install-dialog-steps {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+  gap: 10px;
+  list-style: none;
+}
+
+.install-dialog-step {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  counter-increment: step;
+  gap: 12px;
+}
+
+.install-step-mark {
+  position: relative;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-soft);
+  place-items: center;
+}
+
+.install-step-mark::after {
+  position: absolute;
+  top: -4px;
+  inset-inline-end: -4px;
+  display: grid;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  color: var(--accent-text);
+  background: var(--accent);
+  content: counter(step);
+  font-size: 10.5px;
+  font-weight: 800;
+  place-items: center;
+}
+
+.install-step-mark svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.install-step-text {
+  font-size: calc(13.5px * var(--fs) * var(--fa-small));
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.install-dialog-done {
+  justify-self: end;
+  margin: 0;
+}
+
+[dir="rtl"] .install-dialog-close {
+  margin: -6px 0 0 -6px;
+}
+
+[dir="rtl"] .install-step-mark::after {
+  content: counter(step, persian);
+}

@@ -1,0 +1,24 @@
+---
+import Icon from "../Icon.astro";
+import { STRINGS } from "../../lib/data";
+
+const en = STRINGS.en;
+const icon = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}icons/icon-192.png`;
+---
+
+<dialog id="installDialog" class="install-dialog" aria-labelledby="installDialogTitle" aria-describedby="installDialogLead">
+  <div class="install-dialog-head">
+    <img class="install-dialog-icon" src={icon} alt="" width="56" height="56" />
+    <div class="install-dialog-heading">
+      <p id="installDialogTitle" class="install-dialog-title" data-i18n="installTitle">{en.installTitle}</p>
+      <p id="installDialogLead" class="install-dialog-lead" data-i18n="installHowLead">{en.installHowLead}</p>
+    </div>
+    <button class="reset-icon install-dialog-close" type="button" aria-label={en.close} data-i18n-aria="close">
+      <Icon name="close" />
+    </button>
+  </div>
+
+  <ol class="install-dialog-steps"></ol>
+
+  <button class="install-offer-button install-dialog-done" type="button" data-i18n="installDone">{en.installDone}</button>
+</dialog>

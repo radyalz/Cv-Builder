@@ -18,14 +18,13 @@ export function initInstall(production: boolean): void {
   }
 
   const button = document.getElementById("installApp");
-  const steps = document.getElementById("installSteps");
   const element = document.getElementById("installOffer");
 
-  if (!button || !steps || !element) {
+  if (!button || !element) {
     return;
   }
 
-  const showUninstall = setUpUninstall(button, steps);
+  const showUninstall = setUpUninstall(button);
 
   if (isInstalled()) {
     showUninstall();
@@ -37,5 +36,5 @@ export function initInstall(production: boolean): void {
     return installed;
   });
 
-  invite(production, button, steps, element, elsewhere);
+  invite(production, button, element, elsewhere);
 }

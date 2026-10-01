@@ -1,5 +1,3 @@
-import type { StringKey } from "../../lib/data";
-import { t } from "../../lib/prefs";
 import { countdown } from "./countdown";
 import { isInstalled } from "./env";
 
@@ -10,7 +8,6 @@ const SHOWN: Keyframe = { opacity: 1, transform: "none" };
 export interface Offer {
   schedule(): void;
   hide(): void;
-  refresh(): void;
 }
 
 export function whenLoaded(run: () => void): void {
@@ -20,20 +17,10 @@ export function whenLoaded(run: () => void): void {
 
 const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null): Offer {
-  const text = document.getElementById("installOfferText")!;
-  const button = document.getElementById("installOfferButton")!;
+export function createOffer(offer: HTMLElement): Offer {
   const timer = countdown(offer, offer.querySelector<HTMLElement>(".install-offer-time")!, OFFER_MS, () => hide());
   let offered = false;
   let open = false;
-
-  function refresh(): void {
-    const key = stepsKey() ?? "installPitch";
-
-    text.dataset.i18n = key;
-    text.textContent = t(key);
-    button.hidden = key !== "installPitch";
-  }
 
   function show(): void {
     if (offered || isInstalled()) {
@@ -41,7 +28,6 @@ export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null
     }
 
     offered = open = true;
-    refresh();
     offer.hidden = false;
     timer.start();
 
@@ -72,6 +58,5 @@ export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null
   return {
     schedule: () => whenLoaded(show),
     hide,
-    refresh,
   };
 }

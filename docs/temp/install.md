@@ -78,3 +78,16 @@ like the favicon; `maskable-512` full-bleed and widened to 350px (115,5) so
 the face stays inside the maskable safe zone; `apple-touch-icon` square (iOS
 fills transparency with black). Quantised to 256 colours to keep the
 precache small.
+
+## The install dialog (2026-10-01)
+
+The Install button is always there, on the offer and in the accessibility
+menu. Where the browser has announced installability it opens the browser's
+own prompt; otherwise (and if that prompt is refused) it opens
+`#installDialog` (`InstallDialog.astro`, `dialog.ts`, `install-dialog.css`): a
+native modal `<dialog>` with the portrait, a lead line and three numbered
+steps for this device (`install{Ios|Android|Desktop|Mac}{1..3}`, chosen by
+`manualSteps()`), each with its own icon. "Got it", ×, a click on the backdrop
+or Escape close it with a short animation. This replaces the old line of
+instructions that used to swap in for the Install button: in DevTools' iPhone
+presets (iPhone user agent) that made the button seem to vanish.
