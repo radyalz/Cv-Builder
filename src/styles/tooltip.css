@@ -183,3 +183,8 @@
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+body:has(#installOffer:not([hidden])) .touch-hint {
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  bottom: auto;
+}

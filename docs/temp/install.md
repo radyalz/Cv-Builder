@@ -22,11 +22,12 @@
 
 - The worker registers only in the built site (`initInstall(PROD)`), so
   development never serves a stale cached copy.
-- **Offer** (`offer.ts`): rises in the bottom-left corner 7s after load (after
-  the touch hint has gone), for 30 seconds; hovering or focusing it holds the
-  time. Closing it (× or Escape) keeps it away for 14 days on this device
-  (`cv-builder-install-offer`); letting it run out only for the visit
-  (`sessionStorage`). `?install` in the address shows it regardless. Any menu
+- **Offer** (`offer.ts`): rises in the bottom-left corner as soon as the page
+  has loaded, for 30 seconds (a first-visit touch hint moves to the top of the
+  screen while it is up); hovering or focusing it holds the
+  time. Closing it (× or Escape) keeps it away for 7 days on this device
+  (`cv-builder-install-offer`); letting it run out brings it back on the
+  next load. `?install` in the address shows it regardless. Any menu
   opening hides it. Hidden while the preview is expanded or the background
   admired (CSS).
 - **Installing**: Chrome, Edge and Samsung Internet announce installability;
