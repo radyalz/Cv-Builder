@@ -956,7 +956,13 @@
     animation: preview-point 2.2s ease-in-out infinite;
   }
 
+  [dir="rtl"] .card-main > .preview-head .preview-title {
+    order: -1;
+    margin-inline-end: auto;
+  }
+
   [dir="rtl"] .card-main > .preview-head .preview-pointer {
+    order: 1;
     transform: scaleX(-1);
     animation-name: preview-point-rtl;
   }

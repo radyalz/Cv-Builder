@@ -62,3 +62,7 @@ compacted (no shrinking children, shorter pill and button) to fit 360px-tall
 screens, and in Persian the accessibility button (with admire, wallpaper and
 the install card mirrored) sits bottom-left over the preview's corner, as it
 does bottom-right in English, instead of covering the text column.
+
+In Persian the heading row is spread across the column: the copy's colour,
+edition and language at its start (right), "پیش‌نمایش" and the arrow at its
+far end (left), next to the preview.
