@@ -13,6 +13,8 @@ export const ICONS = {
   expand: '<path d="M15 4h5v5M9 20H4v-5M20 4l-6.5 6.5M4 20l6.5-6.5"/>',
   a11y: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="7.6" r="1.1"/><path d="M8 10.2c2.7.7 5.3.7 8 0M12 10.8v3.4M10 17.5l2-3.3 2 3.3"/>',
   admire: '<path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+  install: '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 7v7M9 11.5l3 3 3-3"/>',
+  wallpaper: '<rect x="3" y="4.5" width="18" height="13" rx="2"/><path d="M12 8v6M9.5 11.5l2.5 2.5 2.5-2.5M8 20.5h8"/>',
 };
 
 export type IconName = keyof typeof ICONS;

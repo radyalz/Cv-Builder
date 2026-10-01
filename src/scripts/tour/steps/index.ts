@@ -1,6 +1,7 @@
 import { onScreen } from "../dom";
 import { matches, type Step } from "../types";
-import { ACCESSIBILITY, ACTION_ITEMS, EXPAND, EXPANDED, LINKS } from "./parts";
+import { ACCESSIBILITY } from "./a11y";
+import { ACTION_ITEMS, EXPAND, EXPANDED, LINKS } from "./parts";
 
 const DESKTOP_STEPS: Step[] = [
   { target: "#colourTrigger", icon: "accent", title: "tourAccentTitle", text: "tourAccentText", topic: true },
@@ -39,10 +40,13 @@ const COMPACT_STEPS: Step[] = [
   ...ACCESSIBILITY,
 ];
 
+const present = (step: Step): boolean =>
+  step.menu ? Boolean(document.querySelector(step.target)) : onScreen(document.querySelector(step.target));
+
 export function currentSteps(): Step[] {
   const steps = matches("(max-width: 1023px)") ? COMPACT_STEPS : DESKTOP_STEPS;
 
   return steps.filter(
-    (step) => (!step.when || matches(step.when)) && (!step.optional || onScreen(document.querySelector(step.target)))
+    (step) => (!step.when || matches(step.when)) && (!step.optional || present(step))
   );
 }

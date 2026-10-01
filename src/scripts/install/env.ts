@@ -1,3 +1,5 @@
+import type { StringKey } from "../../lib/data";
+
 export interface InstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
@@ -10,6 +12,7 @@ declare global {
   interface Navigator {
     standalone?: boolean;
     getInstalledRelatedApps?: () => Promise<{ platform: string }[]>;
+    userAgentData?: { brands: { brand: string }[] };
   }
 }
 
@@ -33,6 +36,24 @@ export function platform(): Platform {
   if (isAppleMobile()) return "ios";
   if (/Android/.test(navigator.userAgent)) return "android";
   return "desktop";
+}
+
+function isChromium(): boolean {
+  const brands = navigator.userAgentData?.brands;
+
+  return brands ? brands.some(({ brand }) => /Chromium|Chrome|Edge/.test(brand)) : /Chrome\/|Edg\//.test(navigator.userAgent);
+}
+
+const isMacSafari = (): boolean => /Macintosh/.test(navigator.userAgent) && /Version\/1[7-9]|Version\/[2-9]\d/.test(navigator.userAgent);
+
+export function manualSteps(): StringKey | null {
+  const where = platform();
+
+  if (where === "ios") return "installIos";
+  if (where === "android") return "installAndroid";
+  if (isChromium()) return "installDesktop";
+
+  return isMacSafari() ? "installMac" : null;
 }
 
 export async function installedElsewhere(): Promise<boolean> {

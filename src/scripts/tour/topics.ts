@@ -1,6 +1,7 @@
 import { t } from "../../lib/prefs";
 import { ICONS } from "./icons";
 import { currentSteps } from "./steps";
+import { keyOf } from "./types";
 
 export function renderTopics(container: Element): void {
   const steps = currentSteps();
@@ -16,7 +17,7 @@ export function renderTopics(container: Element): void {
         button.className = "tour-topic";
         button.dataset.step = String(steps.indexOf(step));
         button.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[step.icon!]}</svg>`;
-        label.textContent = t(step.title);
+        label.textContent = t(keyOf(step.title));
         button.append(label);
 
         return button;

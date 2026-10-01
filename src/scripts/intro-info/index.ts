@@ -18,6 +18,7 @@ function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover): voi
     const start = (event.target as Element).closest<HTMLElement>("#tourStart, .tour-topic");
 
     if (start) {
+      event.stopPropagation();
       popover.hide({ instant: true });
       startTour(Number(start.dataset.step || 0));
     }

@@ -36,16 +36,6 @@ export const EXPANDED: Step[] = [
   { target: "#previewCollapse", title: "close", text: "tourCloseText", menu: "expanded" },
 ];
 
-export const ACCESSIBILITY: Step[] = [
-  { target: "#a11yTrigger", icon: "a11y", title: "tourA11yTitle", text: "tourAccessibilityText", round: true, topic: true },
-  { target: "#a11yMenu > .a11y-group:nth-child(2)", title: "tourPageLangTitle", text: "tourPageLangText", menu: "a11y" },
-  { target: "#a11yMenu > .a11y-group:nth-child(3)", title: "tourAppearanceTitle", text: "tourAppearanceText", menu: "a11y" },
-  { target: "#a11yMenu > .a11y-group:nth-child(4)", title: "tourTextSizeTitle", text: "tourTextSizeText", menu: "a11y" },
-  { target: "#a11yMenu [data-font-lang]:not([hidden])", title: "tourFontTitle", text: "tourFontText", menu: "a11y" },
-  { target: "#admireFromMenu", icon: "admire", title: "tourAdmireButtonTitle", text: "tourAdmireButtonText", menu: "a11y", topic: true },
-  { target: "#admireToggle", title: "tourAdmireTitle", text: "tourAdmireText", admire: true, round: true },
-];
-
 export const ACTION_ITEMS: Step[] = [
   { target: '#actionMenu [data-action="generate"]', title: "tourGenerateTitle", text: "tourGenerateText", menu: "actions" },
   { target: '#actionMenu [data-action="download"]', title: "tourDownloadTitle", text: "tourDownloadText", menu: "actions" },

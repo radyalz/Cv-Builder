@@ -1,7 +1,6 @@
-const DISMISS_DAYS = 14;
+const DISMISS_DAYS = 7;
 
 export const DISMISS_KEY = "cv-builder-install-offer";
-export const SHOWN_KEY = "cv-builder-install-offer-shown";
 export const OFFLINE_OFF_KEY = "cv-builder-offline-off";
 
 export function readStore(store: Storage, key: string): string | null {

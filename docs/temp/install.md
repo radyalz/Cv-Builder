@@ -46,3 +46,21 @@
 Checked against the previous single file: identical behaviour for the offer
 (timing, position, hold, dismissal, `?install`), iPhone steps, the uninstall
 steps on desktop/Android/iPhone, and removing the offline copy.
+
+## When the install card shows (2026-10-01)
+
+- It shows on every page load, 7s in, until the visitor closes it with ×;
+  closing hides it for 7 days (`cv-builder-install-offer`). The old
+  once-per-tab rule is gone: reloading the same tab never brought it back,
+  which looked like it was broken.
+- Chrome does not always announce that the site is installable
+  (`beforeinstallprompt`), e.g. after the app was uninstalled. If no
+  announcement has come 9s in, browsers that can install by hand get the
+  card anyway, with their own steps instead of the Install button
+  (`manualSteps()` in `env.ts`: Chromium desktop, Android, iPhone/iPad,
+  Safari on macOS 17+). Firefox on desktop cannot install sites, so it gets
+  nothing. The Install button in the accessibility menu shows the same steps.
+- If the announcement comes after the card is up, the card switches back to
+  the Install button (`offer.refresh()`).
+- `invite.ts` runs this; `countdown.ts` is the 30s bar, which pauses while
+  hovered or focused.

@@ -6,6 +6,7 @@ const TRIGGERS: Record<Exclude<StageMenu, "expanded">, string> = {
   forms: "#formsTrigger",
   actions: ".split-toggle",
   a11y: "#a11yTrigger",
+  wallpaper: "#wallpaperToggle",
 };
 
 const click = (selector: string) => document.querySelector<HTMLElement>(selector)?.click();

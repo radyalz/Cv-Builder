@@ -4,6 +4,7 @@ import { placeCard, placeSpot } from "./geometry";
 import { still, type Session } from "./session";
 import { stage, unstage } from "./stage";
 import { currentSteps } from "./steps";
+import { keyOf } from "./types";
 
 const SETTLE_MS = 300;
 
@@ -21,11 +22,10 @@ export function place(session: Session): void {
 function describe(session: Session): void {
   const { steps, index } = session;
   const step = steps[index];
-  const textKey = typeof step.text === "function" ? step.text() : step.text;
 
   session.stepLabel.textContent = t("tourStep", { n: number(index + 1), total: number(steps.length) });
-  session.title.textContent = t(step.title);
-  session.text.textContent = t(textKey);
+  session.title.textContent = t(keyOf(step.title));
+  session.text.textContent = t(keyOf(step.text));
   session.back.hidden = index === 0;
   session.next.textContent = t(index === steps.length - 1 ? "tourDone" : "tourNext");
 }

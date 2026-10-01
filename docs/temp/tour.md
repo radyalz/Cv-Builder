@@ -54,3 +54,17 @@ Checked against the previous single file at desktop, tablet and phone in both
 languages: identical steps, text, menus and positions, except the ring on the
 accessibility step after the expanded preview, which is now always the
 settled size.
+
+## Install and wallpaper steps (2026-10-01)
+
+- After the fonts: Install as an app (or Uninstall, once installed), with a
+  topic of its own. It is optional, so it is left out where the browser
+  cannot install; menu steps are checked for being in the page rather than on
+  screen, since their menu is still closed when the list is made.
+- After admiring: the wallpaper button, then its menu (`wallpaper` stage
+  menu, opened through `#wallpaperToggle`): image, then video (left out where
+  the browser cannot record).
+- Step titles can be computed like texts (`keyOf`).
+- A topic click stops at the intro: before, it reached the page's
+  outside-click handlers, which shut the menu the topic had just opened, so
+  the tour skipped past every step inside it.
