@@ -937,13 +937,16 @@
     animation: preview-point 2.2s ease-in-out infinite;
   }
 
-  [dir="rtl"] .card-main > .preview-head .preview-title {
+  .card-main > .preview-head .preview-title {
     order: -1;
     margin-inline-end: auto;
   }
 
-  [dir="rtl"] .card-main > .preview-head .preview-pointer {
+  .card-main > .preview-head .preview-pointer {
     order: 1;
+  }
+
+  [dir="rtl"] .card-main > .preview-head .preview-pointer {
     transform: scaleX(-1);
     animation-name: preview-point-rtl;
   }
@@ -957,4 +960,69 @@
 @keyframes preview-point-rtl {
   0%, 100% { transform: scaleX(-1) translateX(0); }
   50% { transform: scaleX(-1) translateX(4px); }
+}
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  .forms-menu .controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .forms-menu .controls .control:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .intro-pop,
+  .forms-menu {
+    z-index: 47;
+  }
+
+  .intro-pop {
+    display: grid;
+    width: min(660px, calc(100vw - 24px));
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    align-content: start;
+    column-gap: 22px;
+    grid-template-areas:
+      "title start"
+      "text label"
+      "text topics";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    overscroll-behavior: contain;
+  }
+
+  .intro-title {
+    grid-area: title;
+    align-self: center;
+    margin: 0;
+  }
+
+  .intro-text {
+    grid-area: text;
+    margin-top: 8px;
+    font-size: calc(13.5px * var(--fs));
+    line-height: 1.6;
+  }
+
+  .tour-start {
+    grid-area: start;
+    margin-top: 0;
+  }
+
+  .tour-topics-label {
+    grid-area: label;
+    margin: 12px 0 8px;
+  }
+
+  .tour-topics {
+    grid-area: topics;
+    align-content: start;
+  }
+
+  .tour-topic {
+    min-height: 32px;
+    padding: 0 10px;
+  }
 }

@@ -67,3 +67,12 @@ covers it.
 In Persian the heading row is spread across the column: the copy's colour,
 edition and language at its start (right), "پیش‌نمایش" and the arrow at its
 far end (left), next to the preview.
+
+Sideways phones, panels (2026-10-02): How it works opens as one wide
+two-column panel (intro text on one side; Take the tour and the topics on
+the other), capped to the screen height and scrolling inside if needed;
+the CV options menu puts the accent on its own row with edition and
+language side by side below. Both sit above the accessibility button
+(z-index 47). The preview heading row is the same in both languages: the
+copy's colour, edition and language at its start, the label and arrow at
+its end, next to the preview.
