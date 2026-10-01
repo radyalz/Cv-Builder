@@ -544,7 +544,7 @@ body.is-admiring .wallpaper-toggle {
 
 .install-offer {
   position: fixed;
-  z-index: 44;
+  z-index: 39;
   bottom: 20px;
   left: 20px;
   display: flex;
@@ -562,6 +562,30 @@ body.is-admiring .wallpaper-toggle {
 body.preview-open .install-offer,
 body.is-admiring .install-offer {
   display: none;
+}
+
+.install-offer.is-calling {
+  animation: offer-call 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s 3;
+}
+
+.install-offer.is-calling .install-offer-icon {
+  animation: info-swell 2.4s ease-in-out 0.6s 3;
+}
+
+@keyframes offer-call {
+  0% { box-shadow: var(--menu-shadow), 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); }
+  70%, 100% { box-shadow: var(--menu-shadow), 0 0 0 16px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-offer.is-calling,
+  .install-offer.is-calling .install-offer-icon {
+    animation: none;
+  }
+
+  .install-offer.is-calling {
+    border-color: var(--accent);
+  }
 }
 
 .install-offer-icon {

@@ -12,8 +12,8 @@ export function invite(production: boolean, button: HTMLElement, steps: HTMLElem
   let done = false;
   const offer = createOffer(element, () => (prompt ? null : manual));
 
-  document.addEventListener("menus:close", () => offer.hide());
-  document.getElementById("a11yTrigger")?.addEventListener("click", () => offer.hide());
+  document.addEventListener("menus:close", (event) => (event as CustomEvent).detail === "tour" && offer.hide());
+
 
   const install = async () => {
     if (readStore(localStorage, OFFLINE_OFF_KEY)) {

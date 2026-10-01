@@ -1,16 +1,15 @@
 import type { StringKey } from "../../lib/data";
 import { t } from "../../lib/prefs";
 import { countdown } from "./countdown";
-import { forced, isInstalled } from "./env";
-import { DISMISS_KEY, recentlyDismissed, writeStore } from "./store";
+import { isInstalled } from "./env";
 
 const OFFER_MS = 30000;
-const HIDDEN: Keyframe = { opacity: 0, transform: "translateY(18px) scale(0.96)" };
+const HIDDEN: Keyframe = { opacity: 0, transform: "translateY(calc(100% + 28px)) scale(0.9)" };
 const SHOWN: Keyframe = { opacity: 1, transform: "none" };
 
 export interface Offer {
   schedule(): void;
-  hide(options?: { dismissed?: boolean }): void;
+  hide(): void;
   refresh(): void;
 }
 
@@ -37,7 +36,7 @@ export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null
   }
 
   function show(): void {
-    if (offered || isInstalled() || (!forced() && recentlyDismissed())) {
+    if (offered || isInstalled()) {
       return;
     }
 
@@ -46,24 +45,29 @@ export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null
     offer.hidden = false;
     timer.start();
 
-    if (!still()) offer.animate([HIDDEN, SHOWN], { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+    offer.classList.add("is-calling");
+
+    if (!still()) offer.animate([HIDDEN, SHOWN], { duration: 620, easing: "cubic-bezier(0.34, 1.45, 0.64, 1)" });
   }
 
-  function hide({ dismissed = false } = {}): void {
+  function hide(): void {
     if (!open) return;
 
     open = false;
     timer.stop();
 
-    if (dismissed) writeStore(localStorage, DISMISS_KEY, String(Date.now()));
     if (offer.contains(document.activeElement)) document.getElementById("introInfo")?.focus({ preventScroll: true });
 
     if (still()) offer.hidden = true;
     else void offer.animate([SHOWN, HIDDEN], { duration: 240, easing: "ease-in" }).finished.then(() => (offer.hidden = true));
   }
 
-  document.getElementById("installOfferClose")!.addEventListener("click", () => hide({ dismissed: true }));
-  offer.addEventListener("keydown", (event) => event.key === "Escape" && hide({ dismissed: true }));
+  for (const type of ["pointerenter", "focusin"]) {
+    offer.addEventListener(type, () => offer.classList.remove("is-calling"));
+  }
+
+  document.getElementById("installOfferClose")!.addEventListener("click", () => hide());
+  offer.addEventListener("keydown", (event) => event.key === "Escape" && hide());
 
   return {
     schedule: () => whenLoaded(show),

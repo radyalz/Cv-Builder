@@ -25,16 +25,18 @@
 - **Offer** (`offer.ts`): rises in the bottom-left corner as soon as the page
   has loaded, for 30 seconds (a first-visit touch hint moves to the top of the
   screen while it is up); hovering or focusing it holds the
-  time. Closing it (× or Escape) keeps it away for 7 days on this device
-  (`cv-builder-install-offer`); letting it run out brings it back on the
-  next load. `?install` in the address shows it regardless. Any menu
-  opening hides it. Hidden while the preview is expanded or the background
+  time. It rises from below the edge with a slight overshoot and sends three
+  accent ripples (like How it works) until it is hovered or focused. Closing it
+  (× or Escape) only closes it for this page load: nothing is stored, so it
+  comes back on the next load. Menus no longer close it (they used to, for the
+  rest of the visit, which on phones meant it vanished at the first tap); it
+  sits under them (z-index 39, menus 40+). Only starting the tour hides it. Hidden while the preview is expanded or the background
   admired (CSS).
 - **Installing**: Chrome, Edge and Samsung Internet announce installability;
   Install then opens their own prompt (usable once; if declined the browser
-  announces again later). iPhones and iPads have no such prompt, so the offer
-  and the menu button show the Add to Home Screen steps instead. Elsewhere,
-  and once installed, neither shows.
+  announces again later). Where it is not announced, the offer and the menu
+  button show the browser's own steps (see below). Firefox on desktop, and
+  once installed, neither shows.
 - **Uninstalling** (`uninstall.ts`): a page cannot remove an installed app,
   so "Uninstall the app" shows how on this device (desktop, Android or
   iPhone), and can delete the offline copy — the worker and every `cv-`
@@ -45,16 +47,15 @@
   re-placed above its button and the new part scrolled into view (`refit`).
 
 Checked against the previous single file: identical behaviour for the offer
-(timing, position, hold, dismissal, `?install`), iPhone steps, the uninstall
+(timing, position, hold, closing), iPhone steps, the uninstall
 steps on desktop/Android/iPhone, and removing the offline copy.
 
 ## When the install card shows (2026-10-01)
 
 - It shows on every page load as soon as the page has loaded (the window
   `load` event: styles, scripts and fonts; the preview PDF is fetched by
-  script and does not hold it), until the visitor closes it with ×;
-  closing hides it for 7 days (`cv-builder-install-offer`). The old
-  once-per-tab rule is gone: reloading the same tab never brought it back,
+  script and does not hold it), until it runs out or is closed. The old
+  once-per-tab rule and the 7/14-day dismissal are gone: reloading the same tab never brought it back,
   which looked like it was broken.
 - Chrome does not always announce that the site is installable
   (`beforeinstallprompt`), e.g. after the app was uninstalled. If no

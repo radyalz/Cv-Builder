@@ -67,5 +67,3 @@ export async function installedElsewhere(): Promise<boolean> {
     return false;
   }
 }
-
-export const forced = (): boolean => new URLSearchParams(window.location.search).has("install");
