@@ -5,7 +5,9 @@ export interface PinnedBox extends Box {
   right: number;
 }
 
-const pinnedParts = [".card-main", ".preview-head", ".preview-foot"].map((selector) => el.card.querySelector<HTMLElement>(selector)!);
+const allParts = [".card-main", ".preview-head", ".preview-foot"].map((selector) => el.card.querySelector<HTMLElement>(selector)!);
+
+const pinnedParts = (): HTMLElement[] => allParts.filter((part) => !allParts.some((other) => other !== part && other.contains(part)));
 
 function measure(part: HTMLElement, card: DOMRect): PinnedBox | null {
   const builder = el.card;
@@ -35,18 +37,20 @@ function measure(part: HTMLElement, card: DOMRect): PinnedBox | null {
 export function measureParts(): (PinnedBox | null)[] {
   const card = el.card.getBoundingClientRect();
 
-  return pinnedParts.map((part) => measure(part, card));
+  return pinnedParts().map((part) => measure(part, card));
 }
 
 export function pinParts(boxes: (PinnedBox | null)[], { leaving = false } = {}): void {
-  pinnedParts.forEach((part, index) => {
+  const parts = pinnedParts();
+
+  parts.forEach((part, index) => {
     const box = boxes[index];
 
     if (!box) {
       return;
     }
 
-    const byRight = leaving && part === pinnedParts[0] && document.documentElement.dir === "rtl";
+    const byRight = leaving && part === parts[0] && document.documentElement.dir === "rtl";
 
     part.dataset.pinned = "";
     Object.assign(part.style, {
@@ -64,7 +68,7 @@ export function pinParts(boxes: (PinnedBox | null)[], { leaving = false } = {}):
 export function unpinParts(): void {
   el.card.classList.remove("is-growing");
 
-  for (const part of pinnedParts) {
+  for (const part of allParts) {
     delete part.dataset.pinned;
     ["left", "right", "top", "width", "height"].forEach((property) => part.style.removeProperty(property));
   }

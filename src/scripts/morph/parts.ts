@@ -15,6 +15,7 @@ export const PARTS: Part[] = [
   { selector: ".actions > :not(.actions-break)", from: ".action-split" },
   { selector: ".action-split", from: ".actions" },
   { selector: ".card-preview" },
+  { selector: ".preview-foot" },
   { selector: ".expanded-info", pill: true, fade: true, bar: true },
   { selector: ".expanded-actions", pill: true, bar: true },
   { selector: ".expanded-actions > .links-hint, .expanded-actions > .bar-button, .pdf-tools-rule", bar: true },

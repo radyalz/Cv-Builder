@@ -32,3 +32,15 @@ during them are where the parts start from, not where they end up.
 
 Checked against the previous single file: identical animations (parts,
 keyframes, delays, durations) for every crossing, card and expanded view.
+
+## Rotated phones (2026-10-01)
+
+On a phone turned sideways (`max-width: 1023px`, landscape, `max-height:
+600px`: the two-column landscape layout) the preview's foot (publish date,
+clickable links, Expand) is moved into the text column, under the action
+button (`morph/foot.ts`, `placeFoot()` on that media query), and moved back
+under the preview frame otherwise. The query is one of the morph's
+breakpoints and `.preview-foot` one of its parts, so the move slides. The
+expand animation pins only parts not inside another pinned part
+(`pinnedParts()` in `builder/expand/pin.ts`), so the foot then travels with
+the text column.

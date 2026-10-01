@@ -837,3 +837,15 @@
     gap: 14px 10px;
   }
 }
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  .card-main > .preview-foot {
+    justify-content: flex-start;
+    margin-top: 14px;
+    padding-right: 0;
+  }
+
+  .card-main > .preview-foot #previewExpand {
+    margin-inline-start: auto;
+  }
+}
