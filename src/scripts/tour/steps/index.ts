@@ -1,8 +1,10 @@
-import { PEEK } from "../../../lib/layout";
+import { FINE_POINTER } from "../../../lib/layout";
 import { onScreen } from "../dom";
 import { matches, type Step } from "../types";
 import { ACCESSIBILITY } from "./a11y";
-import { ACTION_ITEMS, EXPAND, EXPANDED, LINKS } from "./parts";
+import { ACTION_ITEMS, EXPANDED, LINKS } from "./parts";
+
+const previewText = (): string => (matches(FINE_POINTER) ? "tourPreviewClick" : "tourPreviewPhone");
 
 const DESKTOP_STEPS: Step[] = [
   { target: "#colourTrigger", icon: "accent", title: "tourAccentTitle", text: "tourAccentText", topic: true },
@@ -12,9 +14,8 @@ const DESKTOP_STEPS: Step[] = [
   { target: "#generateButton", icon: "generate", title: "tourGenerateTitle", text: "tourGenerateText", topic: true },
   { target: "#downloadLatest", icon: "download", title: "tourDownloadTitle", text: "tourDownloadText", topic: true },
   { target: ".actions .secondary-link", icon: "all", title: "tourAllTitle", text: "tourAllText", topic: true },
-  { target: ".preview-frame", icon: "preview", title: "tourPreviewTitle", text: "tourPreviewDesktop", topic: true },
+  { target: ".preview-frame", icon: "preview", title: "tourPreviewTitle", text: previewText, topic: true },
   LINKS,
-  EXPAND,
   ...EXPANDED,
   ...ACCESSIBILITY,
 ];
@@ -32,11 +33,10 @@ const COMPACT_STEPS: Step[] = [
     target: ".preview-frame",
     icon: "preview",
     title: "tourPreviewTitle",
-    text: () => (matches(PEEK) ? "tourPreviewPhone" : "tourPreviewTablet"),
+    text: previewText,
     topic: true,
   },
   LINKS,
-  EXPAND,
   ...EXPANDED,
   ...ACCESSIBILITY,
 ];

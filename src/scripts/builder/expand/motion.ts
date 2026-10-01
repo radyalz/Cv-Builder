@@ -1,4 +1,3 @@
-import { PEEK } from "../../../lib/layout";
 import { el } from "../dom";
 import { app } from "../state";
 
@@ -19,7 +18,6 @@ export interface Box {
 
 export const wait = (ms: number): Promise<Animation> => document.body.animate([], { duration: ms }).finished;
 
-export const isPhone = (): boolean => window.matchMedia(PEEK).matches;
 
 export const reducedMotion = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 

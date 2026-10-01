@@ -3,7 +3,6 @@ import { refreshDetails, setBarMenu, wireBarMenus } from "../bar-menus";
 import { el } from "../dom";
 import { collapsePreview } from "../expand/collapse";
 import { expandPreview } from "../expand/expand";
-import { isPhone } from "../expand/motion";
 import { expand } from "../expand/queue";
 import { showLinksHint } from "../links-hint";
 import { app } from "../state";
@@ -52,7 +51,7 @@ export function wirePreview(): void {
   wireBarMenus();
   el.previewDoc.addEventListener("pdf:rendered", onRendered as EventListener);
   el.previewExpand.addEventListener("click", () => void expandPreview());
-  el.previewBox.addEventListener("click", () => isPhone() && expand.state === "closed" && void expandPreview());
+  el.previewBox.addEventListener("click", () => expand.state === "closed" && void expandPreview());
   el.previewCollapse.addEventListener("click", () => void collapsePreview());
 
   document.addEventListener("click", (event) => {

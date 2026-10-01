@@ -909,49 +909,89 @@
   display: none;
 }
 
-@media (max-width: 599px), (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
-  .builder-card:not(.is-expanded) .preview-frame::after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 45%;
-    background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--sk-page) 92%, transparent));
-    content: "";
-    pointer-events: none;
+.builder-card:not(.is-expanded) .preview-frame::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 45%;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--sk-page) 92%, transparent));
+  content: "";
+  pointer-events: none;
+}
+
+.builder-card:not(.is-expanded) .peek-hint:not([hidden]) {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+  white-space: nowrap;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--accent-text);
+  background: var(--accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-weight: 700;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.peek-hint svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.builder-card:not(.is-expanded) .preview-frame {
+  cursor: zoom-in;
+}
+
+.builder-card:not(.is-expanded) .pdf-view {
+  overflow: hidden;
+}
+
+.builder-card:not(.is-expanded) .pdf-links {
+  pointer-events: none;
+}
+
+#previewExpand {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.card-preview:has(#previewExpand:focus-visible) .preview-frame {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.peek-click {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .peek-tap {
+    display: none;
   }
 
-  .builder-card:not(.is-expanded) .peek-hint:not([hidden]) {
-    position: absolute;
-    z-index: 2;
-    right: 0;
-    bottom: 12px;
-    left: 0;
-    display: flex;
-    width: max-content;
-    max-width: calc(100% - 24px);
-    margin-inline: auto;
-    white-space: nowrap;
-    align-items: center;
-    padding: 6px 12px;
-    border-radius: 999px;
-    color: var(--accent-text);
-    background: var(--accent);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-    font-size: calc(12px * var(--fs) * var(--fa-small));
-    font-weight: 700;
-    gap: 6px;
-    pointer-events: none;
-  }
-
-  .peek-hint svg {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 2;
+  .peek-click {
+    display: inline;
   }
 }
 

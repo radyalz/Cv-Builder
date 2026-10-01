@@ -839,22 +839,6 @@
 }
 
 @media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
-  .builder-card:not(.is-expanded) .preview-frame {
-    cursor: zoom-in;
-  }
-
-  .builder-card:not(.is-expanded) .pdf-view {
-    overflow: hidden;
-  }
-
-  .builder-card:not(.is-expanded) .pdf-links {
-    pointer-events: none;
-  }
-
-  #previewExpand {
-    display: none;
-  }
-
   .card-main > .preview-foot {
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -929,23 +913,8 @@
     margin-top: 10px;
   }
 
-  [dir="rtl"] .a11y-trigger {
-    right: auto;
-    left: 20px;
-  }
-
-  [dir="rtl"] .admire-toggle {
-    right: auto;
-    left: 84px;
-  }
-
-  [dir="rtl"] .wallpaper-toggle {
-    left: calc(84px + 40px + 8px);
-  }
-
-  [dir="rtl"] .install-offer {
-    right: 20px;
-    left: auto;
+  [dir="rtl"] .card-main > .preview-head {
+    margin-inline-start: 52px;
   }
 
   .card-main > .preview-head {

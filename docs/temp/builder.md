@@ -132,3 +132,15 @@ choice (swatches, arrow keys, edition, language, valid/invalid/light custom
 colours, reset), for the build flow (up to date, queued → running →
 completed, failure; the service mocked), for every tooltip, and for prefetch
 (the same copies in the same order).
+
+## The preview is a peek everywhere (2026-10-02)
+
+In every layout and orientation the small preview is now the phones' peek:
+it does not scroll and its links are inert, a fade and a "Tap to expand"
+pill ("Click to expand" with a mouse: `(hover: hover) and (pointer: fine)`)
+sit at its foot, and tapping or clicking it opens the large view. The
+Expand button is kept only for the keyboard: visually hidden, still in the
+tab order, and when it has keyboard focus the preview frame gets the focus
+ring. Closing the large view returns focus to it (or to the frame where the
+foot is hidden, on upright phones). The tour's Expand step is gone and its
+preview step says to tap or click.

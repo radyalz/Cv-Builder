@@ -9,8 +9,6 @@ export const LINKS: Step = {
   topic: true,
 };
 
-export const EXPAND: Step = { target: "#previewExpand", icon: "expand", title: "tourExpandTitle", text: "tourExpandText", optional: true };
-
 export const EXPANDED: Step[] = [
   {
     target: ".expanded-info",

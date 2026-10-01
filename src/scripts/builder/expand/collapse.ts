@@ -3,7 +3,7 @@ import { hideTip } from "../../../lib/tooltip";
 import { setBarMenu } from "../bar-menus";
 import { el } from "../dom";
 import { app } from "../state";
-import { RETURN_AT, RETURN_FADE_MS, SHRINK_MS, growBetween, holdPaper, isPhone, previewOrigin, reducedMotion, settle, wait, within } from "./motion";
+import { RETURN_AT, RETURN_FADE_MS, SHRINK_MS, growBetween, holdPaper, previewOrigin, reducedMotion, settle, wait, within } from "./motion";
 import { measureParts, pinParts, unpinParts } from "./pin";
 import { expand, runQueued } from "./queue";
 
@@ -79,5 +79,7 @@ export async function collapsePreview(): Promise<void> {
     return;
   }
 
-  (isPhone() ? el.previewBox : el.previewExpand).focus({ preventScroll: true });
+  el.previewExpand.focus({ preventScroll: true });
+
+  if (document.activeElement !== el.previewExpand) el.previewBox.focus({ preventScroll: true });
 }
