@@ -1,10 +1,10 @@
 import { t } from "../../lib/prefs";
 import { manualSteps, type InstallPromptEvent } from "./env";
-import { createOffer } from "./offer";
+import { createOffer, whenLoaded } from "./offer";
 import { OFFLINE_OFF_KEY, readStore, removeStore } from "./store";
 import { refit, registerWorker } from "./worker";
 
-const MANUAL_AFTER_MS = 9000;
+const MANUAL_GRACE_MS = 800;
 
 export function invite(production: boolean, button: HTMLElement, steps: HTMLElement, element: HTMLElement, settled: Promise<boolean>): void {
   const manual = manualSteps();
@@ -55,7 +55,7 @@ export function invite(production: boolean, button: HTMLElement, steps: HTMLElem
   };
 
   if (window.__installPrompt) installable(window.__installPrompt);
-  window.setTimeout(() => void byHand(), manual === "installIos" ? 0 : MANUAL_AFTER_MS);
+  whenLoaded(() => window.setTimeout(() => void byHand(), manual === "installIos" ? 0 : MANUAL_GRACE_MS));
 
   window.addEventListener("beforeinstallprompt", installable);
   window.addEventListener("appinstalled", () => {

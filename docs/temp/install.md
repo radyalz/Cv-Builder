@@ -49,13 +49,15 @@ steps on desktop/Android/iPhone, and removing the offline copy.
 
 ## When the install card shows (2026-10-01)
 
-- It shows on every page load, 7s in, until the visitor closes it with ×;
+- It shows on every page load as soon as the page has loaded (the window
+  `load` event: styles, scripts and fonts; the preview PDF is fetched by
+  script and does not hold it), until the visitor closes it with ×;
   closing hides it for 7 days (`cv-builder-install-offer`). The old
   once-per-tab rule is gone: reloading the same tab never brought it back,
   which looked like it was broken.
 - Chrome does not always announce that the site is installable
   (`beforeinstallprompt`), e.g. after the app was uninstalled. If no
-  announcement has come 9s in, browsers that can install by hand get the
+  announcement has come within 0.8s of the page loading, browsers that can install by hand get the
   card anyway, with their own steps instead of the Install button
   (`manualSteps()` in `env.ts`: Chromium desktop, Android, iPhone/iPad,
   Safari on macOS 17+). Firefox on desktop cannot install sites, so it gets
@@ -64,3 +66,13 @@ steps on desktop/Android/iPhone, and removing the offline copy.
   the Install button (`offer.refresh()`).
 - `invite.ts` runs this; `countdown.ts` is the 30s bar, which pauses while
   hovered or focused.
+
+## Icons
+
+All app icons are the favicon's portrait crop (the source photo
+`docs/private/IMG_20260926_035252_628.jpg` in the private repo, square crop
+at 150,40, 280px): `icon-192`/`icon-512` round with a transparent outside
+like the favicon; `maskable-512` full-bleed and widened to 350px (115,5) so
+the face stays inside the maskable safe zone; `apple-touch-icon` square (iOS
+fills transparency with black). Quantised to 256 colours to keep the
+precache small.

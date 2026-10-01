@@ -4,7 +4,6 @@ import { countdown } from "./countdown";
 import { forced, isInstalled } from "./env";
 import { DISMISS_KEY, recentlyDismissed, writeStore } from "./store";
 
-const OFFER_DELAY_MS = 7000;
 const OFFER_MS = 30000;
 const HIDDEN: Keyframe = { opacity: 0, transform: "translateY(18px) scale(0.96)" };
 const SHOWN: Keyframe = { opacity: 1, transform: "none" };
@@ -15,13 +14,17 @@ export interface Offer {
   refresh(): void;
 }
 
+export function whenLoaded(run: () => void): void {
+  if (document.readyState === "complete") run();
+  else window.addEventListener("load", run, { once: true });
+}
+
 const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null): Offer {
   const text = document.getElementById("installOfferText")!;
   const button = document.getElementById("installOfferButton")!;
   const timer = countdown(offer, offer.querySelector<HTMLElement>(".install-offer-time")!, OFFER_MS, () => hide());
-  const loadedAt = performance.now();
   let offered = false;
   let open = false;
 
@@ -63,7 +66,7 @@ export function createOffer(offer: HTMLElement, stepsKey: () => StringKey | null
   offer.addEventListener("keydown", (event) => event.key === "Escape" && hide({ dismissed: true }));
 
   return {
-    schedule: () => void window.setTimeout(show, Math.max(0, OFFER_DELAY_MS - (performance.now() - loadedAt))),
+    schedule: () => whenLoaded(show),
     hide,
     refresh,
   };
