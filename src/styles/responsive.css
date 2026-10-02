@@ -1295,3 +1295,39 @@
     gap: 8px 16px;
   }
 }
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  .wallpaper-menu:not([hidden]) {
+    display: grid;
+    width: min(540px, calc(100vw - 24px));
+    align-items: start;
+    column-gap: 18px;
+    grid-template-areas:
+      "title side"
+      "note side"
+      "image side";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .wallpaper-title {
+    grid-area: title;
+  }
+
+  .wallpaper-note {
+    grid-area: note;
+  }
+
+  #wallpaperImage {
+    grid-area: image;
+    align-self: end;
+  }
+
+  .wallpaper-video,
+  .wallpaper-recording {
+    grid-area: side;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+}

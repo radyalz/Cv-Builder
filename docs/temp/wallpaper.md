@@ -27,3 +27,8 @@ Files: `files.ts` (size, compose, save, names, supported type), `recorder.ts`,
 Checked against the previous single file: identical menu state through
 open, image, recording, done and cancel-by-leaving, and the same output
 (1280×720 PNG; H.264 1280×720 15.0s MP4).
+
+Sideways phones (2026-10-02): the menu is two columns (title, note and the
+image button on one side; video length, Record and the recording progress on
+the other) so it fits screens down to 300px tall at every text size; the
+divider above the video section is dropped there.
