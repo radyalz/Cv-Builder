@@ -38,3 +38,9 @@ event on `document`.
 Checked against the previous single file by driving the menu (Persian, light,
 larger text, a font, outside click, reset, Escape): identical page state and
 stored JSON at every step.
+
+Layering of the corner (2026-10-02): the accessibility button is 48, its
+menu 47, the wallpaper menu 46, the admire eye and the wallpaper button 45,
+other menus 40 (sideways panels 47–48), the install card 39. So in admire
+mode the open menu covers the eye and download buttons, and the
+accessibility button always stays above its own menu.

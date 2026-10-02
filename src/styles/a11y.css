@@ -12,7 +12,7 @@
 
 .a11y-trigger {
   position: fixed;
-  z-index: 45;
+  z-index: 48;
   right: 20px;
   bottom: 20px;
   display: inline-grid;
@@ -78,6 +78,7 @@ body.preview-open .a11y-trigger {
 }
 
 .a11y-menu {
+  z-index: 47;
   width: min(300px, calc(100vw - 24px));
   transform-origin: 100% 100%;
   will-change: transform, opacity;
