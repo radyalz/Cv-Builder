@@ -9,13 +9,15 @@ export const BITE_PX = 6;
 export const PAD = 30;
 export const PIVOT = { x: 50 * SCALE, y: 80 * SCALE };
 
-export type PartImages = Record<PartName, HTMLCanvasElement>;
+export type Surface = HTMLCanvasElement | OffscreenCanvas;
+export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+export type PartImages = Record<PartName, CanvasImageSource>;
 
 export const state = {
   field: null as HTMLElement | null,
-  canvas: null as HTMLCanvasElement | null,
-  context: null as CanvasRenderingContext2D | null,
-  pose: document.createElement("canvas"),
+  canvas: null as Surface | null,
+  context: null as Context | null,
+  pose: null as Surface | null,
   images: null as PartImages | null,
   painted: "",
   frame: 0,
@@ -32,4 +34,10 @@ export const state = {
   lastDraw: 0,
 };
 
-export const poseContext = (): CanvasRenderingContext2D => state.pose.getContext("2d")!;
+export function poseSurface(): Surface {
+  state.pose ??= typeof OffscreenCanvas === "undefined" ? document.createElement("canvas") : new OffscreenCanvas(1, 1);
+
+  return state.pose;
+}
+
+export const poseContext = (): Context => poseSurface().getContext("2d") as Context;

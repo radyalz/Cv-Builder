@@ -85,3 +85,31 @@ The skull field is drawn zoomed out on small screens so more skulls fit:
 1366px, 1 elsewhere (`zoomFor()` in `size.ts`; `draw()` scales the canvas
 transform and covers `width / zoom` × `height / zoom`). The tiles are still
 rasterised at full size, so they stay sharp.
+
+## Drawing off the main thread (2026-10-03)
+
+The animation itself is unchanged; only where it runs moved. Measured on a
+throttled mid-range phone (CPU ×4), drawing on the main thread caused 170–225
+long tasks and 2.5–4.5s of blocking in the first 15s, delaying taps, menus
+and the PDF preview; now 5–7 long tasks and under 0.1s.
+
+- `frame.ts` is the drawing engine (size, images, pauses, still pose, frame
+  pacing, the loop) and runs in either place. `worker.ts` runs it in a Web
+  Worker on an `OffscreenCanvas` (`transferControlToOffscreen`); `engine.ts`
+  picks the worker when the browser supports it and falls back to running
+  `frame.ts` on the page otherwise, behind the same interface.
+- The page side still builds the art: the SVG parts can only be decoded on
+  the page, so they are rasterised there, turned into `ImageBitmap`s and
+  transferred (a newer paint wins if two overlap). The page also keeps the
+  sizing (CSS size, device pixel ratio, zoom) and the quality levels; the
+  worker reports each pacing verdict back (`pacing.ts`) and the page decides
+  the level (`pace.ts` `onPace`), which also sets the flat-glass fallback on
+  the document.
+- The canvas on the page becomes the placeholder of the offscreen one; the
+  wallpaper export draws it like before, and it still contains the latest
+  frame.
+- Checked: the drawn background matches the old renderer to within one colour
+  level at fixed poses (`?pose=`), dark and light, desktop and phone; the
+  animation runs, pauses while the preview is expanded, resumes, recolours,
+  survives resizing and a pixel-ratio change, and the export sees it, in both
+  the worker and the fallback (offscreen canvas disabled).

@@ -1,4 +1,5 @@
-import { PAD, TILE_H, TILE_W, state } from "./state";
+import { current } from "./engine";
+import { state } from "./state";
 
 const PHONE_ZOOM = 0.6;
 const TABLET_ZOOM = 0.76;
@@ -10,16 +11,10 @@ function zoomFor(width: number, height: number): number {
   return 1;
 }
 
-export function resize(): void {
+export function resize(canvas: HTMLCanvasElement): void {
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const { innerWidth: width, innerHeight: height } = window;
-  const canvas = state.canvas!;
 
-  state.width = width;
-  state.zoom = zoomFor(width, height);
-  state.height = height;
-  canvas.width = Math.round(width * ratio);
-  canvas.height = Math.round(height * ratio);
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
 
@@ -28,6 +23,5 @@ export function resize(): void {
     state.painted = "";
   }
 
-  state.pose.width = Math.round((TILE_W + PAD * 2) * state.ratio);
-  state.pose.height = Math.round((TILE_H + PAD * 2) * state.ratio);
+  current.engine?.size({ width, height, ratio, zoom: zoomFor(width, height) });
 }

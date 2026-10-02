@@ -29,7 +29,7 @@ function composePose(percent: number): void {
   const bite = sample(TRACKS.bite!, percent) * BITE_PX;
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, state.pose.width, state.pose.height);
+  ctx.clearRect(0, 0, state.pose!.width, state.pose!.height);
 
   for (const [name, group] of LAYERS) {
     const track = TRACKS[name];
@@ -56,7 +56,8 @@ function composePose(percent: number): void {
 }
 
 function stampSet(x: number, y: number): void {
-  const { context: ctx, pose, ratio } = state;
+  const { context: ctx, ratio } = state;
+  const pose = state.pose!;
   const startX = (((x % TILE_W) + TILE_W) % TILE_W) - TILE_W - PAD;
   const startY = (((y % TILE_H) + TILE_H) % TILE_H) - TILE_H - PAD;
 

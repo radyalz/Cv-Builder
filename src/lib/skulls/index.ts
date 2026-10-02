@@ -1,7 +1,7 @@
+import { current, startEngine } from "./engine";
 import { paintSkulls } from "./paint";
-import { LEVELS, pace, setLevel, type Level } from "./pace";
-import { run, setSkullsPaused } from "./loop";
-import { draw } from "./render";
+import { LEVELS, onPace, pace, setLevel, type Level } from "./pace";
+import { setSkullsPaused } from "./loop";
 import { resize } from "./size";
 import { state } from "./state";
 
@@ -19,46 +19,39 @@ function readTestParams(): void {
   }
 
   if (forced && LEVELS.includes(forced)) {
-    setLevel(LEVELS.indexOf(forced));
     pace.fixed = true;
-  }
-}
-
-function onResize(): void {
-  const before = state.ratio;
-
-  resize();
-
-  if (state.ratio !== before && state.last) {
-    paintSkulls(...state.last);
-  } else if (state.images) {
-    draw(performance.now());
+    setLevel(LEVELS.indexOf(forced));
   }
 }
 
 export function initSkulls(): void {
   const field = document.querySelector<HTMLElement>(".skull-field");
+  const canvas = field?.querySelector("canvas");
 
-  if (!field || state.field === field) {
+  if (!field || !canvas || state.field === field) {
     return;
   }
 
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const engine = (current.engine = startEngine(canvas, onPace));
 
   state.field = field;
-  state.canvas = field.querySelector("canvas");
-  state.context = state.canvas!.getContext("2d");
-  state.started = performance.now();
   state.still = motion.matches;
-  resize();
+  readTestParams();
+  engine.still(state.still, state.fixedAt);
+  resize(canvas);
 
   motion.addEventListener("change", () => {
     state.still = motion.matches || state.fixedAt !== null;
-    run();
+    engine.still(state.still, state.fixedAt);
   });
-  readTestParams();
 
-  window.addEventListener("resize", onResize);
+  window.addEventListener("resize", () => {
+    const before = state.painted;
+
+    resize(canvas);
+    if (!state.painted && before && state.last) paintSkulls(...state.last);
+  });
   document.addEventListener("astro:after-swap", () => setLevel(pace.level));
   document.addEventListener("visibilitychange", () => setSkullsPaused("hidden", document.hidden));
 }

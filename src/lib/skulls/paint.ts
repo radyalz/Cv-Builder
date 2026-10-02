@@ -1,7 +1,7 @@
 import { skullParts, type PartName } from "./art";
 import { initSkulls } from "./index";
-import { run } from "./loop";
-import { draw, rasterise } from "./render";
+import { current } from "./engine";
+import { rasterise } from "./render";
 import { state, type PartImages } from "./state";
 
 const ART_CACHE_SIZE = 8;
@@ -11,14 +11,8 @@ const artCache = new Map<string, PartImages>();
 let paintTimer = 0;
 
 function useImages(images: PartImages): void {
-  state.images = images;
-
-  if (state.still || state.pauses.size) {
-    draw(performance.now());
-  }
-
+  current.engine?.images(images);
   state.field?.classList.add("is-painted");
-  run();
 }
 
 async function buildImages(accent: string, theme: string): Promise<PartImages> {
@@ -44,7 +38,7 @@ export function paintSkulls(accent: string, theme: string): void {
   const key = `${accent}|${theme}|${state.ratio}`;
   const kept = artCache.get(key);
 
-  if (!state.canvas || key === state.painted) {
+  if (!current.engine || key === state.painted) {
     return;
   }
 
@@ -66,5 +60,5 @@ export function paintSkulls(accent: string, theme: string): void {
     if (state.painted === key) {
       useImages(images);
     }
-  }, state.images ? PAINT_SETTLE_MS : 0);
+  }, state.field?.classList.contains("is-painted") ? PAINT_SETTLE_MS : 0);
 }
