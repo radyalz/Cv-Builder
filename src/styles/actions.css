@@ -188,7 +188,7 @@
   display: none;
 }
 
-@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
+@media (max-width: 899px), (max-width: 1023px) and (max-height: 600px) {
   .card-main .actions {
     position: absolute;
     width: 1px;
@@ -365,7 +365,7 @@
   opacity: 1;
 }
 
-@media (min-width: 800px) and (min-height: 601px), (min-width: 1024px) {
+@media (min-width: 900px) and (min-height: 601px), (min-width: 1024px) {
   .actions {
     display: grid;
     gap: 10px;
@@ -410,7 +410,7 @@
   text-overflow: ellipsis;
 }
 
-@media (min-width: 800px) and (max-width: 1023px) and (min-height: 601px) {
+@media (min-width: 900px) and (max-width: 1023px) and (min-height: 601px) {
   .actions {
     grid-template-columns: minmax(0, 1fr);
   }

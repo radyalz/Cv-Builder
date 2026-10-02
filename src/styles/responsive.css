@@ -14,7 +14,7 @@
   100% { left: 110%; }
 }
 
-@media (min-width: 800px) and (max-width: 1279px) and (min-height: 601px), (min-width: 1024px) and (max-width: 1279px) {
+@media (min-width: 900px) and (max-width: 1279px) and (min-height: 601px), (min-width: 1024px) and (max-width: 1279px) {
   .builder-card {
     grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
   }
@@ -24,7 +24,7 @@
   }
 }
 
-@media (min-width: 600px) and (max-width: 799px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
+@media (min-width: 600px) and (max-width: 899px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
   .actions {
     display: grid;
     gap: 10px;
@@ -60,7 +60,7 @@
   }
 }
 
-@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
+@media (max-width: 899px), (max-width: 1023px) and (max-height: 600px) {
   .page-shell {
     padding: 12px;
   }
@@ -675,13 +675,13 @@
   }
 }
 
-@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
+@media (max-width: 899px), (max-width: 1023px) and (max-height: 600px) {
   .lead-desktop-info {
     display: none;
   }
 }
 
-@media (min-width: 600px) and (max-width: 799px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
+@media (min-width: 600px) and (max-width: 899px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
   .lead-tablet {
     display: inline;
   }
@@ -750,7 +750,7 @@
   color: var(--accent);
 }
 
-@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
+@media (max-width: 899px), (max-width: 1023px) and (max-height: 600px) {
   .card-main > .controls {
     display: none;
   }
@@ -791,7 +791,7 @@
   }
 }
 
-@media (min-width: 600px) and (max-width: 799px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
+@media (min-width: 600px) and (max-width: 899px), (min-width: 600px) and (max-width: 1023px) and (max-height: 600px) {
   .forms-menu .controls {
     display: grid;
     gap: 16px;
