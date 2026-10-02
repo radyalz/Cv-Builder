@@ -1259,10 +1259,6 @@
     padding-bottom: 12px;
   }
 
-  .card-top {
-    display: none;
-  }
-
   .title-row {
     flex-direction: row;
     flex-wrap: nowrap;

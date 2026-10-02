@@ -128,7 +128,7 @@ every step, language and font: clean.
 Very short sideways screens (2026-10-02): a phone like the Galaxy S25 Ultra
 sideways is about 915px wide but only 300–350px tall once Chrome's address
 bar and Android's navigation bar show, so the lower rows were pushed out of
-the scrolling text column. Below 380px tall the eyebrow is hidden, How it
+the scrolling text column. Below 380px tall How it
 works sits beside the name again, and the gaps shrink; everything down to
 the preview heading fits without scrolling at 300px. Size check at 915×340,
 915×300 and 844×330: clean.
