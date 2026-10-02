@@ -86,7 +86,7 @@
   }
 
   h1 {
-    font-size: calc(clamp(28px, 6vw, 40px) * var(--fs));
+    font-size: calc(clamp(28px, 6vw, 40px) * var(--fs-ui));
   }
 
   .lead {
@@ -134,18 +134,18 @@
 
   .eyebrow {
     margin-bottom: 6px;
-    font-size: calc(10px * var(--fs) * var(--fa-small));
+    font-size: 10px;
   }
 
   h1 {
-    font-size: calc(32px * var(--fs));
+    font-size: calc(32px * var(--fs-ui));
     line-height: 1.02;
   }
 
   .lead {
     display: block;
     margin-top: 8px;
-    font-size: calc(13.5px * var(--fs));
+    font-size: calc(13.5px * var(--fs-read));
     line-height: 1.5;
   }
 
@@ -178,7 +178,7 @@
     border-radius: 4px;
     color: var(--muted);
     background: var(--menu-bg);
-    font-size: calc(9px * var(--fs) * var(--fa-small));
+    font-size: 9px;
     line-height: 14px;
     pointer-events: none;
     transform: translate(-50%, -50%);
@@ -201,7 +201,7 @@
   }
 
   :root[lang="fa"] .controls .control-label {
-    font-size: calc(11px * var(--fs));
+    font-size: 11px;
   }
 
   .segmented {
@@ -347,14 +347,14 @@
 
 .intro-title {
   margin: 0 0 8px;
-  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 750;
 }
 
 .intro-text {
   margin: 0;
   color: var(--text);
-  font-size: calc(14.5px * var(--fs));
+  font-size: calc(14.5px * var(--fs-read));
   line-height: 1.65;
   overflow-wrap: break-word;
   text-wrap: pretty;
@@ -373,7 +373,7 @@
   background: var(--accent);
   cursor: pointer;
   font: inherit;
-  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 700;
   gap: 8px;
 }
@@ -400,7 +400,7 @@
 .tour-topics-label {
   margin: 14px 0 8px;
   color: var(--muted);
-  font-size: calc(12.5px * var(--fs));
+  font-size: calc(12.5px * var(--fs-read));
 }
 
 .tour-topics {
@@ -420,7 +420,7 @@
   background: transparent;
   cursor: pointer;
   font: inherit;
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-ui));
   gap: 6px;
   transition: border-color 140ms ease, color 140ms ease;
 }
@@ -514,7 +514,7 @@
 
 .tour-step {
   color: var(--accent);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -527,14 +527,14 @@
 
 .tour-title {
   margin: 0 0 6px;
-  font-size: calc(15px * var(--fs) * var(--fa-small));
+  font-size: calc(15px * var(--fs-ui));
   font-weight: 750;
 }
 
 .tour-text {
   margin: 0;
   color: var(--muted);
-  font-size: calc(14px * var(--fs));
+  font-size: calc(14px * var(--fs-read));
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -556,7 +556,7 @@
   background: transparent;
   cursor: pointer;
   font: inherit;
-  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 650;
 }
 
@@ -590,7 +590,7 @@
   background: color-mix(in srgb, var(--accent) 16%, transparent);
   cursor: pointer;
   font: inherit;
-  font-size: calc(13.5px * var(--fs) * var(--fa-small));
+  font-size: calc(13.5px * var(--fs-ui));
   font-weight: 700;
   gap: 7px;
   white-space: nowrap;
@@ -716,7 +716,7 @@
 
 .forms-title {
   margin: 0;
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-ui));
   font-weight: 750;
 }
 
@@ -775,7 +775,7 @@
     padding: 0 6px;
     border-radius: 4px;
     background: var(--menu-bg);
-    font-size: calc(9px * var(--fs) * var(--fa-small));
+    font-size: 9px;
     line-height: 14px;
     pointer-events: none;
     transform: translateY(-50%);
@@ -783,7 +783,7 @@
   }
 
   :root[lang="fa"] .forms-entry .control-label {
-    font-size: calc(11px * var(--fs));
+    font-size: 11px;
   }
 
   .forms-trigger {
@@ -823,14 +823,14 @@
     padding: 0;
     border-radius: 0;
     background: none;
-    font-size: calc(11px * var(--fs) * var(--fa-small));
+    font-size: 11px;
     line-height: 1.3;
     pointer-events: auto;
     transform: none;
   }
 
   :root[lang="fa"] .forms-menu .controls .control .control-label {
-    font-size: calc(12.5px * var(--fs));
+    font-size: 12.5px;
   }
 
   .forms-menu .controls {
@@ -891,7 +891,7 @@
     height: 34px;
     padding: 0 14px 0 10px;
     gap: 8px;
-    font-size: calc(13px * var(--fs) * var(--fa-small));
+    font-size: calc(13px * var(--fs-ui));
     letter-spacing: 0.01em;
   }
 
@@ -996,7 +996,7 @@
   }
 
   .intro-text {
-    font-size: calc(13.5px * var(--fs));
+    font-size: calc(13.5px * var(--fs-read));
     line-height: 1.6;
   }
 
@@ -1013,7 +1013,7 @@
     background: transparent;
     cursor: pointer;
     font: inherit;
-    font-size: calc(13.5px * var(--fs) * var(--fa-small));
+    font-size: calc(13.5px * var(--fs-ui));
     font-weight: 700;
     gap: 8px;
   }
@@ -1084,7 +1084,7 @@
     padding: 0 8px;
     border: 0;
     border-radius: var(--radius);
-    font-size: calc(12.5px * var(--fs) * var(--fa-small));
+    font-size: calc(12.5px * var(--fs-ui));
     text-align: start;
   }
 
@@ -1099,7 +1099,11 @@
   }
 
   .forms-menu {
-    width: min(340px, calc(100vw - 24px));
+    width: min(380px, calc(100vw - 24px));
+  }
+
+  .forms-menu .segment {
+    padding: 0 4px;
   }
 
   .a11y-menu:not([hidden]) {

@@ -27,6 +27,7 @@ export const state = {
   width: 0,
   height: 0,
   ratio: 1,
+  zoom: 1,
   minGap: 0,
   lastDraw: 0,
 };

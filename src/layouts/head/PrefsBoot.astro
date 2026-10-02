@@ -1,8 +1,8 @@
 ---
-import { UI_KEY } from "../../lib/data";
+import { TEXT_SIZES, UI_KEY } from "../../lib/data";
 ---
 
-<script is:inline define:vars={{ key: UI_KEY }}>
+<script is:inline define:vars={{ key: UI_KEY, sizes: TEXT_SIZES }}>
   try {
     const stored = JSON.parse(localStorage.getItem(key) || "null") || {};
     const root = document.documentElement;
@@ -15,7 +15,7 @@ import { UI_KEY } from "../../lib/data";
       root.dir = "rtl";
     }
 
-    if (stored.fs) root.style.setProperty("--fs", String(stored.fs));
+    if (sizes.includes(stored.fs)) root.style.setProperty("--fs", String(stored.fs));
 
     const blur = (value) => CSS.supports("backdrop-filter", value) || CSS.supports("-webkit-backdrop-filter", value);
     if (!blur("blur(1px)")) root.dataset.glass = "flat";

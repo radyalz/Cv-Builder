@@ -8,4 +8,4 @@ export const DEFAULT_LANGUAGE = "en";
 
 export const VARIANTS = new Set([DEFAULT_VARIANT, "print"]);
 export const LANGUAGES = new Set([DEFAULT_LANGUAGE, "fa"]);
-export const TEXT_SIZES = [0.9, 1, 1.15, 1.3];
+export const TEXT_SIZES = [0.85, 1, 1.1, 1.2];

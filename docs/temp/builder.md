@@ -144,3 +144,19 @@ tab order, and when it has keyboard focus the preview frame gets the focus
 ring. Closing the large view returns focus to it (or to the frame where the
 foot is hidden, on upright phones). The tour's Expand step is gone and its
 preview step says to tap or click.
+
+## Expanding without a tick (2026-10-02)
+
+Recorded frame by frame in every layout; three causes of a visible snap were
+fixed:
+
+- Pinned parts are placed by their margin box (`measure()` in `pin.ts`
+  subtracts the margins); the text column's negative margin on sideways
+  phones made it sit 16px off while pinned and snap back when released.
+- While the PDF is prepared for the grow, it is lifted out of flow, which
+  shrank the card for a moment on tablets and desktops before it snapped
+  back as the grow began. The card's height is held at its measured value
+  until the grow ends.
+- On sideways phones the date/links and preview rows live in the text
+  column; they now stay visible while it is pinned instead of popping in at
+  the end of the collapse.

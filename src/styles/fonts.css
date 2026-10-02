@@ -8,6 +8,7 @@
 
 @font-face {
   font-family: "CV Manrope";
+  size-adjust: 101%;
   src: url("../fonts/manrope-latin.woff2") format("woff2");
   font-weight: 200 800;
   font-display: swap;
@@ -16,6 +17,7 @@
 
 @font-face {
   font-family: "CV Jakarta";
+  size-adjust: 101%;
   src: url("../fonts/plus-jakarta-sans-latin.woff2") format("woff2");
   font-weight: 200 800;
   font-display: swap;
@@ -24,6 +26,7 @@
 
 @font-face {
   font-family: "CV Plex";
+  size-adjust: 105%;
   src: url("../fonts/ibm-plex-sans-latin.woff2") format("woff2");
   font-weight: 100 700;
   font-display: swap;
@@ -32,6 +35,7 @@
 
 @font-face {
   font-family: "CV Grotesk";
+  size-adjust: 104%;
   src: url("../fonts/space-grotesk-latin.woff2") format("woff2");
   font-weight: 300 700;
   font-display: swap;
@@ -115,7 +119,7 @@
   src: url("../fonts/Doran-Light.woff2") format("woff2");
   font-weight: 300;
   font-display: swap;
-  size-adjust: 100%;
+  size-adjust: 98%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -127,7 +131,7 @@
   src: url("../fonts/Doran-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
-  size-adjust: 100%;
+  size-adjust: 98%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -139,7 +143,7 @@
   src: url("../fonts/Doran-Medium.woff2") format("woff2");
   font-weight: 500 600;
   font-display: swap;
-  size-adjust: 100%;
+  size-adjust: 98%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -151,7 +155,7 @@
   src: url("../fonts/Doran-Bold.woff2") format("woff2");
   font-weight: 650 750;
   font-display: swap;
-  size-adjust: 100%;
+  size-adjust: 98%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -163,7 +167,7 @@
   src: url("../fonts/Doran-ExtraBold.woff2") format("woff2");
   font-weight: 800 900;
   font-display: swap;
-  size-adjust: 100%;
+  size-adjust: 98%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -175,7 +179,7 @@
   src: url("../fonts/Vazirmatn-variable.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
-  size-adjust: 113%;
+  size-adjust: 111%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -187,7 +191,7 @@
   src: url("../fonts/XBNiloofar-Regular.woff2") format("woff2");
   font-weight: 100 550;
   font-display: swap;
-  size-adjust: 112%;
+  size-adjust: 116%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;
@@ -199,7 +203,7 @@
   src: url("../fonts/XBNiloofar-Bold.woff2") format("woff2");
   font-weight: 600 900;
   font-display: swap;
-  size-adjust: 112%;
+  size-adjust: 116%;
   ascent-override: 92%;
   descent-override: 38%;
   line-gap-override: 0%;

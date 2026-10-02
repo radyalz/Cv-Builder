@@ -4,7 +4,6 @@ import { fact, type TipHandler } from "./shared";
 
 const index = (): 0 | 1 => (uiPrefs.lang === "fa" ? 1 : 0);
 
-const size: TipHandler = (element) => ({ facts: [[fact("scale"), `${Math.round(Number(element.dataset.fs) * 100)}%`]] });
 
 const font: TipHandler = (element) => {
   const i = index();
@@ -31,9 +30,5 @@ export const PAGE_TIPS: Record<string, TipHandler> = {
       [fact("fonts"), uiPrefs.lang === "fa" ? FA_FONTS[uiPrefs.faFont].name[index()] : EN_FONTS[uiPrefs.enFont].name],
     ],
   }),
-  sizeSmall: size,
-  sizeDefault: size,
-  sizeLarge: size,
-  sizeLarger: size,
   font,
 };

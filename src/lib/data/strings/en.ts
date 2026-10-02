@@ -106,7 +106,7 @@ export const en = {
     tourAdmireTitle: "Admiring the background",
     tourAdmireText: "This is the background on its own. To bring the card back, press this eye button, which only appears while admiring, or Escape. The card comes back when the tour leaves the background.",
     tourInstallTitle: "Install as an app",
-    tourInstallText: "Adds the site to your home screen or desktop with its own icon. It opens full screen and at once, even offline. Where it can be installed, a card offering it also rises in the bottom corner for 30 seconds after the page opens.",
+    tourInstallText: "Adds the site to your home screen or desktop with its own icon. It opens full screen and at once, even offline. Where it can be installed, a card offering it also rises in the bottom corner for 12 seconds after the page opens.",
     tourUninstallText: "The site is installed on this device. This shows how to remove it, and can delete its offline copy.",
     tourWallpaperText: "Appears beside the eye while admiring. It saves the background on its own, at this window's size, to use as a wallpaper. The next steps show both options.",
     tourWallpaperImageText: "Saves the background as it is right now, as a PNG image.",

@@ -43,6 +43,9 @@ export async function expandPreview(): Promise<void> {
   const parts = measureParts();
   const { cardTo, frameTo, room } = measureTarget();
   const scrolled = el.previewDoc.scrollTop;
+
+  el.card.style.height = `${cardFrom.height}px`;
+
   const scale = holdPaper(frameFrom, frameTo);
 
   if (scale) {
@@ -65,7 +68,10 @@ export async function expandPreview(): Promise<void> {
 
   await wait(quick ? 0 : GROW_MS * 0.2);
   el.card.classList.add("is-open");
-  settle(await growing);
+  const done = await growing;
+
+  el.card.style.removeProperty("height");
+  settle(done);
   unpinParts();
   el.card.style.removeProperty("--fade-delay");
   expand.state = "open";

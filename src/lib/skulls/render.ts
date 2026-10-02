@@ -60,8 +60,8 @@ function stampSet(x: number, y: number): void {
   const startX = (((x % TILE_W) + TILE_W) % TILE_W) - TILE_W - PAD;
   const startY = (((y % TILE_H) + TILE_H) % TILE_H) - TILE_H - PAD;
 
-  for (let top = startY; top < state.height + PAD; top += TILE_H) {
-    for (let left = startX; left < state.width + PAD; left += TILE_W) {
+  for (let top = startY; top < state.height / state.zoom + PAD; top += TILE_H) {
+    for (let left = startX; left < state.width / state.zoom + PAD; left += TILE_W) {
       ctx!.drawImage(pose, left, top, pose.width / ratio, pose.height / ratio);
     }
   }
@@ -73,8 +73,10 @@ export function draw(now: number): void {
   const flow = state.still ? 0 : (elapsed % FLOW_MS) / FLOW_MS;
 
   composePose(percent);
-  state.context!.setTransform(state.ratio, 0, 0, state.ratio, 0, 0);
-  state.context!.clearRect(0, 0, state.width, state.height);
+  const scale = state.ratio * state.zoom;
+
+  state.context!.setTransform(scale, 0, 0, scale, 0, 0);
+  state.context!.clearRect(0, 0, state.width / state.zoom, state.height / state.zoom);
   stampSet(TILE_W * 5 * flow, TILE_H * flow);
   stampSet(TILE_W / 2 - TILE_W * flow, TILE_H / 2 + TILE_H * flow);
 }

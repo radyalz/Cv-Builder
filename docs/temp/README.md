@@ -20,3 +20,4 @@ reading it lives here instead, one file per area.
 - [components.md](components.md) — the Astro components, layout and page, piece by piece
 - [styles.md](styles.md) — the notes that used to be comments in the stylesheets
 - [build-config.md](build-config.md) — astro.config.mjs and the service worker
+- [text-size.md](text-size.md) — the text size steps, roles, layout caps and per-font corrections

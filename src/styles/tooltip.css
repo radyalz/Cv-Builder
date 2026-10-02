@@ -45,7 +45,7 @@
   color: var(--tip-text);
   background: var(--tip-bg);
   box-shadow: 0 0 0 1px var(--tip-edge), 0 10px 30px rgba(0, 0, 0, 0.28);
-  font-size: calc(11px * var(--fs) * var(--fa-small));
+  font-size: calc(11px * var(--fs-read));
   font-weight: 500;
   line-height: 1.45;
   will-change: transform;
@@ -89,7 +89,7 @@
 }
 
 .tip-title {
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   font-weight: 650;
   white-space: nowrap;
 }
@@ -97,7 +97,7 @@
 .tip-body {
   max-width: 34ch;
   margin: 0;
-  font-size: calc(11px * var(--fs) * var(--fa-small));
+  font-size: calc(11px * var(--fs-read));
   opacity: 0.72;
 }
 
@@ -108,7 +108,7 @@
   border-top: 1px solid var(--tip-rule);
   gap: 3px 14px;
   grid-template-columns: auto minmax(0, 1fr);
-  font-size: calc(10.5px * var(--fs) * var(--fa-small));
+  font-size: calc(10.5px * var(--fs-read));
 }
 
 .tip-facts dt {
@@ -141,7 +141,7 @@
 
 .tip-hint {
   margin-top: 4px;
-  font-size: calc(10px * var(--fs) * var(--fa-small));
+  font-size: calc(10px * var(--fs-read));
   opacity: 0.55;
 }
 
@@ -171,7 +171,7 @@
   color: var(--text);
   background: var(--menu-bg);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-read));
   opacity: 0;
   pointer-events: none;
   text-align: center;

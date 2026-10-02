@@ -1,7 +1,7 @@
 import { countdown } from "./countdown";
 import { isInstalled } from "./env";
 
-const OFFER_MS = 30000;
+const OFFER_MS = 12000;
 const HIDDEN: Keyframe = { opacity: 0, transform: "translateY(calc(100% + 28px)) scale(0.9)" };
 const SHOWN: Keyframe = { opacity: 1, transform: "none" };
 

@@ -20,7 +20,7 @@
 .preview-title {
   overflow: hidden;
   color: var(--accent);
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-ui));
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -127,7 +127,7 @@
   border-radius: 999px;
   color: var(--accent);
   background: var(--accent-soft);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   font-weight: 650;
   gap: 6px;
   cursor: pointer;
@@ -377,7 +377,7 @@
   color: var(--muted);
   background: var(--menu-bg);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-  font-size: calc(12.5px * var(--fs) * var(--fa-small));
+  font-size: calc(12.5px * var(--fs-read));
   line-height: 1.5;
   text-align: center;
   transform: translateX(-50%);
@@ -405,7 +405,7 @@
 
 .preview-meta {
   color: var(--muted);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
 }
 
 .card-main,
@@ -447,6 +447,11 @@
 .builder-card.is-expanded .preview-head,
 .builder-card.is-expanded .preview-foot {
   display: none;
+}
+
+.builder-card.is-expanded.is-growing [data-pinned] > .preview-head,
+.builder-card.is-expanded.is-growing [data-pinned] > .preview-foot {
+  display: flex;
 }
 
 .builder-card.is-expanded.is-growing [data-pinned] {
@@ -523,7 +528,7 @@
 .expanded-info .preview-title,
 .expanded-info .preview-meta {
   overflow: hidden;
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   text-overflow: ellipsis;
 }
 
@@ -580,7 +585,7 @@
   -webkit-backdrop-filter: blur(8px) saturate(140%);
   backdrop-filter: blur(8px) saturate(140%);
   color: var(--muted);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   gap: 4px;
   text-align: center;
   transform: translateY(-6px) scale(0.96);
@@ -728,7 +733,7 @@
 .pdf-zoom {
   min-width: 46px;
   color: var(--muted);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
@@ -937,7 +942,7 @@
   color: var(--accent-text);
   background: var(--accent);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-ui));
   font-weight: 700;
   gap: 6px;
   pointer-events: none;
@@ -1011,7 +1016,7 @@
 .preview-error-text {
   margin: 0;
   color: var(--muted);
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-read));
 }
 
 .retry-button {

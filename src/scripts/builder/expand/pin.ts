@@ -25,10 +25,12 @@ function measure(part: HTMLElement, card: DOMRect): PinnedBox | null {
     return null;
   }
 
+  const margin = getComputedStyle(part);
+
   return {
-    left: rect.left - card.left - builder.clientLeft,
-    right: card.right - rect.right - (builder.offsetWidth - builder.clientWidth - builder.clientLeft),
-    top: rect.top - card.top - builder.clientTop,
+    left: rect.left - card.left - builder.clientLeft - parseFloat(margin.marginLeft),
+    right: card.right - rect.right - (builder.offsetWidth - builder.clientWidth - builder.clientLeft) - parseFloat(margin.marginRight),
+    top: rect.top - card.top - builder.clientTop - parseFloat(margin.marginTop),
     width: rect.width,
     height: rect.height,
   };

@@ -77,3 +77,11 @@ settle; the first paint is immediate).
 Checked against the previous single file: the generated SVG for every part is
 byte-identical for 300 random accents in both themes, and the canvas is
 pixel-identical at poses 0, 25, 71, 72.5, 76 and 90 in dark and light.
+
+## Density on phones and tablets (2026-10-02)
+
+The skull field is drawn zoomed out on small screens so more skulls fit:
+0.6 on phones (shorter side under 600px), 0.76 on touch tablets up to
+1366px, 1 elsewhere (`zoomFor()` in `size.ts`; `draw()` scales the canvas
+transform and covers `width / zoom` × `height / zoom`). The tiles are still
+rasterised at full size, so they stay sharp.

@@ -36,7 +36,7 @@
 }
 
 .button-arrow {
-  font-size: calc(19px * var(--fs));
+  font-size: calc(19px * var(--fs-ui));
 }
 
 .secondary-link {
@@ -49,7 +49,7 @@
   border-radius: var(--radius);
   color: var(--text);
   background: var(--panel-2);
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-ui));
   font-weight: 650;
   text-decoration: none;
   gap: 8px;
@@ -115,7 +115,7 @@
 .status-text {
   margin-top: 3px;
   color: var(--muted);
-  font-size: calc(13px * var(--fs) * var(--fa-small));
+  font-size: calc(13px * var(--fs-read));
   line-height: 1.5;
 }
 
@@ -143,7 +143,7 @@
   gap: 12px;
   margin-top: 10px;
   color: var(--muted);
-  font-size: calc(12px * var(--fs) * var(--fa-small));
+  font-size: calc(12px * var(--fs-read));
 }
 
 .success-panel {
@@ -229,7 +229,7 @@
   padding: 0 14px;
   border-start-start-radius: var(--radius);
   border-end-start-radius: var(--radius);
-  font-size: calc(14px * var(--fs) * var(--fa-small));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 750;
   gap: 9px;
 }
@@ -347,13 +347,13 @@
 }
 
 .action-item-title {
-  font-size: calc(13.5px * var(--fs) * var(--fa-small));
+  font-size: calc(13.5px * var(--fs-ui));
   font-weight: 700;
 }
 
 .action-item-note {
   color: var(--muted);
-  font-size: calc(11.5px * var(--fs) * var(--fa-small));
+  font-size: calc(11.5px * var(--fs-ui));
 }
 
 .action-item-check {

@@ -4,16 +4,8 @@
   initial-value: 1;
 }
 
-@property --fa-small {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 1;
-}
-
 :root {
-  transition:
-    --fs 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    --fa-small 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: --fs 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
@@ -50,7 +42,9 @@
   --backdrop: rgba(6, 7, 10, 0.3);
   --skull-opacity: 0.58;
   --fs: 1;
-  --fa-small: 1;
+  --fs-cap: 1.25;
+  --fs-read: min(var(--fs), var(--fs-cap));
+  --fs-ui: calc(1 + (min(var(--fs), var(--fs-cap)) - 1) * 0.5);
   color-scheme: dark;
   --radius: 4px;
   --radius-lg: 6px;
@@ -139,10 +133,6 @@ html {
   letter-spacing: 0 !important;
 }
 
-:root[lang="fa"] {
-  --fa-small: 1;
-}
-
 :root[lang="fa"] h1 {
   font-weight: 900;
   line-height: 1.02;
@@ -188,7 +178,7 @@ body {
   height: 100dvh;
   margin: 0;
   overflow: hidden;
-  font-size: calc(16px * var(--fs));
+  font-size: calc(16px * var(--fs-read));
   font-family: var(--font-ui);
   color: var(--text);
   background:
@@ -201,4 +191,22 @@ button,
 a,
 input {
   font: inherit;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --fs-cap: 1.2;
+  }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --fs-cap: 1.15;
+  }
+}
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 600px) {
+  :root {
+    --fs-cap: 1.1;
+  }
 }

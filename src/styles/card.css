@@ -67,14 +67,14 @@
 .eyebrow {
   margin-bottom: 10px;
   color: var(--muted);
-  font-size: calc(11px * var(--fs) * var(--fa-small));
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.18em;
 }
 
 h1 {
   margin: 0;
-  font-size: calc(clamp(30px, 5vw, 58px) * var(--fs));
+  font-size: calc(clamp(30px, 5vw, 58px) * var(--fs-ui));
   line-height: 0.98;
   letter-spacing: -0.055em;
 }
@@ -83,7 +83,7 @@ h1 {
   max-width: 560px;
   margin: 14px 0 0;
   color: var(--muted);
-  font-size: calc(clamp(14px, 1.3vw, 17px) * var(--fs));
+  font-size: calc(clamp(14px, 1.3vw, 17px) * var(--fs-read));
   line-height: 1.6;
 }
 
@@ -110,7 +110,7 @@ h1 {
   color: var(--muted);
   background: var(--field);
   box-shadow: inset 0 0 0 1px var(--line);
-  font-size: calc(14px * var(--fs));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 650;
   gap: 8px;
   cursor: pointer;
@@ -156,14 +156,14 @@ h1 {
 
 .control-label {
   color: var(--muted);
-  font-size: calc(11px * var(--fs) * var(--fa-small));
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 :root[lang="fa"] .control-label {
-  font-size: calc(12.5px * var(--fs));
+  font-size: 12.5px;
 }
 
 .menu-trigger {
@@ -195,7 +195,7 @@ h1 {
 
 .trigger-caret {
   color: var(--muted);
-  font-size: calc(11px * var(--fs) * var(--fa-small));
+  font-size: 11px;
 }
 
 .segmented {
@@ -212,7 +212,7 @@ h1 {
   border: 0;
   color: var(--muted);
   background: transparent;
-  font-size: calc(14px * var(--fs));
+  font-size: calc(14px * var(--fs-ui));
   font-weight: 650;
   cursor: pointer;
   transition:
@@ -221,7 +221,7 @@ h1 {
 }
 
 .segment[lang="fa"] {
-  font-size: calc(16px * var(--fs));
+  font-size: calc(16px * var(--fs-ui));
 }
 
 .segment[aria-checked="true"] {
