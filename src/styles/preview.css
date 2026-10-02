@@ -743,7 +743,7 @@
   padding-bottom: calc(var(--pdf-pad, 0px) + 72px);
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
   .builder-card.is-expanded {
     --expand-gap: 10px;
     --expand-pad: 10px;

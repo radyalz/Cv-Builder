@@ -1,3 +1,4 @@
+import { COMPACT } from "../../../lib/layout";
 import { matches, type Step } from "../types";
 
 export const LINKS: Step = {
@@ -25,7 +26,7 @@ export const EXPANDED: Step[] = [
   {
     target: ".pdf-tools > [data-pdf^='zoom'], #pdfZoom",
     title: "zoom",
-    text: () => (matches("(min-width: 1024px)") ? "tourZoomText" : "tourZoomTabletText"),
+    text: () => (!matches(COMPACT) ? "tourZoomText" : "tourZoomTabletText"),
     menu: "expanded",
     when: "(min-width: 600px)",
   },

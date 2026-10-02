@@ -1,4 +1,4 @@
-import { LANDSCAPE_PHONE } from "../../lib/layout";
+import { COMPACT, LANDSCAPE_PHONE } from "../../lib/layout";
 import { initTour, startTour } from "../tour";
 import { callForAttention } from "./call";
 import { explore, type Explore } from "./explore";
@@ -42,7 +42,7 @@ function wire(button: HTMLElement, pop: HTMLElement, popover: IntroPopover, list
     if ((event as CustomEvent).detail !== "intro") popover.hide();
   });
 
-  for (const query of ["(max-width: 1023px)", LANDSCAPE_PHONE]) {
+  for (const query of [COMPACT, LANDSCAPE_PHONE]) {
     window.matchMedia(query).addEventListener("change", () => popover.hide({ instant: true }));
   }
   window.addEventListener("resize", () => popover.isOpen() && popover.place());

@@ -102,3 +102,23 @@ are written against `.card-main > …`, so they apply wherever the rows have
 been moved and nowhere else. The arrow points down at the preview on
 tablets and sideways toward it on sideways phones. Under the preview (where
 the foot stays on desktop) the links pill sits at the far end of the row.
+
+## Desktop from 800px (2026-10-02)
+
+The layouts are defined once in `src/lib/layout.ts` and repeated verbatim in
+the CSS media queries:
+
+- desktop: `(min-width: 800px) and (min-height: 601px), (min-width: 1024px)`
+  (iPad Air both ways, iPad mini sideways, Chrome's "Desktop site" on a
+  phone, which reports about 980px).
+- compact: `(max-width: 799px), (max-width: 1023px) and (max-height: 600px)`
+  (iPad mini upright, older 768px iPads, phones, sideways phones).
+- tablet: the compact range from 600px wide.
+- the narrow-desktop tweaks run from 800px to 1279px.
+
+Between 800 and 1023px wide the desktop action buttons stack in one column,
+and all action labels are `nowrap` with an ellipsis, so they never break
+onto two lines. The title row no longer has 26px of end padding, so How it
+works lines up with the buttons' edge. Checked with the size check at
+820×1180, 1180×820, 744×1133, 1133×744, 980×1900, 1300×860 and 768×1024 at
+every step, language and font: clean.

@@ -193,7 +193,7 @@ input {
   font: inherit;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 799px), (max-width: 1023px) and (max-height: 600px) {
   :root {
     --fs-cap: 1.2;
   }

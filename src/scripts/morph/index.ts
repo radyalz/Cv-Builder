@@ -1,11 +1,11 @@
 import { growPart, morphPart } from "./animate";
 import { boxOf, union, type Boxes } from "./boxes";
-import { LANDSCAPE_PHONE, ROWS_UNDER_ACTIONS } from "../../lib/layout";
+import { COMPACT, LANDSCAPE_PHONE, ROWS_UNDER_ACTIONS } from "../../lib/layout";
 import { placeFoot } from "./foot";
 import { watchLayout, type Memory } from "./memory";
 import { partElements } from "./parts";
 
-const BREAKPOINTS = ["(max-width: 599px)", "(max-width: 1023px)", "(max-width: 399px)", "(max-width: 349px)", LANDSCAPE_PHONE];
+const BREAKPOINTS = ["(max-width: 599px)", COMPACT, "(max-width: 399px)", "(max-width: 349px)", LANDSCAPE_PHONE];
 
 let started = false;
 

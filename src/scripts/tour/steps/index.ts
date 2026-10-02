@@ -1,4 +1,4 @@
-import { FINE_POINTER } from "../../../lib/layout";
+import { COMPACT, FINE_POINTER } from "../../../lib/layout";
 import { onScreen } from "../dom";
 import { matches, type Step } from "../types";
 import { ACCESSIBILITY } from "./a11y";
@@ -45,7 +45,7 @@ const present = (step: Step): boolean =>
   step.menu ? Boolean(document.querySelector(step.target)) : onScreen(document.querySelector(step.target));
 
 export function currentSteps(): Step[] {
-  const steps = matches("(max-width: 1023px)") ? COMPACT_STEPS : DESKTOP_STEPS;
+  const steps = matches(COMPACT) ? COMPACT_STEPS : DESKTOP_STEPS;
 
   return steps.filter(
     (step) => (!step.when || matches(step.when)) && (!step.optional || present(step))

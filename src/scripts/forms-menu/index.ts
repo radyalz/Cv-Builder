@@ -1,6 +1,6 @@
+import { COMPACT } from "../../lib/layout";
 import { formsMenu, type FormsMenu } from "./menu";
 
-const COMPACT = "(max-width: 1023px)";
 
 let started = false;
 
