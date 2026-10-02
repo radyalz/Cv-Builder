@@ -364,3 +364,27 @@
 .action-item[aria-checked="true"] .action-item-check {
   opacity: 1;
 }
+
+@media (min-width: 1024px) {
+  .actions {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .actions .primary-button,
+  .actions .download-button {
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
+  }
+
+  .actions-break {
+    display: none;
+  }
+
+  .actions .secondary-link {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+}

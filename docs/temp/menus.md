@@ -53,3 +53,6 @@ action and whose arrow opens a menu to choose it.
 
 Checked against the previous single file on a phone: identical state at every
 step (open, keys, choose, relay, disabled mirroring, Escape, Tab, outside).
+
+Desktop actions (2026-10-02): Generate and Download are two equal columns,
+All published copies spans the full width under them, all 10px apart.

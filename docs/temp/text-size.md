@@ -43,3 +43,15 @@ accessibility menu in each, and flags text that is clipped, spills out of its
 button, leaves the screen or makes the page scroll sideways. One case was
 found and fixed (Digital cut off in the sideways CV options at the two
 largest steps: the menu is 380px wide there); everything else was clean.
+
+Later the same day:
+
+- The name never wraps: it is `nowrap`, and the title row wraps instead, so
+  at the largest steps on desktop How it works drops under the name. On
+  phones the name scales with the screen width (`clamp(22px, 7.6vw, 32px)`).
+- Short phones (under 600px tall, e.g. iPhone 4) hide the intro line and
+  tighten the spacing, so the card fits without scrolling and the preview
+  keeps its room.
+- The size check also flags a wrapping name, an overflowing card and a page
+  that scrolls; it was clean for 320×480, 360×740, 375×667, 390×844,
+  414×736, 740×360, 768×1024 and 1300×860 at every step, language and font.

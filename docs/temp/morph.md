@@ -94,3 +94,11 @@ Sideways phones, panels, second pass (2026-10-02):
   opens upward inside the menu so choices still count as menu clicks.
   Tour steps for the menu's groups are found by their control
   (`:has([data-a11y=…])`), not by position.
+
+Tablets too (2026-10-02): the preview's heading and foot move under the
+main button on every compact non-phone layout as well as sideways phones
+(`ROWS_UNDER_ACTIONS` in `src/lib/layout.ts`). The rules for the moved rows
+are written against `.card-main > …`, so they apply wherever the rows have
+been moved and nowhere else. The arrow points down at the preview on
+tablets and sideways toward it on sideways phones. Under the preview (where
+the foot stays on desktop) the links pill sits at the far end of the row.

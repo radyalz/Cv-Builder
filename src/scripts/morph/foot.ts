@@ -1,4 +1,4 @@
-import { LANDSCAPE_PHONE } from "../../lib/layout";
+import { ROWS_UNDER_ACTIONS } from "../../lib/layout";
 
 export function placeFoot(): void {
   const head = document.querySelector<HTMLElement>(".preview-head");
@@ -11,7 +11,7 @@ export function placeFoot(): void {
     return;
   }
 
-  if (window.matchMedia(LANDSCAPE_PHONE).matches) {
+  if (window.matchMedia(ROWS_UNDER_ACTIONS).matches) {
     if (foot.parentElement !== main) main.append(foot, head);
     return;
   }
