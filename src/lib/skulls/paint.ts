@@ -12,7 +12,6 @@ let paintTimer = 0;
 
 function useImages(images: PartImages): void {
   current.engine?.images(images);
-  state.field?.classList.add("is-painted");
 }
 
 async function buildImages(accent: string, theme: string): Promise<PartImages> {

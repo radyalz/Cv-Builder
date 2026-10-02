@@ -13,6 +13,8 @@ export const current = { engine: null as Engine | null };
 
 type Report = (struggling: boolean) => void;
 
+const showField = () => document.querySelector(".skull-field")?.classList.add("is-painted");
+
 function inWorker(canvas: HTMLCanvasElement, report: Report): Engine | null {
   if (!("transferControlToOffscreen" in canvas) || typeof Worker === "undefined") return null;
 
@@ -22,7 +24,7 @@ function inWorker(canvas: HTMLCanvasElement, report: Report): Engine | null {
     const send = (message: object, transfer: Transferable[] = []) => worker.postMessage(message, transfer);
     let order = 0;
 
-    worker.onmessage = ({ data }) => data.type === "pace" && report(data.struggling);
+    worker.onmessage = ({ data }) => (data.type === "pace" ? report(data.struggling) : showField());
     send({ type: "attach", canvas: offscreen }, [offscreen]);
 
     return {
@@ -47,7 +49,7 @@ export function startEngine(canvas: HTMLCanvasElement, report: Report): Engine {
 
   if (remote) return remote;
 
-  local.attach(canvas, report);
+  local.attach(canvas, report, showField);
 
   return {
     size: local.setSize,

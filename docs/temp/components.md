@@ -102,3 +102,8 @@ the same as before the split (the built HTML compared node for node).
   the steps instead); Uninstall once installed: a page cannot remove an
   installed app itself, so it shows how on this device and can delete the
   offline copy.
+
+The text column (`.card-main`) scrolls, so it is a clipping box; it keeps
+16px of room on each side (negative inline margin, matching padding) so How
+it works and its call-out ripple are never cut at the column's edge in any
+layout. The expand pinning accounts for those margins.

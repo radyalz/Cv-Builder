@@ -27,7 +27,7 @@ export const en = {
     clearOffline: "Remove the offline copy",
     offlineCleared: "Offline copy removed. The site still works online.",
     installTitle: "Install Radman's CV",
-    installPitch: "Add it to your home screen: its own icon, full screen, and it opens at once, even offline.",
+    installPitch: "Opens in one tap, full screen, even offline.",
     installNow: "Install",
     installApp: "Install the app",
     installHowLead: "Your browser installs it from its own menu, in three steps:",

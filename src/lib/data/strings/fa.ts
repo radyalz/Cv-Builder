@@ -29,7 +29,7 @@ export const fa: Partial<Record<StringKey, string>> = {
     clearOffline: "حذف نسخه آفلاین",
     offlineCleared: "نسخه آفلاین حذف شد. سایت همچنان آنلاین کار می‌کند.",
     installTitle: "نصب رزومه رادمان",
-    installPitch: "آن را به صفحه اصلی اضافه کنید تا با نماد ویژه خود، به‌صورت تمام‌صفحه و سریع، حتی بدون اینترنت باز شود.",
+    installPitch: "با یک لمس، تمام‌صفحه و حتی بدون اینترنت باز می‌شود.",
     installNow: "نصب",
     installApp: "نصب برنامه",
     installHowLead: "مرورگر شما این برنامه را از منوی خود و در سه مرحله نصب می‌کند:",

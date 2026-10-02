@@ -15,6 +15,7 @@ const nextFrame = (callback: FrameRequestCallback): number =>
   globalThis.requestAnimationFrame ? globalThis.requestAnimationFrame(callback) : setTimeout(() => callback(performance.now()), 16);
 
 let report: Report = () => {};
+let painted: () => void = () => {};
 
 function loop(now: number): void {
   state.frame = 0;
@@ -41,11 +42,12 @@ function run(): void {
   if (!state.frame && !state.pauses.size && state.images) state.frame = nextFrame(loop);
 }
 
-export function attach(canvas: Surface, onPace: Report): void {
+export function attach(canvas: Surface, onPace: Report, onPainted: () => void): void {
   state.canvas = canvas;
   state.context = canvas.getContext("2d") as typeof state.context;
   state.started = performance.now();
   report = onPace;
+  painted = onPainted;
 }
 
 export function setSize({ width, height, ratio, zoom }: Size): void {
@@ -60,8 +62,8 @@ export function setSize({ width, height, ratio, zoom }: Size): void {
 
 export function setImages(images: PartImages): void {
   state.images = images;
-
-  if (state.still || state.pauses.size) draw(performance.now());
+  draw(performance.now());
+  painted();
   run();
 }
 

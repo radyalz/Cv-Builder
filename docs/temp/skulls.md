@@ -113,3 +113,9 @@ and the PDF preview; now 5–7 long tasks and under 0.1s.
   animation runs, pauses while the preview is expanded, resumes, recolours,
   survives resizing and a pixel-ratio change, and the export sees it, in both
   the worker and the fallback (offscreen canvas disabled).
+
+The fade-in waits for the first drawn frame: the engine reports it (`painted`
+from `frame.ts`, a "painted" message from the worker) and only then gets
+`.is-painted`. Adding the class when the art was handed over made the empty
+canvas fade in while the worker had not drawn yet, so the skulls dropped in
+at the end.
