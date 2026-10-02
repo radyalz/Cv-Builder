@@ -122,3 +122,11 @@ onto two lines. The title row no longer has 26px of end padding, so How it
 works lines up with the buttons' edge. Checked with the size check at
 820×1180, 1180×820, 744×1133, 1133×744, 980×1900, 1300×860 and 768×1024 at
 every step, language and font: clean.
+
+Very short sideways screens (2026-10-02): a phone like the Galaxy S25 Ultra
+sideways is about 915px wide but only 300–350px tall once Chrome's address
+bar and Android's navigation bar show, so the lower rows were pushed out of
+the scrolling text column. Below 380px tall the eyebrow is hidden, How it
+works sits beside the name again, and the gaps shrink; everything down to
+the preview heading fits without scrolling at 300px. Size check at 915×340,
+915×300 and 844×330: clean.

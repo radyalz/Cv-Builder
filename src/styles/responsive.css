@@ -1252,3 +1252,50 @@
     font-size: calc(13px * var(--fs-ui));
   }
 }
+
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 380px) {
+  .builder-card {
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  .card-top {
+    display: none;
+  }
+
+  .title-row {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: calc(clamp(24px, 3.8vw, 34px) * var(--fs-ui));
+  }
+
+  .intro-info {
+    height: 32px;
+  }
+
+  .forms-entry {
+    margin-top: 12px;
+  }
+
+  .action-split {
+    margin-top: 8px;
+  }
+
+  .card-main > .preview-foot {
+    margin-top: 8px;
+  }
+
+  .card-main > .preview-head {
+    margin-top: 6px;
+  }
+
+  .a11y-menu:not([hidden]) {
+    gap: 8px 16px;
+  }
+}
