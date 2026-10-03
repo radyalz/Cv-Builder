@@ -1,3 +1,4 @@
+import { loadLibrary } from "../../lib/pdf-view/library";
 import { initPrefs } from "../../lib/prefs";
 import { setTipContent } from "../../lib/tooltip";
 import { runBuild } from "./build/flow";
@@ -69,6 +70,7 @@ export function initBuilder(): void {
   el.customHex.value = selectedHex();
   localiseSwatches();
   syncInterface();
+  void loadLibrary().catch(() => undefined);
   loadCopies();
   wire();
 }

@@ -30,14 +30,14 @@ function showMissing(): void {
   void collapsePreview();
 }
 
-function loadCopy(url: string): void {
+function loadCopy(url: string, size = 0): void {
   const shownFrom = performance.now();
   const current = () => el.previewDoc.dataset.url === url;
 
   el.previewDoc.dataset.url = url;
   setPreviewLoading(true);
 
-  cachedPreview(url)
+  cachedPreview(url, { size })
     .catch(() => url)
     .then((source) => current() && app.pdfView.open(source))
     .then(async (shown) => {
@@ -66,7 +66,7 @@ function showPublished(published: Published): void {
 
   el.previewFoot.classList.remove("is-quiet");
 
-  if (el.previewDoc.dataset.url !== url) loadCopy(url);
+  if (el.previewDoc.dataset.url !== url) loadCopy(url, published.size);
 
   el.previewDoc.hidden = false;
   el.previewState.hidden = true;

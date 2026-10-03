@@ -1,3 +1,5 @@
+import { report } from "../../lib/progress";
+import { readWithProgress } from "../../lib/stream";
 import { previewUrlFor } from "./listing";
 import { app } from "./state";
 
@@ -13,11 +15,14 @@ async function deviceCache(): Promise<Cache | null> {
   }
 }
 
-async function fetchCopy(url: string, background: boolean): Promise<Blob> {
+const COPY_BYTES = 200_000;
+
+async function fetchCopy(url: string, background: boolean, expected = COPY_BYTES): Promise<Blob> {
   const store = await deviceCache();
   const kept = store && (await store.match(url));
 
   if (kept) {
+    if (!background) report("copy", 1);
     return kept.blob();
   }
 
@@ -29,7 +34,9 @@ async function fetchCopy(url: string, background: boolean): Promise<Blob> {
 
   store?.put(url, response.clone()).catch(() => undefined);
 
-  return response.blob();
+  if (background) return response.blob();
+
+  return readWithProgress(response, expected, (loaded, total) => report("copy", loaded / total, { loaded, total }));
 }
 
 export async function pruneDeviceCache(): Promise<void> {
@@ -46,11 +53,11 @@ export async function pruneDeviceCache(): Promise<void> {
   }
 }
 
-export function cachedPreview(url: string, { background = false } = {}): Promise<Blob> {
+export function cachedPreview(url: string, { background = false, size = 0 } = {}): Promise<Blob> {
   if (!previewCache.has(url)) {
     previewCache.set(
       url,
-      fetchCopy(url, background).catch((error) => {
+      fetchCopy(url, background, size || undefined).catch((error) => {
         previewCache.delete(url);
         throw error;
       })

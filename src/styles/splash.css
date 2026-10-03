@@ -7,7 +7,7 @@
   justify-items: center;
   background: var(--bg);
   gap: 14px;
-  animation: splash-failsafe 0.4s ease 15s forwards;
+  animation: splash-failsafe 0.4s ease 60s forwards;
 }
 
 .splash.is-leaving {
@@ -19,42 +19,33 @@
     transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.splash-mark {
-  position: relative;
-  display: grid;
-  width: 104px;
-  height: 104px;
-  place-items: center;
-}
-
-.splash-ring {
-  position: absolute;
-  inset: 0;
-  transform: rotate(-90deg);
-}
-
-.splash-track,
-.splash-fill {
-  fill: none;
-  stroke-width: 3;
-}
-
-.splash-track {
-  stroke: color-mix(in srgb, var(--accent) 18%, transparent);
-}
-
-.splash-fill {
-  stroke: var(--accent);
-  stroke-dasharray: var(--splash-done, 6) 100;
-  stroke-linecap: round;
-  transition: stroke-dasharray 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .splash-face {
   width: 76px;
   height: 76px;
   border-radius: 50%;
   animation: splash-breathe 2.4s ease-in-out infinite;
+}
+
+.splash-bar {
+  overflow: hidden;
+  width: min(240px, 64vw);
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.splash-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transform: scaleX(var(--splash-done, 0.02));
+  transform-origin: left center;
+}
+
+[dir="rtl"] .splash-fill {
+  transform-origin: right center;
 }
 
 .splash-name {
@@ -70,11 +61,7 @@
   margin: 0;
   color: var(--muted);
   font-size: calc(13px * var(--fs-read));
-  transition: opacity 200ms ease;
-}
-
-.splash-step.is-swapping {
-  opacity: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes splash-breathe {
