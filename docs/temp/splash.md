@@ -62,3 +62,18 @@ still loading the preview…" note sits on the skeleton (`previewState` with
 Try Again stops its click from reaching the preview, and a click on the
 preview only expands it when it is not loading and not on the error, the
 build status or a note.
+
+## Dev server and fonts (2026-10-03)
+
+- In dev (`npm run dev`) the PDF viewer's worker is handed to pdf.js by its
+  URL, not as a blob: Vite injects `import "/@vite/client"` into the worker
+  module, which cannot resolve from a blob URL, so pdf.js fell back to a fake
+  worker and failed. The built site streams the worker and uses the blob as
+  before (no progress is needed in dev).
+- Fonts: before the page is ready only the chosen font downloads (Inter for
+  English, plus Yekan Bakh Bold for the "فارسی"/"فا" labels; for Persian, the
+  chosen family's weights in use plus Inter for Latin text), and the loading
+  screen waits only for those (`document.fonts.ready`). After `app:ready`, once
+  the page has loaded and the browser is idle, `scripts/fonts/warm.ts` loads
+  the other fonts of the page language at 400 and 700, so switching fonts in
+  the accessibility menu is instant. Skipped with Save-Data or on 2G.

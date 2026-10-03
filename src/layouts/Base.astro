@@ -52,9 +52,11 @@ const { title, description } = Astro.props;
       import { initInstall } from "../scripts/install";
       import { initSplash } from "../scripts/splash";
       import { whenReady } from "../scripts/splash/ready";
+      import { warmFonts } from "../scripts/fonts/warm";
 
       initPrefs();
       initSplash();
+      warmFonts();
       initHalftone();
       initSkulls();
       initWallpaper();

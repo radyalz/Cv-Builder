@@ -14,6 +14,8 @@ let library: Promise<Library> | null = null;
 let sharedWorker: Worker | undefined;
 
 async function workerSource(url: string): Promise<string> {
+  if (import.meta.env.DEV) return url;
+
   try {
     const response = await fetch(url);
 
