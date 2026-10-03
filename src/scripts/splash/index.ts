@@ -1,23 +1,39 @@
 import { progress, report } from "../../lib/progress";
+import { drawRing } from "./ring";
+import { skullDrawer } from "./skull";
 import { backgroundDrawn, fontsLoaded, previewSettled } from "./steps";
 import { stepText } from "./text";
+import { wipe } from "./wipe";
 
-const MIN_MS = 700;
+const MIN_MS = 900;
 const STALL_MS = 15000;
-const LEAVE_MS = 620;
-const READY_HOLD_MS = 320;
+const ARRIVE_MS = 720;
 
 let started = false;
 
-function reveal(splash: HTMLElement): void {
-  const card = document.querySelector(".builder-card");
+const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  card?.classList.add("is-arriving");
-  window.setTimeout(() => card?.classList.remove("is-arriving"), LEAVE_MS + 120);
-  document.documentElement.classList.add("is-ready");
+function palette() {
+  const style = getComputedStyle(document.documentElement);
+
+  return { accent: style.getPropertyValue("--accent").trim(), muted: style.getPropertyValue("--muted").trim() };
+}
+
+async function leave(splash: HTMLElement): Promise<void> {
+  const card = document.querySelector(".builder-card");
+  const ready = () => {
+    splash.classList.add("is-covered");
+    card?.classList.add("is-waiting");
+    document.documentElement.classList.add("is-ready");
+  };
+
+  if (still()) ready();
+  else await wipe(splash, ready);
+
+  splash.remove();
+  card?.classList.replace("is-waiting", "is-arriving");
+  window.setTimeout(() => card?.classList.remove("is-arriving"), ARRIVE_MS + 80);
   document.dispatchEvent(new CustomEvent("app:ready"));
-  splash.classList.add("is-leaving");
-  window.setTimeout(() => splash.remove(), LEAVE_MS + 80);
 }
 
 export function initSplash(): void {
@@ -27,38 +43,47 @@ export function initSplash(): void {
 
   started = true;
 
+  const canvas = splash.querySelector<HTMLCanvasElement>(".splash-canvas")!;
   const step = splash.querySelector<HTMLElement>(".splash-step")!;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  const skull = skullDrawer(ratio);
   const shownAt = performance.now();
-  let shown = 0.02;
-  let movedAt = performance.now();
-  let leaving = false;
+  let shown = 0;
+  let movedAt = shownAt;
+  let done = false;
 
-  const paint = () => {
-    const target = Math.max(0.02, progress());
+  const frame = (now: number) => {
+    const target = progress();
+    const ctx = canvas.getContext("2d")!;
+    const size = canvas.clientWidth;
 
-    if (target > shown + 0.001) movedAt = performance.now();
+    if (target > shown + 0.001) movedAt = now;
+    shown = Math.max(shown, shown + (target - shown) * 0.16);
 
-    shown = Math.max(shown, shown + (target - shown) * 0.18);
-    splash.style.setProperty("--splash-done", shown.toFixed(4));
-    step.textContent = stepText();
+    if (canvas.width !== Math.round(size * ratio)) canvas.width = canvas.height = Math.round(size * ratio);
 
-    if (!leaving && performance.now() - movedAt > STALL_MS) finish();
-    if (splash.isConnected && !leaving) requestAnimationFrame(paint);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.clearRect(0, 0, size, size);
+    skull.draw(ctx, size / 2, size * 0.53, size * 1.08, now - shownAt);
+    drawRing(ctx, size / 2, size / 2, size * 0.44, done ? 1 : shown, now, palette());
+    step.textContent = stepText(done ? 1 : shown);
+
+    if (!done && now - movedAt > STALL_MS) void finish();
+    if (splash.isConnected) requestAnimationFrame(frame);
   };
 
   const finish = async () => {
-    if (leaving) return;
+    if (done) return;
 
     (["fonts", "background", "viewer", "copy", "render"] as const).forEach((name) => report(name, 1));
-    await new Promise((resolve) => window.setTimeout(resolve, Math.max(READY_HOLD_MS, MIN_MS - (performance.now() - shownAt))));
-    leaving = true;
-    splash.style.setProperty("--splash-done", "1");
-    step.textContent = stepText();
-    reveal(splash);
+    await new Promise((resolve) => window.setTimeout(resolve, Math.max(350, MIN_MS - (performance.now() - shownAt))));
+    done = true;
+    skull.stop();
+    await leave(splash);
   };
 
   void fontsLoaded().then(() => report("fonts", 1));
   void backgroundDrawn().then(() => report("background", 1));
   void Promise.all([fontsLoaded(), backgroundDrawn(), previewSettled()]).then(finish);
-  requestAnimationFrame(paint);
+  requestAnimationFrame(frame);
 }

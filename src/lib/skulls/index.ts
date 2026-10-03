@@ -5,7 +5,9 @@ import { setSkullsPaused } from "./loop";
 import { resize } from "./size";
 import { state } from "./state";
 
-export { paintSkulls } from "./paint";
+export { onArt, paintSkulls } from "./paint";
+export { drawPose } from "./render";
+export { CYCLE_MS, PAD, TILE_H, TILE_W, type PartImages } from "./state";
 export { setSkullsPaused } from "./loop";
 export { skullParts } from "./art";
 

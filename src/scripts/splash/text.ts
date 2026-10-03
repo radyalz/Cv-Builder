@@ -10,18 +10,13 @@ const KEYS: Record<TaskName, StringKey> = {
   render: "splashRender",
 };
 
-const kb = (bytes: number): string => {
-  const value = Math.max(1, Math.round(bytes / 1024));
-
-  return uiPrefs.lang === "fa" ? value.toLocaleString("fa-IR") : String(value);
-};
-
-export function stepText(): string {
+export function stepText(fraction: number): string {
   const now = current();
 
   if (!now) return t("splashReady");
 
-  const label = t(KEYS[now.name]);
+  const percent = Math.round(fraction * 100);
+  if (uiPrefs.lang === "fa") return `${t(KEYS[now.name])}\u200f · ${percent.toLocaleString("fa-IR")}٪`;
 
-  return now.loaded && now.total ? `${label} · ${t("splashBytes", { loaded: kb(now.loaded), total: kb(now.total) })}` : label;
+  return `${t(KEYS[now.name])} · ${percent}%`;
 }

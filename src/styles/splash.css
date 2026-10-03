@@ -2,71 +2,91 @@
   position: fixed;
   z-index: 200;
   inset: 0;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  background: var(--bg);
-  gap: 14px;
+  overflow: hidden;
   animation: splash-failsafe 0.4s ease 60s forwards;
 }
 
-.splash.is-leaving {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(1.04);
-  transition:
-    opacity 520ms ease,
-    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+:root:not(.is-ready) body > :not(#splash, .tone-field) {
+  visibility: hidden;
+  animation: splash-failsafe-page 0s linear 60s forwards;
 }
 
-.splash-face {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  animation: splash-breathe 2.4s ease-in-out infinite;
+.splash-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
 }
 
-.splash-bar {
-  overflow: hidden;
-  width: min(240px, 64vw);
-  height: 4px;
-  margin-top: 4px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+.splash.is-covered .splash-stage {
+  visibility: hidden;
 }
 
-.splash-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-  transform: scaleX(var(--splash-done, 0.02));
-  transform-origin: left center;
-}
-
-[dir="rtl"] .splash-fill {
-  transform-origin: right center;
+.splash-canvas {
+  width: min(340px, 76vw, 54vh);
+  aspect-ratio: 1;
 }
 
 .splash-name {
-  margin: 4px 0 0;
+  margin: 0;
   color: var(--text);
-  font-size: calc(17px * var(--fs-ui));
+  font-size: calc(19px * var(--fs-ui));
   font-weight: 800;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+:root[lang="fa"] .splash-name {
+  text-transform: none;
 }
 
 .splash-step {
   min-height: 1.5em;
   margin: 0;
   color: var(--muted);
-  font-size: calc(13px * var(--fs-read));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: calc(12.5px * var(--fs-read));
   font-variant-numeric: tabular-nums;
 }
 
-@keyframes splash-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(0.95); }
+:root[lang="fa"] .splash-step {
+  font-family: var(--font-ui);
+}
+
+.splash-wipe > span {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-101%);
+}
+
+[dir="rtl"] .splash-wipe > span {
+  transform: translateX(101%);
+}
+
+.splash-wipe > span:nth-child(1) { background: color-mix(in srgb, var(--accent) 45%, #000); }
+.splash-wipe > span:nth-child(2) { background: var(--accent); }
+.splash-wipe > span:nth-child(3) { background: color-mix(in srgb, var(--accent) 55%, #fff); }
+
+:root[lang="fa"] .splash .only-en,
+:root:not([lang="fa"]) .splash .only-fa {
+  display: none;
+}
+
+.builder-card.is-waiting {
+  opacity: 0;
+}
+
+.builder-card.is-arriving {
+  animation: card-arrive 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
 }
 
 @keyframes splash-failsafe {
@@ -76,29 +96,9 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .splash-face {
-    animation: none;
-  }
-
-  .splash.is-leaving {
-    transform: none;
-  }
-}
-
-:root[lang="fa"] .splash .only-en,
-:root:not([lang="fa"]) .splash .only-fa {
-  display: none;
-}
-
-.builder-card.is-arriving {
-  animation: card-arrive 680ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes card-arrive {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.985);
+@keyframes splash-failsafe-page {
+  to {
+    visibility: visible;
   }
 }
 

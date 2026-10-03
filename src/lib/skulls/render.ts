@@ -1,5 +1,5 @@
 import { sample, wiggle } from "./easing";
-import { BITE_PX, CYCLE_MS, FLOW_MS, PAD, PIVOT, TILE_H, TILE_W, poseContext, state } from "./state";
+import { BITE_PX, CYCLE_MS, FLOW_MS, PAD, PIVOT, TILE_H, TILE_W, poseContext, state, type Context, type PartImages } from "./state";
 import { LAYERS, TRACKS } from "./timeline";
 
 export function rasterise(url: string, ratio: number): Promise<HTMLCanvasElement> {
@@ -20,16 +20,14 @@ export function rasterise(url: string, ratio: number): Promise<HTMLCanvasElement
   });
 }
 
-function composePose(percent: number): void {
-  const ctx = poseContext();
-  const { images, ratio } = state;
+export function drawPose(ctx: Context, images: PartImages, percent: number, ratio: number): void {
   const { scale, turn } = wiggle(percent);
   const shakeX = sample(TRACKS.shakeX!, percent);
   const shakeY = sample(TRACKS.shakeY!, percent);
   const bite = sample(TRACKS.bite!, percent) * BITE_PX;
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, state.pose!.width, state.pose!.height);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   for (const [name, group] of LAYERS) {
     const track = TRACKS[name];
@@ -49,10 +47,14 @@ function composePose(percent: number): void {
     }
 
     ctx.globalAlpha = alpha;
-    ctx.drawImage(images![name], 0, 0, TILE_W, TILE_H);
+    ctx.drawImage(images[name], 0, 0, TILE_W, TILE_H);
   }
 
   ctx.globalAlpha = 1;
+}
+
+function composePose(percent: number): void {
+  drawPose(poseContext(), state.images!, percent, state.ratio);
 }
 
 function stampSet(x: number, y: number): void {

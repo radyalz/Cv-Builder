@@ -10,7 +10,19 @@ const artCache = new Map<string, PartImages>();
 
 let paintTimer = 0;
 
+const artListeners = new Set<(images: PartImages) => void>();
+let latest: PartImages | null = null;
+
+export function onArt(listen: (images: PartImages) => void): () => void {
+  if (latest) listen(latest);
+  artListeners.add(listen);
+
+  return () => artListeners.delete(listen);
+}
+
 function useImages(images: PartImages): void {
+  latest = images;
+  artListeners.forEach((listen) => listen(images));
   current.engine?.images(images);
 }
 

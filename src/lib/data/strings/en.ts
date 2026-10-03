@@ -139,7 +139,6 @@ export const en = {
     splashReady: "Ready",
     splashViewer: "Loading the PDF viewer",
     splashRender: "Drawing the preview",
-    splashBytes: "{loaded} of {total} KB",
     listingFailed: "Couldn't reach the CV service.",
     retry: "Retry",
     justGenerated: "Generated just now",

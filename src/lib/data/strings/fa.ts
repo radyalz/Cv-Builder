@@ -141,7 +141,6 @@ export const fa: Partial<Record<StringKey, string>> = {
     splashReady: "آماده",
     splashViewer: "بارگذاری نمایشگر PDF",
     splashRender: "رسم پیش‌نمایش",
-    splashBytes: "{loaded} از {total} کیلوبایت",
     listingFailed: "دسترسی به سرویس رزومه ممکن نشد.",
     retry: "تلاش دوباره",
     justGenerated: "هم‌اکنون ساخته شد",

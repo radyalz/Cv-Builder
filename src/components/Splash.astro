@@ -2,12 +2,13 @@
 import { STRINGS } from "../lib/data";
 
 const { en, fa } = STRINGS;
-const icon = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}icons/icon-192.png`;
 ---
 
 <div id="splash" class="splash" aria-hidden="true">
-  <img class="splash-face" src={icon} alt="" width="76" height="76" />
-  <p class="splash-name"><span class="only-en">{en.name}</span><span class="only-fa" lang="fa">{fa.name}</span></p>
-  <div class="splash-bar"><span class="splash-fill"></span></div>
-  <p class="splash-step"><span class="only-en">{en.splashFonts}</span><span class="only-fa" lang="fa">{fa.splashFonts}</span></p>
+  <div class="splash-stage">
+    <canvas class="splash-canvas"></canvas>
+    <p class="splash-name"><span class="only-en">{en.name}</span><span class="only-fa" lang="fa">{fa.name}</span></p>
+    <p class="splash-step"><span class="only-en">{en.splashFonts}</span><span class="only-fa" lang="fa">{fa.splashFonts}</span></p>
+  </div>
+  <div class="splash-wipe"><span></span><span></span><span></span></div>
 </div>

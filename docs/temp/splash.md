@@ -1,79 +1,47 @@
-# Loading screen (2026-10-03)
+# Loading screen
 
 `components/Splash.astro`, `styles/splash.css`, `scripts/splash/`.
 
-Shown from the first paint (it is in the HTML, styled by the main stylesheet,
-with the name and first step in both languages picked by `:root[lang]`, so a
-Persian visitor never sees English first). While it is up the page underneath
-does the real work, and the accent ring fills as each step finishes
-(`steps.ts`):
+## Look (2026-10-03, third version)
 
-1. fonts loaded (`document.fonts.ready`);
-2. background drawn (`.skull-field.is-painted`, set after the first frame);
-3. the CV preview settled: rendered, or shown as not generated, or failed.
+- The halftone background shows through (the splash itself is transparent;
+  everything else in `<body>` is `visibility: hidden` until `:root.is-ready`).
+- In the middle, one skull from the background art, animating on a faster
+  3.2s cycle so its bite and eye flash show during a short load
+  (`skull.ts`, drawn with the same `drawPose` as the background, from the
+  same art via `onArt`).
+- Around it, a ring of 72 monospace ASCII glyphs that fills clockwise from
+  the top with progress: filled glyphs `@`/`#` in the accent, a flickering
+  leading edge stepping down the ramp ` .:-=+*#%@`, and `·` for the rest; a
+  faint inner ring drifts slowly (`ring.ts`).
+- Under it, the name (uppercase in English) and a monospace status line, e.g.
+  "Loading the PDF viewer · 38%" (Persian uses the Persian percent sign and a
+  right-to-left mark so it reads correctly).
+- When everything is loaded, three accent bands (deep, the accent, light)
+  sweep across one after another (`wipe.ts`, each passes in and out, 120ms
+  apart); the page is made ready behind the first full band, the last band
+  sweeping off reveals it, and then the card fades in (`.is-waiting` →
+  `.is-arriving`). Reduced motion: no sweep.
 
-Then it shows "Ready" for a moment and fades out while the card rises in
-(`.is-arriving`, once). It stays at least 0.7s so it never flashes, and at
-see below for what ends it. `app:ready` (and `:root.is-ready`) mark the moment; the
-install offer, the How it works call-out and the first-visit touch hint wait
-for it (`whenReady` in `ready.ts`).
+## What it waits for
 
-Measured: about 1s on a normal connection, about 6s on throttled slow 4G,
-where the page now appears with the preview already rendered.
+The bar (now the ring) is driven by bytes (`src/lib/progress.ts`): fonts and
+background (small shares), the PDF viewer's worker and the shown CV copy
+(streamed, weighted by size), then the render. It ends when fonts, background
+and the preview have settled, never earlier than 0.9s, and only gives up if
+nothing has moved for 15s. Failsafes: the splash hides after 60s and the page
+becomes visible after 60s if no script runs.
 
-## Progress by bytes (2026-10-03, replaces the ring)
+The PDF viewer starts downloading at page start. In dev the worker is passed
+by URL (Vite's client import breaks blob workers); the built site streams it.
+Only the chosen font loads before the page is ready; the other fonts of that
+language warm up afterwards (`scripts/fonts/warm.ts`).
 
-The ring is now a straight bar under the name, filled by what has actually
-loaded (`src/lib/progress.ts`): each task has a weight and a fraction done,
-and the bar is the weighted sum, eased toward its target and never moving
-backwards.
-
-- fonts and background: done or not (small weights);
-- the PDF viewer's worker (about 1.2MB raw, 360KB over the wire): streamed
-  with `readWithProgress` (`src/lib/stream.ts`) and handed to pdf.js as a
-  blob URL, so it is downloaded once; its weight is its size in KB;
-- the shown CV copy: streamed the same way in `fetchCopy` (only the copy on
-  screen, not prefetches), weighted by its size;
-- the render: done when the preview settles.
-
-Sizes: `Content-Length` when sent (×3.3 when the response is compressed,
-since the stream yields the uncompressed bytes); otherwise the known worker
-size or the copy's size from the listing. The line under the bar names what
-is loading and, while bytes arrive, "· 294 of 1235 KB".
-
-There is no time limit any more: the screen only gives up if the bar has not
-moved for 15s (nothing arriving at all); the CSS failsafe is 60s for the case
-where no script runs.
-
-The viewer now starts downloading as soon as the page starts
-(`initBuilder` calls `loadLibrary`) instead of after the listing and the copy
-request: on throttled slow 4G the page was ready at 3.5s instead of 6.4s.
-
-Note for testing: Chrome's network throttling does not slow requests the
-service worker makes, so test slow loads with the service worker bypassed.
+Note for testing: Chrome's network throttling does not slow requests made by
+the service worker; test slow loads with the service worker bypassed.
 
 ## Preview patience
 
-The preview no longer gives up after a fixed 10s. It waits by connection
-(25s by default, 45s on 3G, 75–90s on 2G); after 8s a calm "Slow connection,
-still loading the preview…" note sits on the skeleton (`previewState` with
-`data-slow`). A copy that arrives late still replaces the error.
-
-Try Again stops its click from reaching the preview, and a click on the
-preview only expands it when it is not loading and not on the error, the
-build status or a note.
-
-## Dev server and fonts (2026-10-03)
-
-- In dev (`npm run dev`) the PDF viewer's worker is handed to pdf.js by its
-  URL, not as a blob: Vite injects `import "/@vite/client"` into the worker
-  module, which cannot resolve from a blob URL, so pdf.js fell back to a fake
-  worker and failed. The built site streams the worker and uses the blob as
-  before (no progress is needed in dev).
-- Fonts: before the page is ready only the chosen font downloads (Inter for
-  English, plus Yekan Bakh Bold for the "فارسی"/"فا" labels; for Persian, the
-  chosen family's weights in use plus Inter for Latin text), and the loading
-  screen waits only for those (`document.fonts.ready`). After `app:ready`, once
-  the page has loaded and the browser is idle, `scripts/fonts/warm.ts` loads
-  the other fonts of the page language at 400 and 700, so switching fonts in
-  the accessibility menu is instant. Skipped with Save-Data or on 2G.
+The preview waits by connection (25s by default, 45s on 3G, 75–90s on 2G);
+after 8s a "Slow connection, still loading the preview…" note shows. Try Again
+never expands the preview.
