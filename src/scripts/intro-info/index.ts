@@ -1,5 +1,6 @@
 import { COMPACT, LANDSCAPE_PHONE } from "../../lib/layout";
 import { initTour, startTour } from "../tour";
+import { whenReady } from "../splash/ready";
 import { callForAttention } from "./call";
 import { explore, type Explore } from "./explore";
 import { introPopover, type IntroPopover } from "./popover";
@@ -57,7 +58,7 @@ export function initIntroInfo(): void {
   }
 
   started = true;
-  callForAttention(button);
+  whenReady(() => callForAttention(button));
   initTour();
   const list = explore(document.getElementById("tourExplore")!, document.getElementById("tourTopicsBox")!, pop);
 

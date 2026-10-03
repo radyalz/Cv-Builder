@@ -1,3 +1,4 @@
+import { whenReady } from "../splash/ready";
 import { countdown } from "./countdown";
 import { isInstalled } from "./env";
 
@@ -11,8 +12,10 @@ export interface Offer {
 }
 
 export function whenLoaded(run: () => void): void {
-  if (document.readyState === "complete") run();
-  else window.addEventListener("load", run, { once: true });
+  whenReady(() => {
+    if (document.readyState === "complete") run();
+    else window.addEventListener("load", run, { once: true });
+  });
 }
 
 const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;

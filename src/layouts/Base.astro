@@ -5,6 +5,7 @@ import AppHead from "./head/AppHead.astro";
 import SkullField from "../components/SkullField.astro";
 import A11yMenu from "../components/a11y/A11yMenu.astro";
 import Tooltip from "../components/Tooltip.astro";
+import Splash from "../components/Splash.astro";
 import "../styles/main.css";
 
 interface Props {
@@ -29,6 +30,7 @@ const { title, description } = Astro.props;
   </head>
 
   <body>
+    <Splash />
     <div class="tone-field" aria-hidden="true" transition:persist="tone"><canvas></canvas></div>
     <SkullField transition:persist />
 
@@ -48,15 +50,18 @@ const { title, description } = Astro.props;
       import { initHalftone } from "../lib/halftone";
       import { initWallpaper } from "../scripts/wallpaper";
       import { initInstall } from "../scripts/install";
+      import { initSplash } from "../scripts/splash";
+      import { whenReady } from "../scripts/splash/ready";
 
       initPrefs();
+      initSplash();
       initHalftone();
       initSkulls();
       initWallpaper();
       initInstall(import.meta.env.PROD);
       initTooltip();
       initRipple();
-      showTouchHint(t("touchHint"));
+      whenReady(() => showTouchHint(t("touchHint")));
     </script>
   </body>
 </html>

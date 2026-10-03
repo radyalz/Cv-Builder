@@ -45,7 +45,10 @@ function wire(): void {
   });
 
   el.linksHints.forEach((hint) => hint.addEventListener("click", () => app.pdfView.flashLinks()));
-  el.previewRetry.addEventListener("click", () => void retryPreview());
+  el.previewRetry.addEventListener("click", (event) => {
+    event.stopPropagation();
+    void retryPreview();
+  });
   [el.downloadLatest, el.expandedDownload].forEach((save) => save.addEventListener("click", () => void saveShownCopy()));
   wireControls();
   document.addEventListener("keydown", onEscape);

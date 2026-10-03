@@ -51,7 +51,11 @@ export function wirePreview(): void {
   wireBarMenus();
   el.previewDoc.addEventListener("pdf:rendered", onRendered as EventListener);
   el.previewExpand.addEventListener("click", () => void expandPreview());
-  el.previewBox.addEventListener("click", () => expand.state === "closed" && void expandPreview());
+  el.previewBox.addEventListener("click", (event) => {
+    const inside = (event.target as Element).closest(".preview-error, .build-status, .preview-state");
+
+    if (!inside && expand.state === "closed" && !el.previewDoc.classList.contains("is-loading")) void expandPreview();
+  });
   el.previewCollapse.addEventListener("click", () => void collapsePreview());
 
   document.addEventListener("click", (event) => {
