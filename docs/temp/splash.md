@@ -25,16 +25,20 @@
   leaves in one 0.76s pass, so its exit alone reveals the page (about 0.4s);
   about 1s in all. The bands and the electricity only exist during the sweep
   (`.is-wiping`).
-- Each band's leading edge is a neon tube (`SplashNeon.astro`): a sharp
-  zigzag drawn as four stacked SVG strokes (wide accent haze, accent glow,
-  pale tube, white core; no blur filters), plus a soft wash of light thrown
-  back onto the band (`.neon-light`). Five zigzags per edge are generated at
-  build time and shown in turn on irregular CSS timers (different durations
-  and offsets per shape and per band, so they overlap or blink out at
-  random), and the whole tube buzzes with a stepped opacity flicker. All
-  CSS/SVG, nothing drawn per frame. The page is made ready behind the first
-  full band, then the card fades in after the reveal (`.is-waiting` →
-  `.is-arriving`). Reduced motion: no sweep, one still zigzag.
+- Each band's leading edge is a neon signal (`SplashNeon.astro`): six
+  waveforms generated at build time, each with its own number of periods
+  (8–37) and every tooth randomised in spacing and height, smoothed into
+  rounded curves (Catmull-Rom to Bézier, with a random tension so some are
+  rounder than others). Each is drawn as five stacked SVG strokes (wide
+  aura, haze, glow, tube, and a soft half-transparent core) so the glow
+  swallows the line; no blur filters. A soft wash of light is thrown back
+  onto the band (`.neon-light`). The waveforms are shown in turn on irregular
+  CSS timers (each visible 28% of its own cycle, durations 0.43–0.67s, so
+  they overlap or briefly blink out at random), and the whole edge buzzes
+  with a stepped opacity flicker. Bands rest 90px past their width so the
+  glow never peeks in. The page is made ready behind the first full band,
+  then the card fades in after the reveal (`.is-waiting` → `.is-arriving`).
+  Reduced motion: no sweep, one still waveform.
 
 Earlier attempts (drawn arcs, fractal multi-strand bolts, Tesla-style
 streamers on canvases) were dropped: they read as a jagged line rather than

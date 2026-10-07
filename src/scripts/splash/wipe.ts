@@ -1,7 +1,7 @@
 const ENTER_MS = 520;
 const LAST_MS = 760;
 const STAGGER_MS = 110;
-const ROOM = 70;
+const ROOM = 90;
 const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
 
 export async function wipe(splash: HTMLElement, onCovered: () => void): Promise<void> {

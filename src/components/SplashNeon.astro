@@ -1,32 +1,54 @@
 ---
-const VARIANTS = 5;
-const ROWS = 44;
+type Point = [x: number, y: number];
 
-function zigzag(): string {
-  const points: string[] = [];
+const VARIANTS = 6;
+const CENTRE = 20;
+const REACH = 14;
 
-  for (let row = 0; row <= ROWS; row++) {
-    const side = row % 2 === 0 ? -1 : 1;
-    const x = 20 + side * (5 + Math.random() * 9) + (Math.random() - 0.5) * 3;
-    const y = (row / ROWS) * 104 - 2;
+function teeth(): Point[] {
+  const count = 8 + Math.floor(Math.random() * 30);
+  const step = 104 / count;
+  const points: Point[] = [[CENTRE, -2]];
+  let y = -2;
+  let side = Math.random() < 0.5 ? -1 : 1;
 
-    points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  while (y < 102) {
+    y += step * (0.55 + Math.random() * 0.9);
+    side = -side;
+    points.push([CENTRE + side * REACH * (0.25 + Math.random() * 0.75), Math.min(y, 102)]);
   }
 
-  return points.join(" ");
+  return points;
 }
 
-const shapes = Array.from({ length: VARIANTS }, zigzag);
+function smooth(points: Point[], tension: number): string {
+  const at = (i: number) => points[Math.max(0, Math.min(points.length - 1, i))];
+  const f = (n: number) => n.toFixed(2);
+  let d = `M${f(points[0][0])},${f(points[0][1])}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const [p0, p1, p2, p3] = [at(i - 1), at(i), at(i + 1), at(i + 2)];
+    const c1: Point = [p1[0] + ((p2[0] - p0[0]) / 6) * tension, p1[1] + ((p2[1] - p0[1]) / 6) * tension];
+    const c2: Point = [p2[0] - ((p3[0] - p1[0]) / 6) * tension, p2[1] - ((p3[1] - p1[1]) / 6) * tension];
+
+    d += ` C${f(c1[0])},${f(c1[1])} ${f(c2[0])},${f(c2[1])} ${f(p2[0])},${f(p2[1])}`;
+  }
+
+  return d;
+}
+
+const waves = Array.from({ length: VARIANTS }, () => smooth(teeth(), 0.6 + Math.random() * 0.9));
 ---
 
 <span class="neon-light" aria-hidden="true"></span>
 <svg class="neon" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
-  {shapes.map((points) => (
+  {waves.map((d) => (
     <g class="neon-shape">
-      <polyline class="neon-haze" points={points} />
-      <polyline class="neon-glow" points={points} />
-      <polyline class="neon-tube" points={points} />
-      <polyline class="neon-core" points={points} />
+      <path class="neon-aura" d={d} />
+      <path class="neon-haze" d={d} />
+      <path class="neon-glow" d={d} />
+      <path class="neon-tube" d={d} />
+      <path class="neon-core" d={d} />
     </g>
   ))}
 </svg>

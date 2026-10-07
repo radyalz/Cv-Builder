@@ -58,7 +58,7 @@
 .splash-wipe > span {
   position: absolute;
   inset: 0;
-  transform: translateX(calc(-100% - 60px));
+  transform: translateX(calc(-100% - 90px));
 }
 
 .splash-wipe {
@@ -83,24 +83,25 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 90px;
+  width: 120px;
   height: 100%;
-  background: linear-gradient(to left, color-mix(in srgb, #fff 32%, var(--accent)), transparent);
-  opacity: 0.5;
+  background: linear-gradient(to left, color-mix(in srgb, #fff 38%, var(--accent)), transparent);
+  opacity: 0.6;
   animation: neon-buzz 0.93s steps(1) infinite;
 }
 
-.neon polyline {
+.neon path {
   fill: none;
   stroke-linecap: round;
-  stroke-linejoin: miter;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
-.neon-haze { stroke: var(--accent); stroke-width: 22; opacity: 0.12; }
-.neon-glow { stroke: color-mix(in srgb, var(--accent) 60%, #fff); stroke-width: 10; opacity: 0.32; }
-.neon-tube { stroke: color-mix(in srgb, var(--accent) 25%, #fff); stroke-width: 4.5; opacity: 0.75; }
-.neon-core { stroke: #fff; stroke-width: 1.8; }
+.neon-aura { stroke: var(--accent); stroke-width: 48; opacity: 0.1; }
+.neon-haze { stroke: color-mix(in srgb, var(--accent) 80%, #fff); stroke-width: 28; opacity: 0.18; }
+.neon-glow { stroke: color-mix(in srgb, var(--accent) 50%, #fff); stroke-width: 15; opacity: 0.32; }
+.neon-tube { stroke: color-mix(in srgb, var(--accent) 25%, #fff); stroke-width: 6; opacity: 0.4; }
+.neon-core { stroke: #fff; stroke-width: 1.2; opacity: 0.5; }
 
 .neon-shape {
   opacity: 0;
@@ -111,6 +112,7 @@
 .neon-shape:nth-child(3) { animation-delay: -0.29s; animation-duration: 0.61s; }
 .neon-shape:nth-child(4) { animation-delay: -0.37s; animation-duration: 0.43s; }
 .neon-shape:nth-child(5) { animation-delay: -0.19s; animation-duration: 0.53s; }
+.neon-shape:nth-child(6) { animation-delay: -0.07s; animation-duration: 0.67s; }
 
 .splash-wipe > span:nth-child(2) .neon-shape { animation-direction: reverse; }
 .splash-wipe > span:nth-child(3) .neon { animation-duration: 0.71s; }
@@ -128,7 +130,7 @@
 
 @keyframes neon-shape {
   0% { opacity: 1; }
-  20% { opacity: 0; }
+  28% { opacity: 0; }
 }
 
 @keyframes neon-buzz {
@@ -145,7 +147,7 @@
 
 
 [dir="rtl"] .splash-wipe > span {
-  transform: translateX(calc(100% + 60px));
+  transform: translateX(calc(100% + 90px));
 }
 
 .splash-wipe > span:nth-child(1) { background: color-mix(in srgb, var(--accent) 45%, #000); }
