@@ -64,7 +64,7 @@ export function initSplash(): void {
 
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.clearRect(0, 0, size, size);
-    skull.draw(ctx, size / 2, size * 0.55, size * 1.55, now - shownAt);
+    skull.draw(ctx, size / 2, size / 2, size * 0.6, now - shownAt);
     drawRing(ctx, size / 2, size / 2, size * 0.44, done ? 1 : shown, now, palette());
     step.textContent = stepText(done ? 1 : shown);
 
