@@ -1,0 +1,32 @@
+---
+const VARIANTS = 5;
+const ROWS = 44;
+
+function zigzag(): string {
+  const points: string[] = [];
+
+  for (let row = 0; row <= ROWS; row++) {
+    const side = row % 2 === 0 ? -1 : 1;
+    const x = 20 + side * (5 + Math.random() * 9) + (Math.random() - 0.5) * 3;
+    const y = (row / ROWS) * 104 - 2;
+
+    points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+
+  return points.join(" ");
+}
+
+const shapes = Array.from({ length: VARIANTS }, zigzag);
+---
+
+<span class="neon-light" aria-hidden="true"></span>
+<svg class="neon" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
+  {shapes.map((points) => (
+    <g class="neon-shape">
+      <polyline class="neon-haze" points={points} />
+      <polyline class="neon-glow" points={points} />
+      <polyline class="neon-tube" points={points} />
+      <polyline class="neon-core" points={points} />
+    </g>
+  ))}
+</svg>

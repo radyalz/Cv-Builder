@@ -1,4 +1,5 @@
 ---
+import SplashNeon from "./SplashNeon.astro";
 import { STRINGS } from "../lib/data";
 
 const { en, fa } = STRINGS;
@@ -10,5 +11,5 @@ const { en, fa } = STRINGS;
     <p class="splash-name"><span class="only-en">{en.name}</span><span class="only-fa" lang="fa">{fa.name}</span></p>
     <p class="splash-step"><span class="only-en">{en.splashFonts}</span><span class="only-fa" lang="fa">{fa.splashFonts}</span></p>
   </div>
-  <div class="splash-wipe"><span><canvas class="splash-arc"></canvas></span><span><canvas class="splash-arc"></canvas></span><span><canvas class="splash-arc"></canvas></span></div>
+  <div class="splash-wipe"><span><SplashNeon /></span><span><SplashNeon /></span><span><SplashNeon /></span></div>
 </div>

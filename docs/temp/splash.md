@@ -25,17 +25,20 @@
   leaves in one 0.76s pass, so its exit alone reveals the page (about 0.4s);
   about 1s in all. The bands and the electricity only exist during the sweep
   (`.is-wiping`).
-- The leading edges carry live electricity (`arc.ts`): two or three
-  intertwined strands of fractal lightning (midpoint displacement, rebuilt
-  every ~40ms), a white core over a glow lifted from the accent, drawn with
-  additive blending so overlaps brighten, a soft band of light thrown back
-  onto the band's edge, a few forks reaching ahead, and per-frame flicker with
-  occasional surges. Each band carries its own small canvas pinned to its
-  leading edge (`.splash-arc`, 120px wide), so the electricity moves with the
-  band on the compositor and can never lag behind it when the main thread is
-  busy; it is cleared whenever the band is not moving. The page is made ready
-  behind the first full band, then the card fades in after the reveal
-  (`.is-waiting` → `.is-arriving`). Reduced motion: no sweep.
+- Each band's leading edge is a neon tube (`SplashNeon.astro`): a sharp
+  zigzag drawn as four stacked SVG strokes (wide accent haze, accent glow,
+  pale tube, white core; no blur filters), plus a soft wash of light thrown
+  back onto the band (`.neon-light`). Five zigzags per edge are generated at
+  build time and shown in turn on irregular CSS timers (different durations
+  and offsets per shape and per band, so they overlap or blink out at
+  random), and the whole tube buzzes with a stepped opacity flicker. All
+  CSS/SVG, nothing drawn per frame. The page is made ready behind the first
+  full band, then the card fades in after the reveal (`.is-waiting` →
+  `.is-arriving`). Reduced motion: no sweep, one still zigzag.
+
+Earlier attempts (drawn arcs, fractal multi-strand bolts, Tesla-style
+streamers on canvases) were dropped: they read as a jagged line rather than
+electricity, and drawing soft glow every frame cost too much.
 
 ## What it waits for
 

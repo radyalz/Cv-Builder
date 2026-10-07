@@ -69,18 +69,78 @@
   visibility: visible;
 }
 
-.splash-arc {
+.neon {
   position: absolute;
-  top: 0;
-  right: -60px;
-  width: 120px;
-  height: 100%;
-  pointer-events: none;
+  top: -2%;
+  right: -30px;
+  width: 60px;
+  height: 104%;
+  overflow: visible;
+  animation: neon-buzz 0.93s steps(1) infinite;
 }
 
-[dir="rtl"] .splash-arc {
+.neon-light {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 90px;
+  height: 100%;
+  background: linear-gradient(to left, color-mix(in srgb, #fff 32%, var(--accent)), transparent);
+  opacity: 0.5;
+  animation: neon-buzz 0.93s steps(1) infinite;
+}
+
+.neon polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.neon-haze { stroke: var(--accent); stroke-width: 22; opacity: 0.12; }
+.neon-glow { stroke: color-mix(in srgb, var(--accent) 60%, #fff); stroke-width: 10; opacity: 0.32; }
+.neon-tube { stroke: color-mix(in srgb, var(--accent) 25%, #fff); stroke-width: 4.5; opacity: 0.75; }
+.neon-core { stroke: #fff; stroke-width: 1.8; }
+
+.neon-shape {
+  opacity: 0;
+  animation: neon-shape 0.55s steps(1) infinite;
+}
+
+.neon-shape:nth-child(2) { animation-delay: -0.11s; animation-duration: 0.47s; }
+.neon-shape:nth-child(3) { animation-delay: -0.29s; animation-duration: 0.61s; }
+.neon-shape:nth-child(4) { animation-delay: -0.37s; animation-duration: 0.43s; }
+.neon-shape:nth-child(5) { animation-delay: -0.19s; animation-duration: 0.53s; }
+
+.splash-wipe > span:nth-child(2) .neon-shape { animation-direction: reverse; }
+.splash-wipe > span:nth-child(3) .neon { animation-duration: 0.71s; }
+
+[dir="rtl"] .neon {
   right: auto;
-  left: -60px;
+  left: -30px;
+}
+
+[dir="rtl"] .neon-light {
+  right: auto;
+  left: 0;
+  background: linear-gradient(to right, color-mix(in srgb, #fff 32%, var(--accent)), transparent);
+}
+
+@keyframes neon-shape {
+  0% { opacity: 1; }
+  20% { opacity: 0; }
+}
+
+@keyframes neon-buzz {
+  0% { opacity: 1; }
+  6% { opacity: 0.45; }
+  9% { opacity: 1; }
+  31% { opacity: 0.8; }
+  34% { opacity: 1; }
+  52% { opacity: 0.3; }
+  55% { opacity: 1; }
+  78% { opacity: 0.85; }
+  81% { opacity: 1; }
 }
 
 
@@ -126,7 +186,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .builder-card.is-arriving {
+  .builder-card.is-arriving,
+  .neon,
+  .neon-light,
+  .neon-shape {
     animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-shape:first-child {
+    opacity: 1;
   }
 }
