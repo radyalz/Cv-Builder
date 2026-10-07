@@ -25,12 +25,17 @@
   leaves in one 0.76s pass, so its exit alone reveals the page (about 0.4s);
   about 1s in all. The bands and the electricity only exist during the sweep
   (`.is-wiping`).
-- The leading edges carry fine static (`arc.ts`, on the `.splash-sparks`
-  canvas): a thin white crackle, finely jagged and rebuilt every ~45ms, a
-  faint accent glow, rare short branches and a few sparks; nothing is drawn
-  once a band is at rest. The page is made ready behind the first full band,
-  then the card fades in after the reveal (`.is-waiting` → `.is-arriving`).
-  Reduced motion: no sweep.
+- The leading edges carry live electricity (`arc.ts`): two or three
+  intertwined strands of fractal lightning (midpoint displacement, rebuilt
+  every ~40ms), a white core over a glow lifted from the accent, drawn with
+  additive blending so overlaps brighten, a soft band of light thrown back
+  onto the band's edge, a few forks reaching ahead, and per-frame flicker with
+  occasional surges. Each band carries its own small canvas pinned to its
+  leading edge (`.splash-arc`, 120px wide), so the electricity moves with the
+  band on the compositor and can never lag behind it when the main thread is
+  busy; it is cleared whenever the band is not moving. The page is made ready
+  behind the first full band, then the card fades in after the reveal
+  (`.is-waiting` → `.is-arriving`). Reduced motion: no sweep.
 
 ## What it waits for
 

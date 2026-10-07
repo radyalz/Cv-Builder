@@ -61,22 +61,26 @@
   transform: translateX(calc(-100% - 60px));
 }
 
-.splash-wipe,
-.splash-sparks {
+.splash-wipe {
   visibility: hidden;
 }
 
-.splash.is-wiping .splash-wipe,
-.splash.is-wiping .splash-sparks {
+.splash.is-wiping .splash-wipe {
   visibility: visible;
 }
 
-.splash-sparks {
+.splash-arc {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  top: 0;
+  right: -60px;
+  width: 120px;
   height: 100%;
   pointer-events: none;
+}
+
+[dir="rtl"] .splash-arc {
+  right: auto;
+  left: -60px;
 }
 
 

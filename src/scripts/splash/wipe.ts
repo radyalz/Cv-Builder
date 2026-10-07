@@ -6,30 +6,32 @@ const STAGGER_MS = 110;
 const ROOM = 60;
 const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
 
-function sparks(splash: HTMLElement, panels: HTMLElement[], ahead: number): () => void {
-  const canvas = splash.querySelector<HTMLCanvasElement>(".splash-sparks")!;
-  const ctx = canvas.getContext("2d")!;
+const ARC_HALF = 60;
+
+function sparks(panels: HTMLElement[], ahead: number, moving: (panel: HTMLElement) => boolean): () => void {
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
   const arcs = new Map<HTMLElement, Arc>();
+  const canvases = panels.map((panel) => panel.querySelector<HTMLCanvasElement>(".splash-arc")!);
   let running = true;
 
-  canvas.width = Math.round(innerWidth * ratio);
-  canvas.height = Math.round(innerHeight * ratio);
+  canvases.forEach((canvas) => {
+    canvas.width = Math.round(ARC_HALF * 2 * ratio);
+    canvas.height = Math.round(innerHeight * ratio);
+  });
 
   const frame = (now: number) => {
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    panels.forEach((panel, index) => {
+      const ctx = canvases[index].getContext("2d")!;
 
-    for (const panel of panels) {
-      const box = panel.getBoundingClientRect();
-      const edge = ahead > 0 ? box.right : box.left;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, ARC_HALF * 2, innerHeight);
 
-      if (panel.hidden || edge < -ROOM || edge > innerWidth - 2 || (ahead < 0 && edge < 2)) continue;
+      if (!moving(panel)) return;
       if (stale(arcs.get(panel), now)) arcs.set(panel, makeArc(0, innerHeight, ahead, now));
 
-      drawArc(ctx, arcs.get(panel)!, edge, accent);
-    }
+      drawArc(ctx, arcs.get(panel)!, ARC_HALF, ahead, accent);
+    });
 
     if (running) requestAnimationFrame(frame);
   };
@@ -38,7 +40,6 @@ function sparks(splash: HTMLElement, panels: HTMLElement[], ahead: number): () =
 
   return () => {
     running = false;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 }
 
@@ -51,10 +52,17 @@ export async function wipe(splash: HTMLElement, onCovered: () => void): Promise<
 
   splash.classList.add("is-wiping");
 
-  const stop = sparks(splash, [...panels, last], -sign);
+  const animations = new Map<HTMLElement, Animation>();
+  const moving = (panel: HTMLElement) => {
+    const animation = animations.get(panel);
+    const progress = animation?.effect?.getComputedTiming().progress;
+
+    return !panel.hidden && typeof progress === "number" && progress > 0 && progress < 1 && animation!.playState === "running";
+  };
+  const stop = sparks([...panels, last], -sign, moving);
 
   panels.forEach((panel, index) =>
-    panel.animate([at(sign), at(0)], { duration: ENTER_MS, delay: index * STAGGER_MS, easing: EASE, fill: "both" })
+    animations.set(panel, panel.animate([at(sign), at(0)], { duration: ENTER_MS, delay: index * STAGGER_MS, easing: EASE, fill: "both" }))
   );
 
   const sweep = last.animate([{ ...at(sign), easing: EASE }, { ...at(0), offset: 0.5, easing: EASE }, at(-sign)], {
@@ -63,6 +71,7 @@ export async function wipe(splash: HTMLElement, onCovered: () => void): Promise<
     fill: "both",
   });
 
+  animations.set(last, sweep);
   window.setTimeout(onCovered, ENTER_MS + 16);
   window.setTimeout(() => panels.forEach((panel) => (panel.hidden = true)), lastDelay + LAST_MS / 2 + 16);
   await sweep.finished;

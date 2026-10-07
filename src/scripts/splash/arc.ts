@@ -1,77 +1,101 @@
 type Point = [x: number, y: number];
 
-const STEP = 12;
-const SWAY = 7;
-const REFRESH_MS = 45;
+const DEPTH = 7;
+const ROUGHNESS = 0.42;
+const REFRESH_MS = 40;
+const STRANDS = 3;
 
-function jagged(x: number, top: number, bottom: number, sway: number): Point[] {
-  const points: Point[] = [];
-  let drift = 0;
+function fractal(from: Point, to: Point, spread: number, depth: number): Point[] {
+  if (depth === 0) return [from, to];
 
-  for (let y = top; y <= bottom + STEP; y += STEP * (0.6 + Math.random() * 0.8)) {
-    drift = drift * 0.6 + (Math.random() - 0.5) * sway * 2;
-    points.push([x + drift, y]);
-  }
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const middle: Point = [(from[0] + to[0]) / 2 + (Math.random() - 0.5) * length * spread, (from[1] + to[1]) / 2];
 
-  return points;
+  return [...fractal(from, middle, spread, depth - 1).slice(0, -1), ...fractal(middle, to, spread, depth - 1)];
 }
 
-function branch([x, y]: Point, ahead: number): Point[] {
-  const points: Point[] = [[x, y]];
-  const length = 2 + Math.floor(Math.random() * 4);
-  let [px, py] = [x, y];
+function fork([x, y]: Point, ahead: number): Point[] {
+  const reach = 24 + Math.random() * 46;
 
-  for (let i = 0; i < length; i++) {
-    px += ahead * (4 + Math.random() * 10);
-    py += (Math.random() - 0.4) * 16;
-    points.push([px, py]);
-  }
-
-  return points;
+  return fractal([x, y], [x + ahead * reach, y + (Math.random() - 0.3) * reach * 1.4], 0.5, 4);
 }
 
 export interface Arc {
-  main: Point[];
-  branches: Point[][];
-  sparks: Point[];
+  strands: Point[][];
+  forks: Point[][];
+  surge: number;
   madeAt: number;
 }
 
 export function makeArc(x: number, height: number, ahead: number, now: number): Arc {
-  const main = jagged(x, -20, height + 20, SWAY);
-  const branches = main.filter(() => Math.random() < 0.05).map((point) => branch(point, ahead));
-  const sparks = Array.from({ length: 4 }, (): Point => [x + ahead * Math.random() * 18, Math.random() * height]);
+  const strands = Array.from({ length: STRANDS }, (_, i) =>
+    fractal([x + (Math.random() - 0.5) * 8, -30], [x + (Math.random() - 0.5) * 8, height + 30], ROUGHNESS * (i ? 0.7 : 1) * 0.11, DEPTH)
+  );
+  const forks = strands[0].filter(() => Math.random() < 0.035).map((point) => fork(point, ahead));
 
-  return { main, branches, sparks, madeAt: now };
+  return { strands, forks, surge: Math.random() < 0.18 ? 1 : 0.55 + Math.random() * 0.35, madeAt: now };
 }
 
-export const stale = (arc: Arc | undefined, now: number): boolean => !arc || now - arc.madeAt > REFRESH_MS * (0.6 + Math.random());
+export const stale = (arc: Arc | undefined, now: number): boolean => !arc || now - arc.madeAt > REFRESH_MS * (0.5 + Math.random());
 
-function stroke(ctx: CanvasRenderingContext2D, points: Point[], width: number, alpha: number): void {
-  ctx.globalAlpha = alpha;
-  ctx.lineWidth = width;
+function towardWhite(color: string, amount: number): string {
+  const hex = /^#?([\da-f]{6})$/i.exec(color.trim())?.[1];
+
+  if (!hex) return "#fff";
+
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const lift = (value: number) => Math.round(value + (255 - value) * amount);
+
+  return `rgb(${lift(r)}, ${lift(g)}, ${lift(b)})`;
+}
+
+function path(ctx: CanvasRenderingContext2D, points: Point[], dx: number): void {
   ctx.beginPath();
-  points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
-  ctx.stroke();
+  points.forEach(([x, y], i) => (i ? ctx.lineTo(x + dx, y) : ctx.moveTo(x + dx, y)));
 }
 
-export function drawArc(ctx: CanvasRenderingContext2D, arc: Arc, dx: number, accent: string): void {
-  const shift = (points: Point[]) => points.map(([x, y]): Point => [x + dx, y]);
+function edgeLight(ctx: CanvasRenderingContext2D, dx: number, ahead: number, height: number, strength: number): void {
+  const width = 38;
+  const light = ctx.createLinearGradient(dx, 0, dx - ahead * width, 0);
+
+  light.addColorStop(0, `rgba(255, 255, 255, ${0.3 * strength})`);
+  light.addColorStop(1, "rgba(255, 255, 255, 0)");
+  ctx.fillStyle = light;
+  ctx.fillRect(Math.min(dx, dx - ahead * width), 0, width, height);
+}
+
+export function drawArc(ctx: CanvasRenderingContext2D, arc: Arc, dx: number, ahead: number, accent: string): void {
+  const strength = arc.surge * (0.8 + Math.random() * 0.2);
+  const glow = towardWhite(accent, 0.55);
 
   ctx.save();
+  edgeLight(ctx, dx, ahead, ctx.canvas.height, strength);
+  ctx.globalCompositeOperation = "lighter";
   ctx.lineCap = ctx.lineJoin = "round";
-  ctx.shadowColor = accent;
-  ctx.shadowBlur = 5;
-  ctx.strokeStyle = accent;
-  stroke(ctx, shift(arc.main), 2.4, 0.22);
-  ctx.shadowBlur = 0;
-  ctx.strokeStyle = "#fff";
-  stroke(ctx, shift(arc.main), 1, 0.85);
-  arc.branches.forEach((points) => stroke(ctx, shift(points), 0.6, 0.45));
-  ctx.fillStyle = "#fff";
-  arc.sparks.forEach(([x, y]) => {
-    ctx.globalAlpha = Math.random() * 0.7;
-    ctx.fillRect(x + dx, y, 1, 1);
+
+  arc.strands.forEach((strand, i) => {
+    ctx.shadowColor = glow;
+    ctx.shadowBlur = 12 * strength;
+    ctx.strokeStyle = glow;
+    ctx.globalAlpha = (i ? 0.35 : 0.6) * strength;
+    ctx.lineWidth = i ? 2 : 3.2;
+    path(ctx, strand, dx);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = "#fff";
+    ctx.globalAlpha = (i ? 0.55 : 1) * strength;
+    ctx.lineWidth = i ? 0.7 : 1.3;
+    path(ctx, strand, dx);
+    ctx.stroke();
   });
+
+  ctx.shadowBlur = 8 * strength;
+  arc.forks.forEach((points) => {
+    ctx.globalAlpha = 0.75 * strength;
+    ctx.lineWidth = 0.9;
+    path(ctx, points, dx);
+    ctx.stroke();
+  });
+
   ctx.restore();
 }
