@@ -6,7 +6,8 @@
 
 - The halftone background shows through (the splash itself is transparent;
   everything else in `<body>` is `visibility: hidden` until `:root.is-ready`).
-- In the middle, one skull from the background art, animating on a faster
+- In the middle, one skull from the background art, drawn large so it fills
+  the ring, animating on a faster
   3.2s cycle so its bite and eye flash show during a short load
   (`skull.ts`, drawn with the same `drawPose` as the background, from the
   same art via `onArt`).
@@ -18,10 +19,14 @@
   "Loading the PDF viewer · 38%" (Persian uses the Persian percent sign and a
   right-to-left mark so it reads correctly).
 - When everything is loaded, three accent bands (deep, the accent, light)
-  sweep across one after another (`wipe.ts`, each passes in and out, 120ms
-  apart); the page is made ready behind the first full band, the last band
-  sweeping off reveals it, and then the card fades in (`.is-waiting` →
-  `.is-arriving`). Reduced motion: no sweep.
+  sweep across one after another (`wipe.ts`): each passes in and out in
+  620ms, 70ms apart, the last 40ms more; about 0.6–0.9s in all. Each band's
+  leading edge is a jagged lightning bolt (`.bolt`, an SVG polyline with a
+  white core, an accent glow and a 140ms flicker; mirrored in Persian). The
+  bands rest 48px further out than their own width so the bolts stay hidden
+  before and after. The page is made ready behind the first full band, the
+  last band sweeping off reveals it, then the card fades in (`.is-waiting` →
+  `.is-arriving`). Reduced motion: no sweep, no flicker.
 
 ## What it waits for
 

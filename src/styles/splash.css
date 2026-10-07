@@ -58,11 +58,43 @@
 .splash-wipe > span {
   position: absolute;
   inset: 0;
-  transform: translateX(-101%);
+  transform: translateX(calc(-100% - 48px));
+}
+
+.bolt {
+  position: absolute;
+  top: -3%;
+  right: -30px;
+  width: 60px;
+  height: 106%;
+  overflow: visible;
+  filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 12px var(--accent)) drop-shadow(0 0 28px var(--accent));
+  animation: bolt-flicker 140ms steps(1) infinite;
+}
+
+.bolt polyline {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: miter;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+[dir="rtl"] .bolt {
+  right: auto;
+  left: -30px;
+  transform: scaleX(-1);
+}
+
+@keyframes bolt-flicker {
+  0% { opacity: 1; }
+  30% { opacity: 0.55; }
+  55% { opacity: 1; }
+  80% { opacity: 0.75; }
 }
 
 [dir="rtl"] .splash-wipe > span {
-  transform: translateX(101%);
+  transform: translateX(calc(100% + 48px));
 }
 
 .splash-wipe > span:nth-child(1) { background: color-mix(in srgb, var(--accent) 45%, #000); }
@@ -103,7 +135,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .builder-card.is-arriving {
+  .builder-card.is-arriving,
+  .bolt {
     animation: none;
   }
 }
