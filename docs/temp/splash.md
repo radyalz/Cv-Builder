@@ -20,17 +20,17 @@
   "Loading the PDF viewer · 38%" (Persian uses the Persian percent sign and a
   right-to-left mark so it reads correctly).
 - When everything is loaded, three accent bands (deep, the accent, light)
-  sweep across one after another (`wipe.ts`): each passes in and out in
-  1.05s, 110ms apart, the last 70ms more; about 1.4s in all, with a short
-  hold while the screen is covered. The bands and the electricity only exist
-  during the sweep (`.is-wiping`), so nothing shows at the screen edge while
-  loading.
-- Each band's leading edge carries live static electricity (`arc.ts`, drawn
-  on `.splash-sparks`, a full-screen canvas): a jagged main arc rebuilt every
-  ~55ms, branches forking ahead of the band, and scattered sparks; a wide
-  accent glow under a white-hot core. The page is made ready behind the first
-  full band, the last band sweeping off reveals it, then the card fades in
-  (`.is-waiting` → `.is-arriving`). Reduced motion: no sweep.
+  sweep in (`wipe.ts`): the first two only enter (0.52s, 110ms apart) and
+  are hidden once the light band covers them; the light band enters and
+  leaves in one 0.76s pass, so its exit alone reveals the page (about 0.4s);
+  about 1s in all. The bands and the electricity only exist during the sweep
+  (`.is-wiping`).
+- The leading edges carry fine static (`arc.ts`, on the `.splash-sparks`
+  canvas): a thin white crackle, finely jagged and rebuilt every ~45ms, a
+  faint accent glow, rare short branches and a few sparks; nothing is drawn
+  once a band is at rest. The page is made ready behind the first full band,
+  then the card fades in after the reveal (`.is-waiting` → `.is-arriving`).
+  Reduced motion: no sweep.
 
 ## What it waits for
 
