@@ -25,5 +25,6 @@ export async function wipe(splash: HTMLElement, onCovered: () => void): Promise<
 
   window.setTimeout(onCovered, ENTER_MS + 16);
   window.setTimeout(() => panels.forEach((panel) => (panel.hidden = true)), lastDelay + LAST_MS / 2 + 16);
+  window.setTimeout(() => last.classList.add("is-exiting"), lastDelay + LAST_MS / 2);
   await sweep.finished;
 }

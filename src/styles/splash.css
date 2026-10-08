@@ -128,6 +128,39 @@
   background: linear-gradient(to right, color-mix(in srgb, #fff 32%, var(--accent)), transparent);
 }
 
+.neon.is-trail,
+.neon-light.is-trail {
+  display: none;
+}
+
+.is-exiting > .neon.is-trail,
+.is-exiting > .neon-light.is-trail {
+  display: block;
+}
+
+.neon.is-trail {
+  right: auto;
+  left: -30px;
+  transform: scaleX(-1);
+}
+
+.neon-light.is-trail {
+  right: auto;
+  left: -120px;
+  background: linear-gradient(to right, transparent, color-mix(in srgb, #fff 38%, var(--accent)));
+}
+
+[dir="rtl"] .neon.is-trail {
+  left: auto;
+  right: -30px;
+}
+
+[dir="rtl"] .neon-light.is-trail {
+  left: auto;
+  right: -120px;
+  background: linear-gradient(to left, transparent, color-mix(in srgb, #fff 32%, var(--accent)));
+}
+
 @keyframes neon-shape {
   0% { opacity: 1; }
   28% { opacity: 0; }

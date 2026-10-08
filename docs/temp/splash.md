@@ -38,6 +38,10 @@
   with a stepped opacity flicker. Bands rest 90px past their width so the
   glow never peeks in. The page is made ready behind the first full band,
   then the card fades in after the reveal (`.is-waiting` → `.is-arriving`).
+  The last band also carries a second, separately randomised waveform on
+  its trailing edge (`<SplashNeon trail />`, mirrored, glow spilling onto the
+  page), shown only while it exits (`.is-exiting`, added by `wipe.ts` at the
+  exit start), so the edge that reveals the page glows too.
   Reduced motion: no sweep, one still waveform.
 
 Earlier attempts (drawn arcs, fractal multi-strand bolts, Tesla-style

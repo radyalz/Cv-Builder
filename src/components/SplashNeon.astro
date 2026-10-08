@@ -1,4 +1,10 @@
 ---
+interface Props {
+  trail?: boolean;
+}
+
+const { trail = false } = Astro.props;
+
 type Point = [x: number, y: number];
 
 const VARIANTS = 6;
@@ -40,8 +46,8 @@ function smooth(points: Point[], tension: number): string {
 const waves = Array.from({ length: VARIANTS }, () => smooth(teeth(), 0.6 + Math.random() * 0.9));
 ---
 
-<span class="neon-light" aria-hidden="true"></span>
-<svg class="neon" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
+<span class:list={["neon-light", { "is-trail": trail }]} aria-hidden="true"></span>
+<svg class:list={["neon", { "is-trail": trail }]} viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
   {waves.map((d) => (
     <g class="neon-shape">
       <path class="neon-aura" d={d} />
