@@ -8,6 +8,7 @@ import { wipe } from "./wipe";
 const MIN_MS = 900;
 const STALL_MS = 15000;
 const ARRIVE_MS = 720;
+const FRAME_MS = 40;
 
 let started = false;
 
@@ -51,11 +52,24 @@ export function initSplash(): void {
   let shown = 0;
   let movedAt = shownAt;
   let done = false;
+  let measured = 0;
+  let lastLabel = "";
+  let drawnAt = 0;
+
+  window.addEventListener("resize", () => (measured = 0));
 
   const frame = (now: number) => {
+    if (!splash.isConnected) return;
+
+    if (now - drawnAt < FRAME_MS || document.hidden) {
+      requestAnimationFrame(frame);
+      return;
+    }
+
+    drawnAt = now;
     const target = progress();
     const ctx = canvas.getContext("2d")!;
-    const size = canvas.clientWidth;
+    const size = (measured ||= canvas.clientWidth);
 
     if (target > shown + 0.001) movedAt = now;
     shown = Math.max(shown, shown + (target - shown) * 0.16);
@@ -66,7 +80,12 @@ export function initSplash(): void {
     ctx.clearRect(0, 0, size, size);
     skull.draw(ctx, size / 2, size / 2, size * 0.6, now - shownAt);
     drawRing(ctx, size / 2, size / 2, size * 0.44, done ? 1 : shown, now, palette());
-    step.textContent = stepText(done ? 1 : shown);
+    const label = stepText(done ? 1 : shown);
+
+    if (label !== lastLabel) {
+      lastLabel = label;
+      step.textContent = label;
+    }
 
     if (!done && now - movedAt > STALL_MS) void finish();
     if (splash.isConnected) requestAnimationFrame(frame);
@@ -85,5 +104,5 @@ export function initSplash(): void {
   void fontsLoaded().then(() => report("fonts", 1));
   void backgroundDrawn().then(() => report("background", 1));
   void Promise.all([fontsLoaded(), backgroundDrawn(), previewSettled()]).then(finish);
-  requestAnimationFrame(frame);
+  window.setTimeout(() => requestAnimationFrame(frame), 0);
 }

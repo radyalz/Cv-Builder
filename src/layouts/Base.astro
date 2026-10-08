@@ -56,14 +56,19 @@ const { title, description } = Astro.props;
 
       initPrefs();
       initSplash();
-      warmFonts();
-      initHalftone();
-      initSkulls();
-      initWallpaper();
-      initInstall(import.meta.env.PROD);
-      initTooltip();
-      initRipple();
-      whenReady(() => showTouchHint(t("touchHint")));
+
+      const boot = () => {
+        warmFonts();
+        initHalftone();
+        initSkulls();
+        initWallpaper();
+        initInstall(import.meta.env.PROD);
+        initTooltip();
+        initRipple();
+        whenReady(() => showTouchHint(t("touchHint")));
+      };
+
+      requestAnimationFrame(() => window.setTimeout(boot, 0));
     </script>
   </body>
 </html>

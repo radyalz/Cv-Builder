@@ -27,6 +27,8 @@ export function describeLink(url: string): string {
   }
 }
 
+const MIN_TARGET = 24;
+
 function linkElement(item: Annotation & { url: string }, viewport: PageViewport): HTMLAnchorElement {
   const [a, b, c, d, e, f] = viewport.transform;
   const point = (x: number, y: number) => [a * x + c * y + e, b * x + d * y + f];
@@ -40,11 +42,13 @@ function linkElement(item: Annotation & { url: string }, viewport: PageViewport)
   link.className = "pdf-link";
   link.title = item.url;
   link.setAttribute("aria-label", describeLink(item.url));
+  const width = Math.max(Math.abs(x2 - x1), MIN_TARGET);
+  const height = Math.max(Math.abs(y2 - y1), MIN_TARGET);
   Object.assign(link.style, {
-    left: `${Math.min(x1, x2)}px`,
-    top: `${Math.min(y1, y2)}px`,
-    width: `${Math.abs(x2 - x1)}px`,
-    height: `${Math.abs(y2 - y1)}px`,
+    left: `${(x1 + x2) / 2 - width / 2}px`,
+    top: `${(y1 + y2) / 2 - height / 2}px`,
+    width: `${width}px`,
+    height: `${height}px`,
   });
 
   return link;

@@ -30,6 +30,7 @@ export default defineConfig({
   site: "https://radyalz.github.io",
   base: "/Cv-Builder",
   trailingSlash: "ignore",
+  build: { inlineStylesheets: "always" },
   integrations: [serviceWorker()],
   vite: {
     build: {
