@@ -1,6 +1,4 @@
-import type { Palette } from "../../lib/transition/render";
-
-type Rgb = [number, number, number];
+import { mixRgb, type Palette, type Rgb } from "../../lib/transition/palette";
 
 const BLACK: Rgb = [7, 5, 10];
 const WHITE: Rgb = [255, 255, 255];
@@ -15,16 +13,12 @@ function parse(color: string): Rgb {
   return [r, g, b];
 }
 
-const mix = (a: Rgb, b: Rgb, amount: number): string =>
-  `rgb(${a.map((v, i) => Math.round(v * amount + b[i] * (1 - amount))).join(",")})`;
-
 export function accentPalette(): Palette {
   const accent = parse(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
 
   return {
-    lav: [mix(accent, WHITE, 0.22), mix(accent, WHITE, 0.7), mix(accent, BLACK, 0.9), mix(accent, BLACK, 0.75)],
-    dark: [0.2, 0.28, 0.36, 0.46, 0.6].map((amount) => mix(accent, BLACK, amount)),
-    edge: mix(accent, WHITE, 0.06),
-    bg: "#07050a",
+    field: [mixRgb(BLACK, accent, 0.85), mixRgb(BLACK, accent, 0.55)],
+    edge: [mixRgb(accent, WHITE, 0.18), mixRgb(accent, WHITE, 0.5), mixRgb(accent, WHITE, 0.86)],
+    bg: BLACK,
   };
 }

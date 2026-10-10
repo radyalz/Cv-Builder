@@ -1,11 +1,13 @@
 import { makeGrid, type Grid } from "../../lib/transition/grid";
-import { draw, type Palette } from "../../lib/transition/render";
+import { draw } from "../../lib/transition/render";
+import { lerpPalette, type Palette } from "../../lib/transition/palette";
 import { decodeHandoff, TX_PARAM, type Handoff } from "../../lib/transition/handoff";
 
-const HOLD_MS = 50;
+export type OnFrame = (p: number, time: number, grid: Grid) => void;
 
 export interface Field {
-  reveal(ms: number): Promise<void>;
+  morph(to: Palette, ms: number): Promise<void>;
+  reveal(ms: number, onFrame?: OnFrame): Promise<void>;
 }
 
 export function takeHandoff(): Handoff | null {
@@ -17,38 +19,38 @@ export function takeHandoff(): Handoff | null {
   return handoff;
 }
 
-export function field(canvas: HTMLCanvasElement, seed: number, time: number, palette?: Palette): Field {
+export function field(canvas: HTMLCanvasElement, seed: number, time: number, palette: Palette, fill = true): Field {
   const ctx = canvas.getContext("2d")!;
   const origin = performance.now() - time * 1000;
   const resize = () => (grid = makeGrid(canvas, seed));
-  const paint = (p: number, now: number) => draw(ctx, grid, "in", p, (now - origin) / 1000, palette);
   let grid: Grid = makeGrid(canvas, seed);
-  let sweepAt = 0;
-  let span = 1;
-  let drawnAt = 0;
-  let finish = () => undefined as void;
+  let from = palette, to = palette, morphAt = 0, morphMs = 1, morphed = () => undefined as void;
+  let sweepAt = 0, span = 1, onFrame: OnFrame | undefined, finish = () => undefined as void;
+
+  const paint = (now: number): number => {
+    const k = morphAt ? Math.min(1, (now - morphAt) / morphMs) : 0;
+    const p = sweepAt ? Math.min(1, (now - sweepAt) / span) : 0;
+    const t = (now - origin) / 1000;
+    draw(ctx, grid, { mode: "in", p, time: t, pal: lerpPalette(from, to, k), fill });
+    onFrame?.(p, t, grid);
+    if (k === 1 && morphAt) (morphAt = 0, (from = to), morphed());
+    return p;
+  };
 
   const frame = (now: number) => {
-    const p = sweepAt ? Math.min(1, (now - sweepAt) / span) : 0;
-    if (now - drawnAt >= (sweepAt ? 16 : HOLD_MS) || p === 1) {
-      drawnAt = now;
-      paint(p, now);
-    }
-    if (p < 1) return void requestAnimationFrame(frame);
+    if (paint(now) < 1) return void requestAnimationFrame(frame);
     window.removeEventListener("resize", resize);
     finish();
   };
 
   window.addEventListener("resize", resize);
-  paint(0, performance.now());
+  paint(performance.now());
   requestAnimationFrame(frame);
 
   return {
-    reveal: (ms) =>
-      new Promise<void>((resolve) => {
-        finish = resolve;
-        span = ms;
-        sweepAt = performance.now();
-      }),
+    morph: (target, ms) =>
+      new Promise<void>((resolve) => ((morphed = resolve), (to = target), (morphMs = ms), (morphAt = performance.now()))),
+    reveal: (ms, hook) =>
+      new Promise<void>((resolve) => ((finish = resolve), (onFrame = hook), (span = ms), (sweepAt = performance.now()))),
   };
 }

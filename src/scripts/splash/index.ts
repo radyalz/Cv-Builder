@@ -3,17 +3,14 @@ import { drawRing } from "./ring";
 import { skullDrawer } from "./skull";
 import { backgroundDrawn, fontsLoaded, previewSettled } from "./steps";
 import { stepText } from "./text";
-import { field, takeHandoff, type Field } from "./ascii";
+import { handoffCover } from "./cover";
 import { leave } from "./leave";
 
 const MIN_MS = 900;
 const STALL_MS = 15000;
 const FRAME_MS = 40;
-const COVER_MS = 1500;
 
 let started = false;
-
-const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function palette() {
   const style = getComputedStyle(document.documentElement);
@@ -32,11 +29,8 @@ export function initSplash(): void {
   const step = splash.querySelector<HTMLElement>(".splash-step")!;
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const skull = skullDrawer(ratio);
-  const handoff = takeHandoff();
   const ascii = splash.querySelector<HTMLCanvasElement>(".splash-ascii")!;
-  const cover: Field | null = handoff && !still() ? field(ascii, handoff.seed, handoff.time) : null;
-  let uncovered: Promise<void> | undefined;
-  const uncover = () => (uncovered ??= cover ? cover.reveal(COVER_MS) : Promise.resolve());
+  const uncover = handoffCover(splash, ascii);
   const shownAt = performance.now();
   let shown = 0;
   let movedAt = shownAt;
@@ -45,8 +39,6 @@ export function initSplash(): void {
   let lastLabel = "";
   let drawnAt = 0;
 
-  if (cover) ascii.classList.add("is-shown");
-  splash.classList.remove("is-handoff");
   window.addEventListener("resize", () => (measured = 0));
 
   const frame = (now: number) => {
