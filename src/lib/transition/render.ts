@@ -1,10 +1,19 @@
 import { CELL, CHARS, type Grid } from "./grid";
 import { n3 } from "./noise";
 
-const LAV = ["#E6DBFF", "#9D6CFF", "#8458F5", "#6B3DFF"];
-const DARK = ["#1c1138", "#2a1a55", "#35206b", "#44298a", "#5a37b0"];
-const GOLD = "#E9C46A";
-const BG = "#07050a";
+export interface Palette {
+  lav: string[];
+  dark: string[];
+  edge: string;
+  bg: string;
+}
+
+export const PURPLE: Palette = {
+  lav: ["#E6DBFF", "#9D6CFF", "#8458F5", "#6B3DFF"],
+  dark: ["#1c1138", "#2a1a55", "#35206b", "#44298a", "#5a37b0"],
+  edge: "#E9C46A",
+  bg: "#07050a",
+};
 const ANG = (35 * Math.PI) / 180;
 const CA = Math.cos(ANG), SA = Math.sin(ANG);
 
@@ -12,7 +21,8 @@ export type Mode = "out" | "in";
 
 const ease = (p: number): number => (p < 0.5 ? 2 * p * p : 1 - (-2 * p + 2) ** 2 / 2);
 
-export function draw(ctx: CanvasRenderingContext2D, g: Grid, mode: Mode, p: number, time: number): void {
+export function draw(ctx: CanvasRenderingContext2D, g: Grid, mode: Mode, p: number, time: number, pal: Palette = PURPLE): void {
+  const { lav: LAV, dark: DARK, edge: GOLD, bg: BG } = pal;
   const { cols, rows, dpr, noise, wave: w } = g;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, cols * CELL, rows * CELL);

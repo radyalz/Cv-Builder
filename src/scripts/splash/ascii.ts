@@ -1,16 +1,14 @@
 import { makeGrid, type Grid } from "../../lib/transition/grid";
-import { draw } from "../../lib/transition/render";
-import { newSeed } from "../../lib/transition/rng";
+import { draw, type Palette } from "../../lib/transition/render";
 import { decodeHandoff, TX_PARAM, type Handoff } from "../../lib/transition/handoff";
 
 const HOLD_MS = 50;
-const IN_MS = 1900;
 
-export interface Cover {
-  reveal(): Promise<void>;
+export interface Field {
+  reveal(ms: number): Promise<void>;
 }
 
-function takeHandoff(): Handoff | null {
+export function takeHandoff(): Handoff | null {
   const url = new URL(location.href);
   if (!url.searchParams.has(TX_PARAM)) return null;
   const handoff = decodeHandoff(url.searchParams.get(TX_PARAM));
@@ -19,23 +17,22 @@ function takeHandoff(): Handoff | null {
   return handoff;
 }
 
-export function startCover(canvas: HTMLCanvasElement, still: boolean): Cover {
-  const handoff = takeHandoff();
-  const ctx = canvas.getContext("2d");
-  if (still || !ctx) return { reveal: async () => undefined };
-  const seed = handoff?.seed ?? newSeed();
-  const origin = performance.now() - (handoff?.time ?? 0) * 1000;
+export function field(canvas: HTMLCanvasElement, seed: number, time: number, palette?: Palette): Field {
+  const ctx = canvas.getContext("2d")!;
+  const origin = performance.now() - time * 1000;
   const resize = () => (grid = makeGrid(canvas, seed));
+  const paint = (p: number, now: number) => draw(ctx, grid, "in", p, (now - origin) / 1000, palette);
   let grid: Grid = makeGrid(canvas, seed);
   let sweepAt = 0;
+  let span = 1;
   let drawnAt = 0;
   let finish = () => undefined as void;
 
   const frame = (now: number) => {
-    const p = sweepAt ? Math.min(1, (now - sweepAt) / IN_MS) : 0;
+    const p = sweepAt ? Math.min(1, (now - sweepAt) / span) : 0;
     if (now - drawnAt >= (sweepAt ? 16 : HOLD_MS) || p === 1) {
       drawnAt = now;
-      draw(ctx, grid, "in", p, (now - origin) / 1000);
+      paint(p, now);
     }
     if (p < 1) return void requestAnimationFrame(frame);
     window.removeEventListener("resize", resize);
@@ -43,14 +40,14 @@ export function startCover(canvas: HTMLCanvasElement, still: boolean): Cover {
   };
 
   window.addEventListener("resize", resize);
-  draw(ctx, grid, "in", 0, (performance.now() - origin) / 1000);
-  canvas.classList.add(handoff ? "is-shown" : "is-fading");
+  paint(0, performance.now());
   requestAnimationFrame(frame);
 
   return {
-    reveal: () =>
+    reveal: (ms) =>
       new Promise<void>((resolve) => {
         finish = resolve;
+        span = ms;
         sweepAt = performance.now();
       }),
   };

@@ -5,9 +5,14 @@ const { en, fa } = STRINGS;
 ---
 
 <div id="splash" class="splash" aria-hidden="true">
-  <canvas class="splash-canvas"></canvas>
   <div class="splash-stage">
+    <canvas class="splash-canvas"></canvas>
     <p class="splash-name"><span class="only-en">{en.name}</span><span class="only-fa" lang="fa">{fa.name}</span></p>
     <p class="splash-step"><span class="only-en">{en.splashFonts}</span><span class="only-fa" lang="fa">{fa.splashFonts}</span></p>
   </div>
+  <canvas class="splash-ascii"></canvas>
 </div>
+<script is:inline>
+  if (/[?&]tx=/.test(location.search) && !matchMedia("(prefers-reduced-motion: reduce)").matches)
+    document.getElementById("splash").classList.add("is-handoff");
+</script>
