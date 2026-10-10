@@ -1,4 +1,4 @@
-import { CELL, type Grid } from "./grid";
+import type { Grid } from "./grid";
 import { CA, SA, edgeAt, wave } from "./wave";
 
 export type Side = "behind" | "ahead";
@@ -12,7 +12,7 @@ export function frontClip(g: Grid, p: number, time: number, side: Side, dx = 0, 
   const far = side === "behind" ? -1e4 : 1e4;
   const shift = side === "ahead" ? -band * 0.22 : 0;
   const pt = (u: number, s: number): string =>
-    `${((u * CA - s * SA) * CELL - dx).toFixed(1)}px ${((u * SA + s * CA) * CELL - dy).toFixed(1)}px`;
+    `${((u * CA - s * SA) * g.cell - dx).toFixed(1)}px ${((u * SA + s * CA) * g.cell - dy).toFixed(1)}px`;
   const pts: string[] = [];
   for (let i = 0; i <= STEPS; i++) {
     const s = lo + ((hi - lo) * i) / STEPS;

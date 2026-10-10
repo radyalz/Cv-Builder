@@ -9,7 +9,7 @@ const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)
 
 async function sweep(splash: HTMLElement): Promise<void> {
   const canvas = splash.querySelector<HTMLCanvasElement>(".splash-ascii")!;
-  const front = field(canvas, newSeed(), 0, accentPalette(), false);
+  const front = field(canvas, newSeed(), 0, accentPalette(), false, 18);
 
   canvas.classList.add("is-shown");
   document.documentElement.classList.add("is-ready");

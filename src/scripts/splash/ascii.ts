@@ -1,4 +1,4 @@
-import { makeGrid, type Grid } from "../../lib/transition/grid";
+import { frameGap, makeGrid, type Grid } from "../../lib/transition/grid";
 import { draw } from "../../lib/transition/render";
 import { lerpPalette, type Palette } from "../../lib/transition/palette";
 import { decodeHandoff, TX_PARAM, type Handoff } from "../../lib/transition/handoff";
@@ -19,11 +19,11 @@ export function takeHandoff(): Handoff | null {
   return handoff;
 }
 
-export function field(canvas: HTMLCanvasElement, seed: number, time: number, palette: Palette, fill = true): Field {
+export function field(canvas: HTMLCanvasElement, seed: number, time: number, palette: Palette, fill = true, cell?: number): Field {
   const ctx = canvas.getContext("2d")!;
   const origin = performance.now() - time * 1000;
-  const resize = () => (grid = makeGrid(canvas, seed));
-  let grid: Grid = makeGrid(canvas, seed);
+  const resize = () => (grid = makeGrid(canvas, seed, cell));
+  let grid: Grid = makeGrid(canvas, seed, cell);
   let from = palette, to = palette, morphAt = 0, morphMs = 1, morphed = () => undefined as void;
   let sweepAt = 0, span = 1, onFrame: OnFrame | undefined, finish = () => undefined as void;
 
@@ -31,13 +31,17 @@ export function field(canvas: HTMLCanvasElement, seed: number, time: number, pal
     const k = morphAt ? Math.min(1, (now - morphAt) / morphMs) : 0;
     const p = sweepAt ? Math.min(1, (now - sweepAt) / span) : 0;
     const t = (now - origin) / 1000;
-    draw(ctx, grid, { mode: "in", p, time: t, pal: lerpPalette(from, to, k), fill });
+    draw(ctx, grid, { mode: "in", p, time: t, pal: lerpPalette(from, to, Math.round(k * 6) / 6), fill });
     onFrame?.(p, t, grid);
     if (k === 1 && morphAt) (morphAt = 0, (from = to), morphed());
     return p;
   };
 
+  let last = 0;
+  const gap = frameGap() - 2;
   const frame = (now: number) => {
+    if (now - last < gap) return void requestAnimationFrame(frame);
+    last = now;
     if (paint(now) < 1) return void requestAnimationFrame(frame);
     window.removeEventListener("resize", resize);
     finish();

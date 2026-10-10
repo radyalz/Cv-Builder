@@ -12,10 +12,14 @@ const FRAME_MS = 40;
 
 let started = false;
 
-function palette() {
-  const style = getComputedStyle(document.documentElement);
+let cached = { at: -1e4, accent: "", muted: "" };
 
-  return { accent: style.getPropertyValue("--accent").trim(), muted: style.getPropertyValue("--muted").trim() };
+function palette() {
+  const now = performance.now();
+  if (now - cached.at < 500) return cached;
+  const style = getComputedStyle(document.documentElement);
+  cached = { at: now, accent: style.getPropertyValue("--accent").trim(), muted: style.getPropertyValue("--muted").trim() };
+  return cached;
 }
 
 export function initSplash(): void {
@@ -72,9 +76,11 @@ export function initSplash(): void {
     }
 
     if (!done && now - movedAt > STALL_MS) void finish();
-    if (splash.isConnected) requestAnimationFrame(frame);
+    if (splash.isConnected && !(done && settled)) requestAnimationFrame(frame);
+    settled = done;
   };
 
+  let settled = false;
   const finish = async () => {
     if (done) return;
 
