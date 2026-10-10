@@ -16,6 +16,11 @@ function sweep(splash: HTMLElement): Promise<void> {
   const grid = makeGrid(canvas, newSeed(), 16);
   const pal = accentPalette();
   const gap = frameGap() - 2;
+  const parts = [...document.querySelectorAll<HTMLElement>("body > :not(#splash):not(.tone-field):not(script)")];
+  const boxes = parts.map((el) => el.getBoundingClientRect());
+  const reveal = (p: number, time: number): void =>
+    parts.forEach((el, i) => (el.style.clipPath = frontClip(grid, p, time, "behind", boxes[i].left, boxes[i].top)));
+  reveal(0, 0);
   canvas.classList.add("is-shown");
   document.documentElement.classList.add("is-ready");
   return new Promise((done) => {
@@ -26,9 +31,12 @@ function sweep(splash: HTMLElement): Promise<void> {
       last = now;
       const k = (now - start) / SWEEP_MS, time = (now - start) / 1000;
       draw(ctx, grid, { mode: "out", p: clamp(k / (1 - LAG)), time, pal });
-      splash.style.clipPath = frontClip(grid, clamp((k - LAG) / (1 - LAG)), time, "ahead");
-      if (k < 1) requestAnimationFrame(frame);
-      else done();
+      const p2 = clamp((k - LAG) / (1 - LAG));
+      splash.style.clipPath = frontClip(grid, p2, time, "ahead");
+      reveal(p2, time);
+      if (k < 1) return void requestAnimationFrame(frame);
+      parts.forEach((el) => (el.style.clipPath = ""));
+      done();
     };
     requestAnimationFrame(frame);
   });
