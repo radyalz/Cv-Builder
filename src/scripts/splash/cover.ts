@@ -2,8 +2,8 @@ import { PURPLE_GOLD } from "../../lib/transition/palette";
 import { accentPalette } from "./accent";
 import { field, takeHandoff } from "./ascii";
 
-const MORPH_MS = 400;
-const REVEAL_MS = 1000;
+const MORPH_MS = 500;
+const REVEAL_MS = 1500;
 
 const still = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
